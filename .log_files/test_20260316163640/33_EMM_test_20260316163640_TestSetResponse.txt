@@ -1,0 +1,21 @@
+=== Test Start (Loop 33): 2026-03-16 17:30:15 ===
+[17:30:15] [System] PV Rows Reset for Loop 33, Mode=EMM
+[17:30:15] [Info ] *************  Information  ***************
+[17:30:15] [Info ] Project Name  = Front
+[17:30:15] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[17:30:15] [Info ] Box  Index    = 01
+[17:30:15] [Info ] Serial Number = test
+[17:30:15] [Info ] EMC Mode  = EMM
+[17:30:15] [Info ] Loop Number   = 33
+[17:30:15] [Info ] *************  Information  ***************
+[17:30:15] [PROC ] EMC EMM Test Start
+[17:30:15] [MQTT] Set All Analog Type-1 Pins with 5V
+[17:30:15] [MQTT] Set All Analog Type-2 Group 2 Pins with 5V
+[17:30:15] [MQTT] Set All DIN Pins with High Level
+[17:30:15] [MQTT] Set All ITK Pins with Cross Mode
+[17:30:15] [PROC ] CR1001 not connected. Skipping SLAC Handshake Test.
+[17:30:15] [PROC ] Ping Test Start
+[17:30:15] [PING6] Skip – SLAC Handshake not completed or failed.
+[17:30:15] [PROC ] Ping Test End
+[17:30:15] LIN Test Start
+[17:30:24] [LIN  ] No Lin result found, treat as FAIL

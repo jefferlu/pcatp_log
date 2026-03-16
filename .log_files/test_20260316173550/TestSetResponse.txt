@@ -1,0 +1,138 @@
+=== Test Start: 2026-03-16 17:35:50 ===
+[17:35:50] PV Mode: Report Structure Initialized.
+[17:35:50] [System] PV Report Enabled. (Mode: EMC/)
+[17:35:50] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:35:50] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:35:50] [Info ] *************  Information  ***************
+[17:35:50] [Info ] Project Name  = Front
+[17:35:50] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[17:35:50] [Info ] Box  Index    = 01
+[17:35:50] [Info ] Serial Number = test
+[17:35:50] [Info ] *************  Information  ***************
+[17:35:50] [MQTT ] Test Board Connection Pass
+[17:35:51] [MQTT ] Test Board Switch Pass:Front
+[17:35:51] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[17:35:51] [DoIP ] Ping ZCU: 192.168.5.1...
+[17:35:51] [DoIP ] ZCU Ping OK (192.168.5.1)
+[17:35:51] [DoIP ] Creating Session...
+[17:35:51] [DoIP ] ZCU Connected
+[17:35:51] [UDS  ] Session Ctrl: 4
+[17:35:51] [UDS  ] Session Control Pass
+[17:35:51] [PROC ] Get EMC Test Criteria
+[17:35:51] [PROC ] EMC Mode: EMM
+[17:35:51] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:35:51] PV Mode: Report Structure Initialized.
+[17:35:51] [System] PV Report Enabled. (Mode: EMC/)
+[17:35:51] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:35:51] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:35:51] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:36:51] PV Mode: Report Structure Initialized.
+[17:36:51] [System] PV Report Enabled. (Mode: EMC/)
+[17:36:51] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:36:51] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[17:36:51] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:38:38] PV Mode: Report Structure Initialized.
+[17:38:38] [System] PV Report Enabled. (Mode: EMC/)
+[17:38:38] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:38:38] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[17:38:38] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:39:51] PV Mode: Report Structure Initialized.
+[17:39:51] [System] PV Report Enabled. (Mode: EMC/)
+[17:39:51] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:39:51] [System] New Session. QTest: EMC, PrePV: , Loop: 4
+[17:39:51] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:42:07] PV Mode: Report Structure Initialized.
+[17:42:07] [System] PV Report Enabled. (Mode: EMC/)
+[17:42:07] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:42:07] [System] New Session. QTest: EMC, PrePV: , Loop: 5
+[17:42:07] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:43:44] PV Mode: Report Structure Initialized.
+[17:43:44] [System] PV Report Enabled. (Mode: EMC/)
+[17:43:44] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:43:44] [System] New Session. QTest: EMC, PrePV: , Loop: 6
+[17:43:44] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:45:10] PV Mode: Report Structure Initialized.
+[17:45:10] [System] PV Report Enabled. (Mode: EMC/)
+[17:45:10] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:45:10] [System] New Session. QTest: EMC, PrePV: , Loop: 7
+[17:45:10] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:47:35] PV Mode: Report Structure Initialized.
+[17:47:35] [System] PV Report Enabled. (Mode: EMC/)
+[17:47:35] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:47:35] [System] New Session. QTest: EMC, PrePV: , Loop: 8
+[17:47:35] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:49:10] PV Mode: Report Structure Initialized.
+[17:49:10] [System] PV Report Enabled. (Mode: EMC/)
+[17:49:10] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:49:10] [System] New Session. QTest: EMC, PrePV: , Loop: 9
+[17:49:10] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:50:45] PV Mode: Report Structure Initialized.
+[17:50:45] [System] PV Report Enabled. (Mode: EMC/)
+[17:50:45] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:50:45] [System] New Session. QTest: EMC, PrePV: , Loop: 10
+[17:50:45] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:52:14] PV Mode: Report Structure Initialized.
+[17:52:14] [System] PV Report Enabled. (Mode: EMC/)
+[17:52:14] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:52:14] [System] New Session. QTest: EMC, PrePV: , Loop: 11
+[17:52:14] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:53:43] PV Mode: Report Structure Initialized.
+[17:53:43] [System] PV Report Enabled. (Mode: EMC/)
+[17:53:43] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:53:43] [System] New Session. QTest: EMC, PrePV: , Loop: 12
+[17:53:43] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:55:13] PV Mode: Report Structure Initialized.
+[17:55:13] [System] PV Report Enabled. (Mode: EMC/)
+[17:55:13] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:55:13] [System] New Session. QTest: EMC, PrePV: , Loop: 13
+[17:55:13] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:56:42] PV Mode: Report Structure Initialized.
+[17:56:42] [System] PV Report Enabled. (Mode: EMC/)
+[17:56:42] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:56:42] [System] New Session. QTest: EMC, PrePV: , Loop: 14
+[17:56:42] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:58:12] PV Mode: Report Structure Initialized.
+[17:58:12] [System] PV Report Enabled. (Mode: EMC/)
+[17:58:12] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:58:12] [System] New Session. QTest: EMC, PrePV: , Loop: 15
+[17:58:12] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[17:59:41] PV Mode: Report Structure Initialized.
+[17:59:41] [System] PV Report Enabled. (Mode: EMC/)
+[17:59:41] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[17:59:41] [System] New Session. QTest: EMC, PrePV: , Loop: 16
+[17:59:41] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:01:10] PV Mode: Report Structure Initialized.
+[18:01:10] [System] PV Report Enabled. (Mode: EMC/)
+[18:01:10] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:01:10] [System] New Session. QTest: EMC, PrePV: , Loop: 17
+[18:01:10] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:02:39] PV Mode: Report Structure Initialized.
+[18:02:39] [System] PV Report Enabled. (Mode: EMC/)
+[18:02:39] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:02:39] [System] New Session. QTest: EMC, PrePV: , Loop: 18
+[18:02:39] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:04:14] PV Mode: Report Structure Initialized.
+[18:04:14] [System] PV Report Enabled. (Mode: EMC/)
+[18:04:14] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:04:14] [System] New Session. QTest: EMC, PrePV: , Loop: 19
+[18:04:14] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:05:43] PV Mode: Report Structure Initialized.
+[18:05:43] [System] PV Report Enabled. (Mode: EMC/)
+[18:05:43] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:05:43] [System] New Session. QTest: EMC, PrePV: , Loop: 20
+[18:05:43] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:07:13] PV Mode: Report Structure Initialized.
+[18:07:13] [System] PV Report Enabled. (Mode: EMC/)
+[18:07:13] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:07:13] [System] New Session. QTest: EMC, PrePV: , Loop: 21
+[18:07:13] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:08:42] PV Mode: Report Structure Initialized.
+[18:08:42] [System] PV Report Enabled. (Mode: EMC/)
+[18:08:42] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:08:42] [System] New Session. QTest: EMC, PrePV: , Loop: 22
+[18:08:42] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv
+[18:10:19] PV Mode: Report Structure Initialized.
+[18:10:19] [System] PV Report Enabled. (Mode: EMC/)
+[18:10:19] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\.test_20260316173550_details.tmp'
+[18:10:19] [System] New Session. QTest: EMC, PrePV: , Loop: 23
+[18:10:19] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\test_20260316173550\test_20260316173550.csv

@@ -1,0 +1,32 @@
+=== Test Start (Loop 23): 2026-03-16 18:10:19 ===
+[18:10:19] [System] PV Rows Reset for Loop 23, Mode=EMM
+[18:10:19] [Info ] *************  Information  ***************
+[18:10:19] [Info ] Project Name  = Front
+[18:10:19] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[18:10:19] [Info ] Box  Index    = 01
+[18:10:19] [Info ] Serial Number = test
+[18:10:19] [Info ] EMC Mode  = EMM
+[18:10:19] [Info ] Loop Number   = 23
+[18:10:19] [Info ] *************  Information  ***************
+[18:10:19] [PROC ] EMC EMM Test Start
+[18:10:19] [MQTT] Set All Analog Type-1 Pins with 5V
+[18:10:19] [MQTT] Set All Analog Type-2 Group 2 Pins with 5V
+[18:10:19] [MQTT] Set All DIN Pins with High Level
+[18:10:19] [MQTT] Set All ITK Pins with Cross Mode
+[18:10:19] [PROC ] CR1001 not connected. Skipping SLAC Handshake Test.
+[18:10:19] [PROC ] Ping Test Start
+[18:10:19] [PING6] Skip – SLAC Handshake not completed or failed.
+[18:10:19] [PROC ] Ping Test End
+[18:10:19] LIN Test Start
+[18:10:27] [LIN  ] No Lin result found, treat as FAIL
+[18:10:35] [LIN  ] No Lin result found, treat as FAIL
+[18:10:43] [LIN  ] No Lin result found, treat as FAIL
+[18:10:51] [LIN  ] No Lin result found, treat as FAIL
+[18:10:52] CAN Test Start
+[18:10:59] [CAN  ] No CAN result found, treat as FAIL
+[18:11:07] [CAN  ] No CAN result found, treat as FAIL
+[18:11:15] [CAN  ] No CAN result found, treat as FAIL
+[18:11:23] [CAN  ] No CAN result found, treat as FAIL
+[18:11:32] [UDS] Send EOL_CANSetLoopback Timeout RID:0321, Type:01, Payload:0401
+[18:11:40] [UDS] Send EOL_CANSetStatus Timeout RID:0323, Type:01, Payload:0502
+[18:11:45] [CAN  ] No CAN result found, treat as FAIL
