@@ -66,9 +66,9 @@ def render_result_table(
     # --- Styling ---
     styled = display_df.style
     if "Result" in display_df.columns:
-        styled = styled.applymap(_style_result, subset=["Result"])
+        styled = styled.map(_style_result, subset=["Result"])
 
-    st.dataframe(styled, height=height, use_container_width=True, key=key)
+    st.dataframe(styled, height=height, width="stretch", key=key)
 
 
 def render_category_filter(df: pd.DataFrame, key: str = "cat_filter") -> str:

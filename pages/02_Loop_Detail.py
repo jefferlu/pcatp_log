@@ -19,6 +19,7 @@ from components.result_table import (
 )
 from parsers.log_parser import parse_test_set_response
 from utils.helpers import get_loop_numbers, LOG_LEVEL_COLORS, format_value_cell
+from utils.chart_theme import light_layout
 
 session_data, selected_loop = render_sidebar(show_loop_selector=True)
 
@@ -110,48 +111,44 @@ if not results_df.empty and "Value" in results_df.columns:
             })
 
 if gauge_rows:
-    fig = go.Figure()
-    for i, g in enumerate(gauge_rows):
-        color = "#00CC66" if g["result"] == "PASS" else (
-            "#FF4444" if g["result"] == "FAIL" else "#FFAA00"
-        )
-        # Bar for measured range
-        fig.add_trace(go.Bar(
-            x=[(g["max"] + g["min"]) / 2],
-            y=[g["name"]],
-            orientation="h",
-            width=max(g["max"] - g["min"], 1),
-            base=g["min"],
-            marker_color=color,
-            name=g["result"],
-            showlegend=(i == 0),
-            hovertemplate=(
-                f"<b>{g['name']}</b><br>"
-                f"Measured: {g['min']:.1f} ~ {g['max']:.1f}<br>"
-                f"Limit: {g['lo']:.1f} ~ {g['hi']:.1f}<br>"
-                f"Result: {g['result']}<extra></extra>"
-            ),
-        ))
-        # Limit lines
-        for limit_val in [g["lo"], g["hi"]]:
-            fig.add_shape(
-                type="line",
-                x0=limit_val, x1=limit_val,
-                y0=i - 0.4, y1=i + 0.4,
-                line=dict(color="#FFFFFF", width=1, dash="dot"),
+    with st.container(border=True):
+        fig = go.Figure()
+        for i, g in enumerate(gauge_rows):
+            color = "#00AA55" if g["result"] == "PASS" else (
+                "#EE3333" if g["result"] == "FAIL" else "#DD8800"
             )
+            fig.add_trace(go.Bar(
+                x=[(g["max"] + g["min"]) / 2],
+                y=[g["name"]],
+                orientation="h",
+                width=max(g["max"] - g["min"], 1),
+                base=g["min"],
+                marker_color=color,
+                name=g["result"],
+                showlegend=(i == 0),
+                hovertemplate=(
+                    f"<b>{g['name']}</b><br>"
+                    f"Measured: {g['min']:.1f} ~ {g['max']:.1f}<br>"
+                    f"Limit: {g['lo']:.1f} ~ {g['hi']:.1f}<br>"
+                    f"Result: {g['result']}<extra></extra>"
+                ),
+            ))
+            for limit_val in [g["lo"], g["hi"]]:
+                fig.add_shape(
+                    type="line",
+                    x0=limit_val, x1=limit_val,
+                    y0=i - 0.4, y1=i + 0.4,
+                    line=dict(color="#444444", width=1, dash="dot"),
+                )
 
-    fig.update_layout(
-        height=max(400, len(gauge_rows) * 22),
-        barmode="overlay",
-        paper_bgcolor="#0E1117",
-        plot_bgcolor="#1C2333",
-        font_color="#FAFAFA",
-        yaxis=dict(autorange="reversed"),
-        showlegend=False,
-        margin=dict(l=250),
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(**light_layout(
+            height=max(400, len(gauge_rows) * 22),
+            barmode="overlay",
+            yaxis=dict(autorange="reversed"),
+            showlegend=False,
+            margin=dict(l=250),
+        ))
+        st.plotly_chart(fig, width="stretch")
 else:
     st.info("No range-type measurement data available for this loop.")
 

@@ -1,10 +1,7 @@
 [theme]
-base = "dark"
+base = "light"
 primaryColor = "#00AAFF"
-backgroundColor = "#0E1117"
-secondaryBackgroundColor = "#1C2333"
-textColor = "#FAFAFA"
-font = "monospace"
+font = "sans serif"
 
 [server]
 headless = true
@@ -12,3 +9,7 @@ port = 8501
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = false

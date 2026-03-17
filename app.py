@@ -90,7 +90,7 @@ if loop_nums:
 
     import pandas as pd
     summary_df = pd.DataFrame(rows)
-    st.dataframe(summary_df, use_container_width=True, hide_index=True)
+    st.dataframe(summary_df, width="stretch", hide_index=True)
 
     st.divider()
     st.markdown(

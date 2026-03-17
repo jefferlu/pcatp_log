@@ -79,7 +79,7 @@ st.markdown(f"**{len(changed_df)}** items changed result between Loop {loop_a} a
 
 if not changed_df.empty:
     st.subheader("Changed Items")
-    st.dataframe(changed_df, use_container_width=True, hide_index=True)
+    st.dataframe(changed_df, width="stretch", hide_index=True)
 
 with st.expander(f"Unchanged items ({len(same_df)})", expanded=False):
-    st.dataframe(same_df, use_container_width=True, hide_index=True)
+    st.dataframe(same_df, width="stretch", hide_index=True)
