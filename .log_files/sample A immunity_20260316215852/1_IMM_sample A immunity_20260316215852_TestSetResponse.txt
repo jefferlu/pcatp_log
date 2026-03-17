@@ -1,0 +1,157 @@
+=== Test Start (Loop 1): 2026-03-16 21:58:53 ===
+[21:58:53] [System] PV Rows Reset for Loop 1, Mode=IMM
+[21:58:53] [Info ] *************  Information  ***************
+[21:58:53] [Info ] Project Name  = Front
+[21:58:53] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[21:58:53] [Info ] Box  Index    = 01
+[21:58:53] [Info ] Serial Number = sample A immunity
+[21:58:53] [Info ] EMC Mode  = IMM
+[21:58:53] [Info ] Loop Number   = 1
+[21:58:53] [Info ] *************  Information  ***************
+[21:58:54] [PROC ] EMC IMM Test Start
+[21:58:54] [MQTT] Set All Analog Type-1 Pins with 5V
+[21:58:54] [MQTT] Set All Analog Type-2 Group 0 Pins with 5V
+[21:58:54] [MQTT] Set All DIN Pins with High Level
+[21:58:54] [MQTT] Set All ITK Pins with Cross Mode
+[21:58:54] [PROC ] SLAC Handshake Test Start
+[21:58:54] [SLAC ] Wake pulse (Duty 0%) sent to CR1001.
+[21:58:54] [SLAC ] Listener Started. Waiting for State 1...
+[21:58:54] [SLAC_INT] Starting SLAC handshake...
+[21:58:54] [SLAC_INT] Duty 5% set.
+[21:58:54] [SLAC_INT] Packet sent successfully: CM_SET_KEY.REQ
+[21:58:54] [SLAC_INT] Recv CM_SET_KEY.CNF
+[21:58:54] [SLAC ] State 2 Reached. Waiting for DUT readiness...
+[21:58:55] [SLAC_INT] Recv CM_SLAC_PARM.REQ
+[21:58:55] [SLAC_INT] [SLAC_INT] Valid SLAC Trigger Packet (MME: 6064)
+[21:58:55] [SLAC_INT] Learned EV MAC: 3C-42-7E-B0-43-52
+[21:58:55] [SLAC_INT] Learned Run ID: 00-00-00-00-00-00-00-00
+[21:58:55] [SLAC_INT] Packet sent successfully: CM_SLAC_PARM.CNF
+[21:58:55] [UDS  ] Send EOL_WriteDigitalOutput success RID:0701, Status:0,Type:01, Payload:01
+[21:58:55] [UDS  ] Send EOL_WriteDigitalOutput success RID:0701, Status:0,Type:03, Payload:NA
+[21:58:55] [SLAC_INT] Recv CM_START_ATTEN_CHAR.IND
+[21:58:55] [SLAC_INT] Recv CM_START_ATTEN_CHAR.IND
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 1/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 2/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 3/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 4/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 5/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 6/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 7/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 8/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 9/10
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[21:58:55] [SLAC_INT] [SLAC_INT] Profile Count: 10/10
+[21:58:55] [SLAC_INT] Packet sent successfully: CM_ATTEN_CHAR.IND
+[21:58:55] [SLAC_INT] Recv CM_ATTEN_CHAR.RSP
+[21:58:56] [SLAC_INT] Recv CM_SLAC_MATCH.REQ
+[21:58:56] [SLAC_INT] Packet sent successfully: CM_SLAC_MATCH.CNF
+[21:58:56] [SLAC_INT] SLAC Handshake Complete!
+[21:58:56] [SLAC_INT] SLAC handshake completed.
+[21:58:56] [SLAC ] SLAC Handshake PASS
+[21:58:56] [PROC ] SLAC Handshake Test End
+[21:58:57] [PROC ] Ping Test Start
+[21:58:57] [PROC ] IPv6 Ping Test Start
+[21:59:01] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%29 (使用 32 位元組的資料): | 要求等候逾時。 | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=17ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=9ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=7ms  |  | fe80::3e42:7eff:feb0:4352%29 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 3, 已遺失 = 1 (25% 遺失)， | 大約的來回時間 (毫秒): |     最小值 = 7ms，最大值 = 17ms，平均 = 11ms | 
+[21:59:01] [PING6] IPv6 Ping PASS
+[21:59:01] [PROC ] IPv6 Ping Test End
+[21:59:01] [PROC ] Ping Test End
+[21:59:01] LIN Test Start
+[21:59:04] [MSG  ] TestItem: lin, Channel: 01CM, Result: PASS
+[21:59:04] [MSG  ] TestItem: lin, Channel: 01CE, Result: PASS
+[21:59:07] [MSG  ] TestItem: lin, Channel: 02CM, Result: PASS
+[21:59:07] [MSG  ] TestItem: lin, Channel: 02CE, Result: PASS
+[21:59:10] [MSG  ] TestItem: lin, Channel: 03CM, Result: PASS
+[21:59:10] [MSG  ] TestItem: lin, Channel: 03CE, Result: PASS
+[21:59:13] [MSG  ] TestItem: lin, Channel: 04CM, Result: PASS
+[21:59:13] [MSG  ] TestItem: lin, Channel: 04CE, Result: PASS
+[21:59:13] CAN Test Start
+[21:59:16] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:16] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:16] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:21] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:21] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:21] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:29] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:29] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:29] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:34] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:34] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:34] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:37] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:37] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:37] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:42] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:42] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:42] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:50] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:50] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:50] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[21:59:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[21:59:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[21:59:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:11] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:11] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:11] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:00:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:00:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:00:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
