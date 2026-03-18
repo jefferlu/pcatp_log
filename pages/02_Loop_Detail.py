@@ -5,10 +5,7 @@ Reproduces the ATP real-time screen for a single selected loop.
 Shows categorised test results, value gauges, and the raw log timeline.
 """
 import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
-
-st.set_page_config(page_title="Loop Detail", page_icon="🔍", layout="wide")
 
 from components.sidebar import render_sidebar
 from components.metrics_card import render_metrics_card, compute_counts
@@ -17,13 +14,11 @@ from components.result_table import (
     render_category_filter,
     render_result_filter,
 )
-from parsers.log_parser import parse_test_set_response
-from utils.helpers import get_loop_numbers, LOG_LEVEL_COLORS, format_value_cell
-from utils.chart_theme import light_layout
+from utils.helpers import get_loop_numbers, LOG_LEVEL_COLORS
 
 session_data, selected_loop = render_sidebar(show_loop_selector=True)
 
-st.title("🔍 Loop Detail")
+st.title("Loop Detail")
 
 if session_data is None or selected_loop is None:
     st.info("Select a session and loop from the sidebar.")
@@ -92,65 +87,65 @@ if not legacy_df.empty:
 st.divider()
 
 # ---------------------------------------------------------------------------
-# Value gauge chart for range-type items
+# Value gauge chart for range-type items (disabled)
 # ---------------------------------------------------------------------------
-st.subheader("Measurement Values vs. Limits")
-
-gauge_rows = []
-if not results_df.empty and "Value" in results_df.columns:
-    for _, row in results_df.iterrows():
-        parsed = format_value_cell(str(row.get("Value", "")))
-        if parsed["type"] == "range":
-            gauge_rows.append({
-                "name":   f"{row.get('Test Name','')} / {row.get('Sub Item','')}",
-                "result": str(row.get("Result", "")).strip().upper(),
-                "min":    parsed["min"],
-                "max":    parsed["max"],
-                "lo":     parsed["lo"],
-                "hi":     parsed["hi"],
-            })
-
-if gauge_rows:
-    with st.container(border=True):
-        fig = go.Figure()
-        for i, g in enumerate(gauge_rows):
-            color = "#00AA55" if g["result"] == "PASS" else (
-                "#EE3333" if g["result"] == "FAIL" else "#DD8800"
-            )
-            fig.add_trace(go.Bar(
-                x=[(g["max"] + g["min"]) / 2],
-                y=[g["name"]],
-                orientation="h",
-                width=max(g["max"] - g["min"], 1),
-                base=g["min"],
-                marker_color=color,
-                name=g["result"],
-                showlegend=(i == 0),
-                hovertemplate=(
-                    f"<b>{g['name']}</b><br>"
-                    f"Measured: {g['min']:.1f} ~ {g['max']:.1f}<br>"
-                    f"Limit: {g['lo']:.1f} ~ {g['hi']:.1f}<br>"
-                    f"Result: {g['result']}<extra></extra>"
-                ),
-            ))
-            for limit_val in [g["lo"], g["hi"]]:
-                fig.add_shape(
-                    type="line",
-                    x0=limit_val, x1=limit_val,
-                    y0=i - 0.4, y1=i + 0.4,
-                    line=dict(color="#444444", width=1, dash="dot"),
-                )
-
-        fig.update_layout(**light_layout(
-            height=max(400, len(gauge_rows) * 22),
-            barmode="overlay",
-            yaxis=dict(autorange="reversed"),
-            showlegend=False,
-            margin=dict(l=250),
-        ))
-        st.plotly_chart(fig, width="stretch")
-else:
-    st.info("No range-type measurement data available for this loop.")
+# st.subheader("Measurement Values vs. Limits")
+#
+# gauge_rows = []
+# if not results_df.empty and "Value" in results_df.columns:
+#     for _, row in results_df.iterrows():
+#         parsed = format_value_cell(str(row.get("Value", "")))
+#         if parsed["type"] == "range":
+#             gauge_rows.append({
+#                 "name":   f"{row.get('Test Name','')} / {row.get('Sub Item','')}",
+#                 "result": str(row.get("Result", "")).strip().upper(),
+#                 "min":    parsed["min"],
+#                 "max":    parsed["max"],
+#                 "lo":     parsed["lo"],
+#                 "hi":     parsed["hi"],
+#             })
+#
+# if gauge_rows:
+#     with st.container(border=True):
+#         fig = go.Figure()
+#         for i, g in enumerate(gauge_rows):
+#             color = "#00AA55" if g["result"] == "PASS" else (
+#                 "#EE3333" if g["result"] == "FAIL" else "#DD8800"
+#             )
+#             fig.add_trace(go.Bar(
+#                 x=[(g["max"] + g["min"]) / 2],
+#                 y=[g["name"]],
+#                 orientation="h",
+#                 width=max(g["max"] - g["min"], 1),
+#                 base=g["min"],
+#                 marker_color=color,
+#                 name=g["result"],
+#                 showlegend=(i == 0),
+#                 hovertemplate=(
+#                     f"<b>{g['name']}</b><br>"
+#                     f"Measured: {g['min']:.1f} ~ {g['max']:.1f}<br>"
+#                     f"Limit: {g['lo']:.1f} ~ {g['hi']:.1f}<br>"
+#                     f"Result: {g['result']}<extra></extra>"
+#                 ),
+#             ))
+#             for limit_val in [g["lo"], g["hi"]]:
+#                 fig.add_shape(
+#                     type="line",
+#                     x0=limit_val, x1=limit_val,
+#                     y0=i - 0.4, y1=i + 0.4,
+#                     line=dict(color="#444444", width=1, dash="dot"),
+#                 )
+#
+#         fig.update_layout(**light_layout(
+#             height=max(400, len(gauge_rows) * 22),
+#             barmode="overlay",
+#             yaxis=dict(autorange="reversed"),
+#             showlegend=False,
+#             margin=dict(l=250),
+#         ))
+#         st.plotly_chart(fig, width="stretch")
+# else:
+#     st.info("No range-type measurement data available for this loop.")
 
 # ---------------------------------------------------------------------------
 # Log timeline
@@ -158,13 +153,8 @@ else:
 st.divider()
 st.subheader("Log Timeline")
 
-session_id = session_data["id"]
-loop_num_str = str(selected_loop)
-from pathlib import Path
-from utils.helpers import LOG_ROOT
-
-log_path = LOG_ROOT / session_id / f"{loop_num_str}_EMM_{session_id}_TestSetResponse.txt"
-log_entries = parse_test_set_response(log_path)
+from db.database import load_log_entries
+log_entries = load_log_entries(session_data["id"], selected_loop)
 
 if log_entries:
     level_filter = st.multiselect(

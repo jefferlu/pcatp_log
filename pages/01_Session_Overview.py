@@ -8,8 +8,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-st.set_page_config(page_title="Session Overview", page_icon="📊", layout="wide")
-
 from components.sidebar import render_sidebar
 from components.metrics_card import render_metrics_card, compute_counts
 from utils.helpers import get_loop_numbers
@@ -17,9 +15,10 @@ from utils.chart_theme import light_layout
 
 session_data, _ = render_sidebar(show_loop_selector=False)
 
-st.title("📊 Session Overview")
+st.title("Session Overview")
 
 if session_data is None:
+    st.info("No session selected. Please import log files via **Import Sessions** and select a session from the sidebar.")
     st.stop()
 
 loops = session_data.get("loops", {})
