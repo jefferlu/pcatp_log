@@ -1,12 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""
-PyInstaller spec for ATP Log Analyzer.
-
-Build steps (run on Windows):
-    pip install pyinstaller
-    pyinstaller ATPLogAnalyzer.spec --clean
-Output: dist\ATPLogAnalyzer\ATPLogAnalyzer.exe
-"""
+# PyInstaller spec for ATP Log Analyzer.
+#
+# Build steps (run on Windows):
+#   pip install pyinstaller
+#   pyinstaller ATPLogAnalyzer.spec --clean
+# Output: dist/ATPLogAnalyzer/ATPLogAnalyzer.exe
 
 from PyInstaller.utils.hooks import collect_all, collect_data_files
 
@@ -75,7 +73,11 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=["matplotlib", "scipy", "notebook", "IPython"],
+    excludes=[
+        "matplotlib", "scipy", "notebook", "IPython",
+        "langchain", "streamlit.external.langchain",
+        "openai", "anthropic",
+    ],
     noarchive=False,
 )
 
