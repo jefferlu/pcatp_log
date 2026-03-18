@@ -36,6 +36,7 @@ def main() -> None:
         "streamlit",
         "run",
         _resource_path("app.py"),
+        "--global.developmentMode=false",
         f"--server.port={port}",
         "--server.headless=true",
         "--server.fileWatcherType=none",
