@@ -36,7 +36,7 @@ with st.container(border=True):
         accept_multiple_files=True,
     )
 
-    overwrite = st.checkbox("Overwrite if session already exists", value=False)
+    overwrite = st.checkbox("Overwrite if session already exists", value=True)
 
     if st.button("Import", type="primary", disabled=not uploaded):
         results = []
@@ -53,39 +53,30 @@ with st.container(border=True):
 
             # --- Process loose CSV files ---
             if csv_files:
-                # Detect session_id from filename pattern: test_<ts>.csv or N_EMM_test_<ts>.csv
+                # Use the first non-loop CSV as session_id, fallback to first filename stem
                 session_id = None
                 for cf in csv_files:
-                    name = cf.name
-                    if name.startswith("test_") and "_EMM_" not in name:
-                        session_id = name.replace(".csv", "")
+                    if "_EMM_" not in cf.name:
+                        session_id = Path(cf.name).stem
                         break
-                if session_id is None and csv_files:
-                    import re
-                    m = re.search(r"(test_\d+)", csv_files[0].name)
-                    session_id = m.group(1) if m else "uploaded_session"
+                if session_id is None:
+                    session_id = Path(csv_files[0].name).stem
 
                 sess_dir = tmp_path / session_id
                 sess_dir.mkdir(exist_ok=True)
                 for cf in csv_files:
                     (sess_dir / cf.name).write_bytes(cf.read())
 
-            # Discover session directories in tmp_path
-            session_dirs = [
-                p for p in tmp_path.iterdir()
-                if p.is_dir() and p.name.startswith("test_")
-            ]
-            # Also check one level deeper (ZIP with nested folder)
+            # Discover ALL subdirectories in tmp_path (no name restriction)
+            session_dirs = [p for p in tmp_path.iterdir() if p.is_dir()]
+            # Also check one level deeper (ZIP with a nested parent folder)
             if not session_dirs:
                 for sub in tmp_path.iterdir():
                     if sub.is_dir():
-                        session_dirs += [
-                            p for p in sub.iterdir()
-                            if p.is_dir() and p.name.startswith("test_")
-                        ]
+                        session_dirs += [p for p in sub.iterdir() if p.is_dir()]
 
             if not session_dirs:
-                st.error("No session folders (test_*) found in uploaded files.")
+                st.error("No folders found in uploaded files.")
             else:
                 progress = st.progress(0)
                 for i, sess_dir in enumerate(session_dirs):
