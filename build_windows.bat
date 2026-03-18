@@ -1,53 +1,87 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 echo ============================================
 echo  ATP Log Analyzer - Windows Build Script
 echo ============================================
 echo.
 
-:: Check Python
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Python not found. Please install Python 3.10+ from https://python.org
-    pause
-    exit /b 1
+:: ---------------------------------------------------------------------------
+:: Find Python (try "py" launcher first, then "python")
+:: ---------------------------------------------------------------------------
+set PYTHON_CMD=
+
+where py >nul 2>&1
+if not errorlevel 1 (
+    set PYTHON_CMD=py
+    goto :found_python
 )
 
-:: Install / upgrade dependencies
+where python >nul 2>&1
+if not errorlevel 1 (
+    python -c "import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)" >nul 2>&1
+    if not errorlevel 1 (
+        set PYTHON_CMD=python
+        goto :found_python
+    )
+)
+
+echo [ERROR] Python 3.10+ not found.
+echo Please install from https://www.python.org/downloads/
+echo Make sure to check "Add Python to PATH" during installation.
+goto :end_pause
+
+:found_python
+for /f "tokens=*" %%v in ('!PYTHON_CMD! --version 2^>^&1') do echo [OK] Found: %%v
+echo.
+
+:: ---------------------------------------------------------------------------
+:: Install dependencies
+:: ---------------------------------------------------------------------------
 echo [1/3] Installing dependencies...
-pip install -r requirements.txt --quiet
+!PYTHON_CMD! -m pip install -r requirements.txt
 if errorlevel 1 (
+    echo.
     echo [ERROR] Failed to install dependencies.
-    pause
-    exit /b 1
+    goto :end_pause
 )
 
-pip install pyinstaller --quiet
+echo.
+echo [2/3] Installing PyInstaller...
+!PYTHON_CMD! -m pip install pyinstaller
 if errorlevel 1 (
+    echo.
     echo [ERROR] Failed to install PyInstaller.
-    pause
-    exit /b 1
+    goto :end_pause
 )
 
+:: ---------------------------------------------------------------------------
 :: Clean previous build
-echo [2/3] Cleaning previous build...
-if exist dist\ATPLogAnalyzer rmdir /s /q dist\ATPLogAnalyzer
-if exist build\ATPLogAnalyzer rmdir /s /q build\ATPLogAnalyzer
-
-:: Build
+:: ---------------------------------------------------------------------------
+echo.
 echo [3/3] Building executable...
-pyinstaller ATPLogAnalyzer.spec --clean --noconfirm
+if exist dist\ATPLogAnalyzer (
+    echo Removing previous build...
+    rmdir /s /q dist\ATPLogAnalyzer
+)
+if exist build\ATPLogAnalyzer (
+    rmdir /s /q build\ATPLogAnalyzer
+)
+
+!PYTHON_CMD! -m PyInstaller ATPLogAnalyzer.spec --clean --noconfirm
 if errorlevel 1 (
-    echo [ERROR] PyInstaller build failed.
-    pause
-    exit /b 1
+    echo.
+    echo [ERROR] PyInstaller build failed. Check the output above for details.
+    goto :end_pause
 )
 
 echo.
 echo ============================================
 echo  Build complete!
 echo  Output: dist\ATPLogAnalyzer\ATPLogAnalyzer.exe
-echo  Distribute the entire dist\ATPLogAnalyzer\ folder.
+echo  Zip and distribute the dist\ATPLogAnalyzer\ folder.
 echo ============================================
+
+:end_pause
+echo.
 pause
