@@ -29,6 +29,18 @@ def import_session(session_dir: Path, overwrite: bool = False) -> dict:
     loops = session_data.get("loops", {})
     meta = session_data.get("header_meta", {})
 
+    # Pre-parse all .txt files in the directory (sorted), then pair them with
+    # loops in sorted order — no filename convention assumed.
+    txt_files = sorted(session_dir.glob("*.txt"))
+    txt_entries: dict[int, list] = {}
+    sorted_loop_nums = sorted(loops.keys())
+    for idx, txt_file in enumerate(txt_files):
+        if idx >= len(sorted_loop_nums):
+            break
+        entries = parse_test_set_response(txt_file)
+        if entries:
+            txt_entries[sorted_loop_nums[idx]] = entries
+
     with connect() as conn:
         # sessions table
         conn.execute(
@@ -57,9 +69,8 @@ def import_session(session_dir: Path, overwrite: bool = False) -> dict:
             if not leg_df.empty:
                 _insert_results(conn, "legacy_results", session_id, loop_num, leg_df)
 
-            # log_entries — read .txt file
-            log_path = session_dir / f"{loop_num}_EMM_{session_id}_TestSetResponse.txt"
-            entries = parse_test_set_response(log_path)
+            # log_entries
+            entries = txt_entries.get(loop_num, [])
             if entries:
                 log_rows = [
                     (session_id, loop_num, e["time"], e["module"], e["message"], e["level"])

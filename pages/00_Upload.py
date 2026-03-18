@@ -5,7 +5,6 @@ Supports ZIP archives or individual CSV files.
 from __future__ import annotations
 
 import io
-import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -15,10 +14,27 @@ import streamlit as st
 from components.sidebar import render_sidebar
 from db.database import list_sessions, delete_session
 from db.importer import import_session
+from parsers.csv_parser import _is_loop_csv
 
 render_sidebar(show_loop_selector=False)
 
 st.title("Import Sessions")
+
+# ---------------------------------------------------------------------------
+# Show import results carried over from the previous run (after st.rerun)
+# ---------------------------------------------------------------------------
+if "_import_results" in st.session_state:
+    for r in st.session_state.pop("_import_results"):
+        if r.get("error"):
+            st.error(r["error"])
+        elif r["skipped"]:
+            st.warning(
+                f"**{r['session_id']}** — already exists (enable overwrite to replace)."
+            )
+        else:
+            st.success(
+                f"**{r['session_id']}** — imported {r['loops_imported']} loop(s)."
+            )
 
 # ---------------------------------------------------------------------------
 # Upload section
@@ -43,8 +59,8 @@ with st.container(border=True):
         with tempfile.TemporaryDirectory() as tmp_root:
             tmp_path = Path(tmp_root)
 
-            zip_files  = [f for f in uploaded if f.name.endswith(".zip")]
-            csv_files  = [f for f in uploaded if f.name.endswith(".csv")]
+            zip_files = [f for f in uploaded if f.name.endswith(".zip")]
+            csv_files = [f for f in uploaded if f.name.endswith(".csv")]
 
             # --- Process ZIP files ---
             for zf in zip_files:
@@ -53,19 +69,26 @@ with st.container(border=True):
 
             # --- Process loose CSV files ---
             if csv_files:
-                # Use the first non-loop CSV as session_id, fallback to first filename stem
-                session_id = None
+                # Write files to a temp dir, then use content to find the summary CSV
+                staging = tmp_path / "_loose_csv_staging"
+                staging.mkdir()
                 for cf in csv_files:
-                    if "_EMM_" not in cf.name:
-                        session_id = Path(cf.name).stem
+                    (staging / cf.name).write_bytes(cf.read())
+
+                # Identify session_id from the summary CSV (not a loop CSV)
+                session_id = None
+                for p in sorted(staging.glob("*.csv")):
+                    is_loop, _ = _is_loop_csv(p)
+                    if not is_loop:
+                        session_id = p.stem
                         break
                 if session_id is None:
                     session_id = Path(csv_files[0].name).stem
 
                 sess_dir = tmp_path / session_id
                 sess_dir.mkdir(exist_ok=True)
-                for cf in csv_files:
-                    (sess_dir / cf.name).write_bytes(cf.read())
+                for p in staging.iterdir():
+                    p.rename(sess_dir / p.name)
 
             # Discover ALL subdirectories in tmp_path (no name restriction)
             session_dirs = [p for p in tmp_path.iterdir() if p.is_dir()]
@@ -76,7 +99,8 @@ with st.container(border=True):
                         session_dirs += [p for p in sub.iterdir() if p.is_dir()]
 
             if not session_dirs:
-                st.error("No folders found in uploaded files.")
+                results.append({"error": "No folders found in uploaded files.",
+                                "session_id": "", "loops_imported": 0, "skipped": False})
             else:
                 progress = st.progress(0)
                 for i, sess_dir in enumerate(session_dirs):
@@ -85,16 +109,10 @@ with st.container(border=True):
                         results.append(result)
                     progress.progress((i + 1) / len(session_dirs))
 
-                for r in results:
-                    if r["skipped"]:
-                        st.warning(
-                            f"**{r['session_id']}** — already exists (enable overwrite to replace)."
-                        )
-                    else:
-                        st.success(
-                            f"**{r['session_id']}** — imported {r['loops_imported']} loop(s)."
-                        )
-                st.cache_data.clear()
+        # Store results and rerun so sidebar refreshes with new sessions
+        st.session_state["_import_results"] = results
+        st.cache_data.clear()
+        st.rerun()
 
 st.divider()
 

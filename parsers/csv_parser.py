@@ -1,13 +1,11 @@
 """
 Parsers for ATP CSV log files.
 
-File types handled:
-  - test_<timestamp>.csv          : session summary (no results, only test list)
-  - <N>_EMM_test_<timestamp>.csv  : per-loop results (PASS/FAIL/BLOCK + values)
+File classification is done by reading file content (header fields),
+not by filename patterns.
 """
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 import pandas as pd
@@ -28,6 +26,21 @@ def _read_header(path: Path) -> dict:
             if len(parts) >= 2 and parts[0]:
                 header[parts[0]] = parts[1]
     return header
+
+
+def _is_loop_csv(path: Path) -> tuple[bool, int]:
+    """Return (True, loop_num) if the file is a per-loop result CSV, else (False, 0).
+
+    Detection is based on the presence of a 'Test Loop' field in the header,
+    not on the filename.
+    """
+    header = _read_header(path)
+    if "Test Loop" in header:
+        try:
+            return True, int(header["Test Loop"])
+        except (ValueError, TypeError):
+            return True, 0
+    return False, 0
 
 
 def _find_data_start(path: Path) -> int:
@@ -86,26 +99,26 @@ def _parse_csv_table(path: Path, skiprows: int) -> pd.DataFrame:
 
 def parse_session_summary(session_dir: Path) -> pd.DataFrame:
     """
-    Parse the master summary CSV (``test_<ts>.csv``).
+    Find and parse the master summary CSV.
 
-    Returns a DataFrame with columns:
-        Test ID, Category, Test Name, Sub Item, Hex ID
-    (No Result/Value — this file is only the test item list.)
+    The summary CSV is identified by the absence of a 'Test Loop' field
+    in its header — no filename convention is assumed.
     """
-    session_id = session_dir.name
-    csv_path = session_dir / f"{session_id}.csv"
-    if not csv_path.exists():
+    csv_path = None
+    for p in sorted(session_dir.glob("*.csv")):
+        is_loop, _ = _is_loop_csv(p)
+        if not is_loop:
+            csv_path = p
+            break
+    if csv_path is None:
         return pd.DataFrame()
 
     skip = _find_data_start(csv_path)
     df = _parse_csv_table(csv_path, skip)
 
-    # The summary CSV has 7 columns: Test ID,Category,Test Name,Sub Item,Result,Value,[Hex]
-    # Result & Value are empty; last column is Hex ID
     df = df[df["Test ID"].notna() & df["Test ID"].str.match(r"^\d+$", na=False)]
     df["Test ID"] = df["Test ID"].astype(int)
 
-    # Last column is Hex ID (unnamed in some files)
     unnamed = [c for c in df.columns if c.startswith("Unnamed")]
     if unnamed:
         df = df.rename(columns={unnamed[-1]: "Hex ID"})
@@ -115,11 +128,11 @@ def parse_session_summary(session_dir: Path) -> pd.DataFrame:
 
 def parse_loop_results(loop_csv: Path) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
     """
-    Parse a per-loop CSV file (``<N>_EMM_test_<ts>.csv``).
+    Parse a per-loop CSV file.
 
     Returns:
         header  : dict  with Test Mode, Test Loop, Test End Time, Total Tests, etc.
-        main_df : DataFrame of the primary test items (Test ID 1-100)
+        main_df : DataFrame of the primary test items
         legacy_df: DataFrame of the appended legacy rows (CAN/LIN/etc.)
     """
     if not loop_csv.exists():
@@ -127,7 +140,7 @@ def parse_loop_results(loop_csv: Path) -> tuple[dict, pd.DataFrame, pd.DataFrame
 
     header = _read_header(loop_csv)
 
-    # Find the two 'Test ID,' header rows
+    # Find the 'Test ID,' header rows
     header_lines = []
     with open(loop_csv, encoding="utf-8", errors="replace") as f:
         for i, line in enumerate(f):
@@ -139,11 +152,8 @@ def parse_loop_results(loop_csv: Path) -> tuple[dict, pd.DataFrame, pd.DataFrame
 
     # --- Primary table ---
     main_df = _parse_csv_table(loop_csv, header_lines[0])
-    # Keep only rows with numeric Test ID
     main_df = main_df[main_df["Test ID"].str.match(r"^\d+$", na=False)].copy()
     main_df["Test ID"] = main_df["Test ID"].astype(int)
-
-    # Drop rows that are separators / headers
     main_df = main_df[main_df["Test ID"] > 0]
 
     # Split at the legacy separator if present
@@ -155,19 +165,16 @@ def parse_loop_results(loop_csv: Path) -> tuple[dict, pd.DataFrame, pd.DataFrame
         ].copy()
         legacy_df["Test ID"] = legacy_df["Test ID"].astype(int)
 
-        # main_df should only contain rows before the separator
-        # Re-read limited to between the two header rows
+        # Re-read main_df limited to rows between the two header rows
         main_df = _parse_csv_table(loop_csv, header_lines[0])
         main_df = main_df.iloc[: header_lines[1] - header_lines[0] - 1]
         main_df = main_df[main_df["Test ID"].str.match(r"^\d+$", na=False)].copy()
         main_df["Test ID"] = main_df["Test ID"].astype(int)
         main_df = main_df[main_df["Test ID"] > 0]
 
-    # Normalise Result column
     if "Result" in main_df.columns:
         main_df["Result"] = main_df["Result"].fillna("").str.strip()
 
-    # Last non-standard column = Hex ID
     unnamed = [c for c in main_df.columns if c.startswith("Unnamed")]
     if unnamed:
         main_df = main_df.rename(columns={unnamed[-1]: "Hex ID"})
@@ -179,16 +186,19 @@ def load_session(session_dir: Path) -> dict:
     """
     Load an entire test session from a directory.
 
+    Loop CSVs are identified by content (presence of 'Test Loop' in header),
+    not by filename. Loop number is read from the header field.
+
     Returns::
 
         {
             "id":      str,
-            "summary": DataFrame,      # master test list
+            "summary": DataFrame,
             "loops":   {
                 1: {"header": dict, "results": DataFrame, "legacy": DataFrame},
                 ...
             },
-            "header_meta": dict,       # from first loop header
+            "header_meta": dict,
         }
     """
     session_dir = Path(session_dir)
@@ -201,21 +211,11 @@ def load_session(session_dir: Path) -> dict:
         "header_meta": {},
     }
 
-    # Discover loop CSV files
-    loop_pattern = re.compile(rf"^(\d+)_EMM_{re.escape(session_id)}\.csv$")
-    loop_files = sorted(
-        session_dir.glob("*_EMM_*.csv"),
-        key=lambda p: int(loop_pattern.match(p.name).group(1))
-        if loop_pattern.match(p.name)
-        else 9999,
-    )
-
-    for lf in loop_files:
-        m = loop_pattern.match(lf.name)
-        if not m:
+    for csv_file in sorted(session_dir.glob("*.csv")):
+        is_loop, loop_num = _is_loop_csv(csv_file)
+        if not is_loop:
             continue
-        loop_num = int(m.group(1))
-        header, results, legacy = parse_loop_results(lf)
+        header, results, legacy = parse_loop_results(csv_file)
         data["loops"][loop_num] = {
             "header": header,
             "results": results,
