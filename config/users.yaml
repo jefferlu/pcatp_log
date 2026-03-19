@@ -1,0 +1,21 @@
+# ATP Log Analyzer — User credentials
+# Passwords must be bcrypt hashes.
+# Run:  python3 scripts/create_user.py  to add / update users.
+#
+# roles:
+#   admin  - can see ALL sessions and manage shares
+#   user   - can only see own sessions + shared sessions
+
+credentials:
+  usernames:
+    admin:
+      name: Administrator
+      email: admin@example.com
+      # Default password: admin1234  (change after first login!)
+      password: "$2b$12$MiGNHLJZYnb3jxgC8OICseNUPM6k6s1ahdAqNADYDweuEUoSRcBge"
+      role: admin
+
+cookie:
+  name: atp_log_analyzer
+  key: "change-this-to-a-random-secret-key-32chars"
+  expiry_days: 7

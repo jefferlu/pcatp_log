@@ -318,23 +318,9 @@ def build_content() -> list:
 
     # ── 8. Comparison ────────────────────────────────────────────────────────
     story += [H1("8. Comparison"), HR()]
-    story += [P("提供三個視角的跨 loop 比較分析，以頁籤切換。")]
+    story += [P("提供兩個視角的跨 loop 比較分析，以頁籤切換。")]
 
-    story += [SP(), H2("8.1 Overall Statistics（整體統計）")]
-    story += [P("從整個 session 的角度統計狀態翻轉：")]
-    story += [bullet_list([
-        "<b>PASS→FAIL Events / FAIL→PASS Events</b>：全 session 的翻轉事件總數",
-        "<b>Degraded Only</b>：只發生 PASS→FAIL，從未恢復的測點",
-        "<b>Recovered Only</b>：只發生 FAIL→PASS 的測點",
-        "<b>Recurring</b>：兩個方向都發生過（反覆不穩定）",
-    ])]
-    story += [P(
-        "<b>Transitions per Loop Boundary</b> 長條圖：顯示哪個 loop 邊界發生最多翻轉，"
-        "有助於找出問題集中在哪次測試切換。"
-    )]
-    story += [P("下方三個 Expander 分別列出 Degraded / Recovered / Recurring 測點的詳細翻轉軌跡。")]
-
-    story += [SP(), H2("8.2 Session Comparison（Session 內翻轉分析）")]
+    story += [SP(), H2("8.1 Session Comparison（Session 內翻轉分析）")]
     story += [P("分析整個 session 中每個測點的完整狀態變化軌跡：")]
     story += [bullet_list([
         "<b>Summary Metrics</b>：總測點數、不穩定測點數、翻轉總次數",
@@ -347,7 +333,7 @@ def build_content() -> list:
         "不會將 retry 過程中的 FAIL 視為翻轉。"
     )]
 
-    story += [SP(), H2("8.3 Loop Comparison（兩 Loop 比較）")]
+    story += [SP(), H2("8.2 Loop Comparison（兩 Loop 比較）")]
     story += [bullet_list([
         "從下拉選單分別選取 <b>Loop A</b> 和 <b>Loop B</b>",
         "系統自動比對兩 loop 間結果有差異的測點，列為 <b>Changed Items</b>",

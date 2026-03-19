@@ -50,8 +50,7 @@ for ln in loop_nums:
             }
         all_results[tid][ln] = res
 
-# Build flip events list and per-item transition summary
-flip_events: list[dict] = []
+# Build per-item transition summary
 transition_rows: list[dict] = []
 
 for tid, loop_map in all_results.items():
@@ -62,14 +61,6 @@ for tid, loop_map in all_results.items():
         curr_loop, curr_res = sequence[i]
         if prev_res in VALID and curr_res in VALID and prev_res != curr_res:
             flips.append(f"L{prev_loop}→L{curr_loop}: {prev_res}→{curr_res}")
-            flip_events.append({
-                "Test ID":   tid,
-                "From Loop": prev_loop,
-                "To Loop":   curr_loop,
-                "Type":      f"{prev_res}→{curr_res}",
-                "From":      prev_res,
-                "To":        curr_res,
-            })
     if flips:
         transition_rows.append({
             "Test ID":     tid,
@@ -84,13 +75,11 @@ transition_df = (
     pd.DataFrame(transition_rows).sort_values("Transitions", ascending=False)
     if transition_rows else pd.DataFrame()
 )
-flip_df = pd.DataFrame(flip_events) if flip_events else pd.DataFrame()
 
 # ---------------------------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------------------------
-tab_overall, tab_session, tab_loop = st.tabs([
-    "Overall Statistics",
+tab_session, tab_loop = st.tabs([
     "Session Comparison",
     "Loop Comparison",
 ])
@@ -263,120 +252,3 @@ with tab_session:
                 ))
                 st.plotly_chart(fig_seq, width="stretch")
 
-# ---------------------------------------------------------------------------
-# Tab 1 — Overall Statistics
-# ---------------------------------------------------------------------------
-with tab_overall:
-    if flip_df.empty:
-        st.success("No state transitions found in this session.")
-        st.stop()
-
-    pf_count = int((flip_df["Type"] == "PASS→FAIL").sum())
-    fp_count = int((flip_df["Type"] == "FAIL→PASS").sum())
-
-    # Classify each unstable item
-    degraded_ids  = set()  # only PASS→FAIL, never FAIL→PASS
-    recovered_ids = set()  # only FAIL→PASS, never PASS→FAIL
-    recurring_ids = set()  # both directions
-
-    for tid in transition_df["Test ID"].tolist():
-        tid_flips = flip_df[flip_df["Test ID"] == tid]["Type"].tolist()
-        has_pf = "PASS→FAIL" in tid_flips
-        has_fp = "FAIL→PASS" in tid_flips
-        if has_pf and has_fp:
-            recurring_ids.add(tid)
-        elif has_pf:
-            degraded_ids.add(tid)
-        elif has_fp:
-            recovered_ids.add(tid)
-
-    # Summary metrics
-    c1, c2, c3, c4, c5 = st.columns(5)
-    c1.metric("PASS→FAIL Events", pf_count)
-    c2.metric("FAIL→PASS Events", fp_count)
-    c3.metric("Degraded Only",    len(degraded_ids),  help="PASS→FAIL, never recovered")
-    c4.metric("Recovered Only",   len(recovered_ids), help="FAIL→PASS only")
-    c5.metric("Recurring",        len(recurring_ids), help="Flipped in both directions")
-
-    st.divider()
-
-    # Per-loop transition distribution
-    st.subheader("Transitions per Loop Boundary")
-    loop_pf: dict[str, int] = {}
-    loop_fp: dict[str, int] = {}
-    for _, ev in flip_df.iterrows():
-        key = f"L{ev['From Loop']}→L{ev['To Loop']}"
-        if ev["Type"] == "PASS→FAIL":
-            loop_pf[key] = loop_pf.get(key, 0) + 1
-        elif ev["Type"] == "FAIL→PASS":
-            loop_fp[key] = loop_fp.get(key, 0) + 1
-
-    all_boundaries = sorted(set(loop_pf) | set(loop_fp))
-    with st.container(border=True):
-        fig_loop = go.Figure()
-        fig_loop.add_trace(go.Bar(
-            name="PASS→FAIL",
-            x=all_boundaries,
-            y=[loop_pf.get(b, 0) for b in all_boundaries],
-            marker_color="#EE3333",
-            text=[loop_pf.get(b, 0) for b in all_boundaries],
-            textposition="outside",
-        ))
-        fig_loop.add_trace(go.Bar(
-            name="FAIL→PASS",
-            x=all_boundaries,
-            y=[loop_fp.get(b, 0) for b in all_boundaries],
-            marker_color="#00AA55",
-            text=[loop_fp.get(b, 0) for b in all_boundaries],
-            textposition="outside",
-        ))
-        fig_loop.update_layout(**light_layout(
-            barmode="group",
-            xaxis=dict(title="Loop Boundary"),
-            yaxis=dict(title="Count"),
-            height=320,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        ))
-        st.plotly_chart(fig_loop, width="stretch")
-
-    st.divider()
-
-    # Item classification tables
-    def _make_item_df(id_set: set) -> pd.DataFrame:
-        rows = []
-        for tid in id_set:
-            tid_events = flip_df[flip_df["Test ID"] == tid]
-            detail = "  |  ".join(
-                f"L{r['From Loop']}→L{r['To Loop']}: {r['Type']}"
-                for _, r in tid_events.iterrows()
-            )
-            rows.append({
-                "Test ID":   tid,
-                "Category":  ref_info[tid]["Category"],
-                "Test Name": ref_info[tid]["Test Name"],
-                "Sub Item":  ref_info[tid]["Sub Item"],
-                "Events":    len(tid_events),
-                "Detail":    detail,
-            })
-        return pd.DataFrame(rows).sort_values("Events", ascending=False) if rows else pd.DataFrame()
-
-    with st.expander(f"Degraded (PASS→FAIL only) — {len(degraded_ids)} items", expanded=True):
-        df_deg = _make_item_df(degraded_ids)
-        if not df_deg.empty:
-            st.dataframe(df_deg, width="stretch", hide_index=True)
-        else:
-            st.info("None.")
-
-    with st.expander(f"Recovered (FAIL→PASS only) — {len(recovered_ids)} items", expanded=True):
-        df_rec = _make_item_df(recovered_ids)
-        if not df_rec.empty:
-            st.dataframe(df_rec, width="stretch", hide_index=True)
-        else:
-            st.info("None.")
-
-    with st.expander(f"Recurring (both directions) — {len(recurring_ids)} items", expanded=True):
-        df_rec2 = _make_item_df(recurring_ids)
-        if not df_rec2.empty:
-            st.dataframe(df_rec2, width="stretch", hide_index=True)
-        else:
-            st.info("None.")

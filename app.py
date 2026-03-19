@@ -4,11 +4,14 @@ ATP Log Analyzer — Main Entry Point
 Run with:
     streamlit run app.py
 """
+from pathlib import Path
+
 import streamlit as st
+import yaml
 
 st.set_page_config(
     page_title="ATP Log Analyzer",
-    page_icon="📈",
+    page_icon=":material/line_axis:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -17,7 +20,7 @@ st.markdown(
     """
     <style>
     /* Main content top padding */
-    .block-container { padding-top: 1.5rem !important; }
+    .block-container { padding: 1.5rem !important; }
     /* Sidebar top padding */
     [data-testid="stSidebarContent"] { padding-top: 0 !important; }
     </style>
@@ -25,7 +28,96 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ---------------------------------------------------------------------------
+# Authentication
+# ---------------------------------------------------------------------------
+_CONFIG_PATH = Path(__file__).parent / "config" / "users.yaml"
 
+try:
+    import streamlit_authenticator as stauth
+    with open(_CONFIG_PATH) as f:
+        _auth_config = yaml.safe_load(f)
+
+    authenticator = stauth.Authenticate(
+        _auth_config["credentials"],
+        _auth_config["cookie"]["name"],
+        _auth_config["cookie"]["key"],
+        _auth_config["cookie"]["expiry_days"],
+    )
+
+    if st.session_state.get("authentication_status") is not True:
+        # Not authenticated — hide sidebar and show centered login card
+        st.markdown("""
+        <style>
+        section[data-testid="stSidebar"]      { display: none !important; }
+        button[data-testid="collapsedControl"] { display: none !important; }
+        /* Replace form's "Login" title text with our own (hidden) */
+        [data-testid="stForm"] h2,
+        [data-testid="stForm"] h3 { display: none !important; }
+        /* Remove form card border and padding */
+        [data-testid="stForm"] {
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+     
+        /* Button fills parent width — override fit-content at every layer */
+        [data-testid="stForm"] [data-testid="stElementContainer"][width="fit-content"],
+        [data-testid="stForm"] [data-testid="stElementContainer"][width="fit-content"] > div,
+        [data-testid="stForm"] .stFormSubmitButton,
+        [data-testid="stForm"] .stFormSubmitButton button {
+            width: 100% !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<br>" * 3, unsafe_allow_html=True)
+        _, center_col, _ = st.columns([1, 0.7, 1])
+        with center_col:
+            st.markdown(
+                "<h2 style='margin-bottom:1.5rem;text-align:center;'>ATP Log Analyzer</h2>",
+                unsafe_allow_html=True,
+            )
+            authenticator.login()
+            if st.session_state.get("authentication_status") is False:
+                st.error("帳號或密碼錯誤")
+        st.stop()
+
+    # Authenticated — expose helpers via session_state
+    _username = st.session_state.get("username", "")
+    _cred = _auth_config["credentials"]["usernames"].get(_username, {})
+    _is_admin = _cred.get("role", "user") == "admin"
+    st.session_state["_username"] = _username
+    st.session_state["_is_admin"] = _is_admin
+
+    # Sync shares.yaml → session_shares table
+    _shares_path = Path(__file__).parent / "config" / "shares.yaml"
+    if _shares_path.exists():
+        with open(_shares_path) as f:
+            _shares_cfg = yaml.safe_load(f) or {}
+        from db.database import sync_shares
+        sync_shares(_shares_cfg.get("shares", {}))
+
+    # Logout button in sidebar
+    authenticator.logout("登出", "sidebar")
+    st.sidebar.markdown(
+        f"👤 **{st.session_state.get('name', _username)}**"
+        + (" `admin`" if _is_admin else "")
+    )
+    st.sidebar.divider()
+
+except Exception as e:
+    # If auth config missing or library not installed, run without auth (dev mode)
+    st.warning(f"⚠️ Auth not configured ({e}). Running in dev mode.")
+    st.session_state.setdefault("_username", "dev")
+    st.session_state.setdefault("_is_admin", True)
+
+
+# ---------------------------------------------------------------------------
+# Home page
+# ---------------------------------------------------------------------------
 def home_page():
     import pandas as pd
     from components.sidebar import render_sidebar
@@ -35,12 +127,9 @@ def home_page():
     session_data, _ = render_sidebar(show_loop_selector=False)
 
     st.title("ATP Log Analyzer")
-    st.markdown(
-        "Event-after reconstruction of ATP system real-time test screens from log files."
-    )
 
     if session_data is None:
-        st.warning("No test sessions found. Please check the `.log_files/` directory.")
+        st.info("No test sessions found. Please import log files via **Import Sessions**.")
         st.stop()
 
     meta = session_data.get("header_meta", {})
@@ -100,18 +189,21 @@ def home_page():
         st.warning("No loop data found in this session.")
 
 
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
 pg = st.navigation(
     {
         "": [
-            st.Page(home_page, title="Home", icon="📔", default=True),
+            st.Page(home_page, title="Home", icon=":material/cottage:", default=True),
         ],
         "Analysis": [
-            st.Page("pages/01_Session_Overview.py", title="Session Overview", icon="📔"),
-            st.Page("pages/02_Loop_Detail.py",      title="Loop Detail",      icon="📔"),
-            st.Page("pages/03_Comparison.py",       title="Comparison",       icon="📔"),
+            st.Page("pages/01_Session_Overview.py", title="Session Overview", icon=":material/expand_circle_right:"),
+            st.Page("pages/02_Loop_Detail.py",      title="Loop Detail",      icon=":material/expand_circle_right:"),
+            st.Page("pages/03_Comparison.py",       title="Comparison",       icon=":material/expand_circle_right:"),
         ],
         "Data": [
-            st.Page("pages/00_Upload.py", title="Import Sessions", icon="📔"),
+            st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
         ],
     }
 )

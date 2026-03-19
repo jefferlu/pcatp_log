@@ -18,7 +18,7 @@ import pandas as pd
 def _read_header(path: Path) -> dict:
     """Extract the 8-line header block from an ATP CSV file."""
     header = {}
-    with open(path, encoding="utf-8", errors="replace") as f:
+    with open(path, encoding="utf-8-sig", errors="replace") as f:
         for i, line in enumerate(f):
             if i >= 8:
                 break
@@ -31,13 +31,14 @@ def _read_header(path: Path) -> dict:
 def _is_loop_csv(path: Path) -> tuple[bool, int]:
     """Return (True, loop_num) if the file is a per-loop result CSV, else (False, 0).
 
-    Detection is based on the presence of a 'Test Loop' field in the header,
-    not on the filename.
+    Detection is based on the 'Test Loop' header field having a non-empty numeric
+    value. A summary CSV also has 'Test Loop' in the header but with an empty value.
     """
     header = _read_header(path)
-    if "Test Loop" in header:
+    val = header.get("Test Loop", "").strip()
+    if val:
         try:
-            return True, int(header["Test Loop"])
+            return True, int(val)
         except (ValueError, TypeError):
             return True, 0
     return False, 0
@@ -45,7 +46,7 @@ def _is_loop_csv(path: Path) -> tuple[bool, int]:
 
 def _find_data_start(path: Path) -> int:
     """Return the 0-based line index of the first 'Test ID,...' header row."""
-    with open(path, encoding="utf-8", errors="replace") as f:
+    with open(path, encoding="utf-8-sig", errors="replace") as f:
         for i, line in enumerate(f):
             if line.startswith("Test ID,"):
                 return i
@@ -59,7 +60,7 @@ def _parse_csv_table(path: Path, skiprows: int) -> pd.DataFrame:
     (the last column is the Hex ID).  We read the header row manually and
     then read the data rows with an extra column appended.
     """
-    with open(path, encoding="utf-8", errors="replace") as f:
+    with open(path, encoding="utf-8-sig", errors="replace") as f:
         lines = f.readlines()
 
     if skiprows >= len(lines):
@@ -116,6 +117,9 @@ def parse_session_summary(session_dir: Path) -> pd.DataFrame:
     skip = _find_data_start(csv_path)
     df = _parse_csv_table(csv_path, skip)
 
+    if "Test ID" not in df.columns:
+        return pd.DataFrame()
+
     df = df[df["Test ID"].notna() & df["Test ID"].str.match(r"^\d+$", na=False)]
     df["Test ID"] = df["Test ID"].astype(int)
 
@@ -142,7 +146,7 @@ def parse_loop_results(loop_csv: Path) -> tuple[dict, pd.DataFrame, pd.DataFrame
 
     # Find the 'Test ID,' header rows
     header_lines = []
-    with open(loop_csv, encoding="utf-8", errors="replace") as f:
+    with open(loop_csv, encoding="utf-8-sig", errors="replace") as f:
         for i, line in enumerate(f):
             if line.startswith("Test ID,"):
                 header_lines.append(i)

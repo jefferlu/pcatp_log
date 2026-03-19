@@ -8,6 +8,9 @@ streamlit = "*"
 pandas = "*"
 plotly = "*"
 duckdb = "*"
+streamlit-authenticator = "*"
+pyyaml = "*"
+bcrypt = "*"
 
 [dev-packages]
 

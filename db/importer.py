@@ -7,12 +7,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from db.database import connect, delete_session, session_exists
+from db.database import connect, delete_session, session_exists, get_session_owner
 from parsers.csv_parser import load_session as parse_session
 from parsers.log_parser import parse_test_set_response
 
 
-def import_session(session_dir: Path, overwrite: bool = False) -> dict:
+def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") -> dict:
     """Parse a session directory and import it into DuckDB.
 
     Returns a status dict: {"session_id", "loops_imported", "skipped": bool}
@@ -23,7 +23,11 @@ def import_session(session_dir: Path, overwrite: bool = False) -> dict:
     if session_exists(session_id):
         if not overwrite:
             return {"session_id": session_id, "loops_imported": 0, "skipped": True}
-        delete_session(session_id)
+        # Preserve original owner when overwriting
+        existing_owner = get_session_owner(session_id)
+        if existing_owner:
+            owner = existing_owner
+        delete_session(session_id, username=owner or "__system__", is_admin=True)
 
     session_data = parse_session(session_dir)
     loops = session_data.get("loops", {})
@@ -44,8 +48,8 @@ def import_session(session_dir: Path, overwrite: bool = False) -> dict:
     with connect() as conn:
         # sessions table
         conn.execute(
-            "INSERT INTO sessions (session_id, test_mode, total_loops) VALUES (?, ?, ?)",
-            [session_id, meta.get("Test Mode", ""), len(loops)],
+            "INSERT INTO sessions (session_id, owner, test_mode, total_loops) VALUES (?, ?, ?, ?)",
+            [session_id, owner, meta.get("Test Mode", ""), len(loops)],
         )
 
         for loop_num, ldata in loops.items():

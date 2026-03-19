@@ -1,5 +1,5 @@
 """
-Sidebar component — session and loop selector (DB-backed).
+Sidebar component — session and loop selector (DB-backed, access-controlled).
 """
 from __future__ import annotations
 
@@ -19,7 +19,10 @@ def render_sidebar(
     show_loop_selector: bool = True,
     log_root=None,  # kept for API compatibility, unused
 ) -> tuple[dict | None, int | None]:
-    sessions = list_sessions()
+    username = st.session_state.get("_username", "")
+    is_admin = st.session_state.get("_is_admin", False)
+
+    sessions = list_sessions(username, is_admin=is_admin)
     if not sessions:
         st.sidebar.warning("No sessions in database. Please import via the Upload page.")
         return None, None
@@ -48,11 +51,16 @@ def render_sidebar(
 
     st.sidebar.markdown("---")
     if session_data:
+        # Show owner info for admin
+        sess_meta = next((s for s in sessions if s["session_id"] == selected_name), {})
+        owner = sess_meta.get("owner", "")
         st.sidebar.caption(f"Session: `{selected_name}`")
         loops_count = len(session_data.get("loops", {}))
         st.sidebar.caption(f"Loops loaded: **{loops_count}**")
         meta = session_data.get("header_meta", {})
         if meta.get("Test Mode"):
             st.sidebar.caption(f"Mode: **{meta['Test Mode']}**")
+        if is_admin and owner:
+            st.sidebar.caption(f"Owner: `{owner}`")
 
     return session_data, selected_loop

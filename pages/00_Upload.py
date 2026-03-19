@@ -5,6 +5,7 @@ Supports ZIP archives or individual CSV files.
 from __future__ import annotations
 
 import io
+import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -36,13 +37,85 @@ if "_import_results" in st.session_state:
                 f"**{r['session_id']}** — imported {r['loops_imported']} loop(s)."
             )
 
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _is_metadata(path: Path, base: Path) -> bool:
+    """True if any path component is an OS-generated metadata dir."""
+    return any(
+        part.startswith(("__", "."))
+        for part in path.relative_to(base).parts
+    )
+
+
+def _collect_files(base: Path, suffix: str) -> list[Path]:
+    return [p for p in base.rglob(f"*{suffix}") if not _is_metadata(p, base)]
+
+
+def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
+    """
+    Extract one ZIP and return a list of session directories to import.
+
+    Session ID always comes from the ZIP filename (stem).
+    Compatible with both:
+      - CSVs packed directly into the ZIP (flat)
+      - CSVs inside a subfolder in the ZIP (any folder name)
+    For ZIPs with multiple subfolders each containing CSVs, each subfolder
+    becomes a separate session named  <zip_stem>_<subfolder>.
+    """
+    zip_stem = Path(zf_file.name).stem
+    extract_dir = tmp_path / f"_zip_{zip_stem}"
+    extract_dir.mkdir()
+
+    with zipfile.ZipFile(io.BytesIO(zf_file.read())) as z:
+        z.extractall(extract_dir)
+
+    all_csvs = _collect_files(extract_dir, ".csv")
+    all_txts = _collect_files(extract_dir, ".txt")
+
+    if not all_csvs:
+        return []
+
+    # Group CSVs by their immediate parent directory
+    from collections import defaultdict
+    groups: dict[Path, list[Path]] = defaultdict(list)
+    for csv in all_csvs:
+        groups[csv.parent].append(csv)
+
+    session_dirs: list[Path] = []
+
+    if len(groups) == 1:
+        # All CSVs in one place → single session named after ZIP
+        src_dir = next(iter(groups))
+        sess_dir = tmp_path / zip_stem
+        sess_dir.mkdir(exist_ok=True)
+        for f in all_csvs + [t for t in all_txts if t.parent == src_dir]:
+            shutil.move(str(f), sess_dir / f.name)
+        session_dirs.append(sess_dir)
+    else:
+        # Multiple directories → one session per directory
+        for src_dir, csvs in sorted(groups.items()):
+            suffix = src_dir.name
+            sess_id = f"{zip_stem}_{suffix}" if suffix else zip_stem
+            sess_dir = tmp_path / sess_id
+            sess_dir.mkdir(exist_ok=True)
+            txts_here = [t for t in all_txts if t.parent == src_dir]
+            for f in csvs + txts_here:
+                shutil.move(str(f), sess_dir / f.name)
+            session_dirs.append(sess_dir)
+
+    return session_dirs
+
+
 # ---------------------------------------------------------------------------
 # Upload section
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     st.subheader("Upload Log Files")
     st.caption(
-        "Upload a **ZIP** archive containing one or more session folders, "
+        "Upload a **ZIP** archive (CSVs directly or inside a folder) "
         "or select multiple **CSV** files from a single session."
     )
 
@@ -54,7 +127,8 @@ with st.container(border=True):
 
     overwrite = st.checkbox("Overwrite if session already exists", value=True)
 
-    if st.button("Import", type="primary", disabled=not uploaded):
+    _, btn_col = st.columns([8, 1])
+    if btn_col.button("Import", type="primary", disabled=not uploaded, use_container_width=True):
         results = []
         with tempfile.TemporaryDirectory() as tmp_root:
             tmp_path = Path(tmp_root)
@@ -62,20 +136,26 @@ with st.container(border=True):
             zip_files = [f for f in uploaded if f.name.endswith(".zip")]
             csv_files = [f for f in uploaded if f.name.endswith(".csv")]
 
-            # --- Process ZIP files ---
-            for zf in zip_files:
-                with zipfile.ZipFile(io.BytesIO(zf.read())) as z:
-                    z.extractall(tmp_path)
+            session_dirs: list[Path] = []
 
-            # --- Process loose CSV files ---
+            # --- Process ZIP files (each ZIP → one or more sessions) ---
+            for zf in zip_files:
+                dirs = _prepare_zip_sessions(zf, tmp_path)
+                if not dirs:
+                    results.append({
+                        "error": f"No CSV files found in **{zf.name}**.",
+                        "session_id": "", "loops_imported": 0, "skipped": False,
+                    })
+                else:
+                    session_dirs.extend(dirs)
+
+            # --- Process loose CSV files → session named after summary CSV ---
             if csv_files:
-                # Write files to a temp dir, then use content to find the summary CSV
-                staging = tmp_path / "_loose_csv_staging"
+                staging = tmp_path / "_staging"
                 staging.mkdir()
                 for cf in csv_files:
                     (staging / cf.name).write_bytes(cf.read())
 
-                # Identify session_id from the summary CSV (not a loop CSV)
                 session_id = None
                 for p in sorted(staging.glob("*.csv")):
                     is_loop, _ = _is_loop_csv(p)
@@ -89,27 +169,26 @@ with st.container(border=True):
                 sess_dir.mkdir(exist_ok=True)
                 for p in staging.iterdir():
                     p.rename(sess_dir / p.name)
+                session_dirs.append(sess_dir)
 
-            # Discover ALL subdirectories in tmp_path (no name restriction)
-            session_dirs = [p for p in tmp_path.iterdir() if p.is_dir()]
-            # Also check one level deeper (ZIP with a nested parent folder)
-            if not session_dirs:
-                for sub in tmp_path.iterdir():
-                    if sub.is_dir():
-                        session_dirs += [p for p in sub.iterdir() if p.is_dir()]
-
-            if not session_dirs:
-                results.append({"error": "No folders found in uploaded files.",
-                                "session_id": "", "loops_imported": 0, "skipped": False})
-            else:
+            # --- Import ---
+            if session_dirs:
                 progress = st.progress(0)
                 for i, sess_dir in enumerate(session_dirs):
                     with st.spinner(f"Importing {sess_dir.name}…"):
-                        result = import_session(sess_dir, overwrite=overwrite)
+                        try:
+                            owner = st.session_state.get("_username", "")
+                            result = import_session(sess_dir, overwrite=overwrite, owner=owner)
+                        except Exception as e:
+                            result = {
+                                "session_id": sess_dir.name,
+                                "loops_imported": 0,
+                                "skipped": False,
+                                "error": f"**{sess_dir.name}** — import failed: {e}",
+                            }
                         results.append(result)
                     progress.progress((i + 1) / len(session_dirs))
 
-        # Store results and rerun so sidebar refreshes with new sessions
         st.session_state["_import_results"] = results
         st.cache_data.clear()
         st.rerun()
@@ -121,21 +200,27 @@ st.divider()
 # ---------------------------------------------------------------------------
 st.subheader("Imported Sessions")
 
-sessions = list_sessions()
+_username = st.session_state.get("_username", "")
+_is_admin = st.session_state.get("_is_admin", False)
+
+sessions = list_sessions(_username, is_admin=_is_admin)
 if not sessions:
     st.info("No sessions imported yet.")
 else:
     for sess in sessions:
         col_info, col_del = st.columns([5, 1])
         with col_info:
+            owner_tag = f" &nbsp;|&nbsp; Owner: `{sess['owner']}`" if _is_admin and sess.get("owner") else ""
             st.markdown(
                 f"**{sess['session_id']}** &nbsp;|&nbsp; "
                 f"Mode: `{sess['test_mode'] or '—'}` &nbsp;|&nbsp; "
                 f"Loops: **{sess['total_loops']}** &nbsp;|&nbsp; "
                 f"Imported: {str(sess['imported_at'])[:19]}"
+                + owner_tag
             )
         with col_del:
-            if st.button("Delete", key=f"del_{sess['session_id']}"):
-                delete_session(sess["session_id"])
+            can_delete = _is_admin or sess.get("owner") == _username
+            if can_delete and st.button("Delete", key=f"del_{sess['session_id']}"):
+                delete_session(sess["session_id"], username=_username, is_admin=_is_admin)
                 st.cache_data.clear()
                 st.rerun()

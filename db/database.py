@@ -4,9 +4,8 @@ DuckDB database layer for ATP Log Analyzer.
 from __future__ import annotations
 
 import contextlib
-from pathlib import Path
-
 import sys
+from pathlib import Path
 
 import duckdb
 import pandas as pd
@@ -24,9 +23,18 @@ _DDL_STATEMENTS = [
     """
     CREATE TABLE IF NOT EXISTS sessions (
         session_id   TEXT PRIMARY KEY,
+        owner        TEXT DEFAULT '',
         imported_at  TIMESTAMP DEFAULT current_timestamp,
         test_mode    TEXT,
         total_loops  INTEGER
+    )
+    """,
+    # Grant read access to a session for additional users (beyond the owner)
+    """
+    CREATE TABLE IF NOT EXISTS session_shares (
+        session_id  TEXT,
+        username    TEXT,
+        PRIMARY KEY (session_id, username)
     )
     """,
     """
@@ -74,6 +82,10 @@ _DDL_STATEMENTS = [
         level       TEXT
     )
     """,
+    # Migration: add owner column to existing installations
+    """
+    ALTER TABLE sessions ADD COLUMN IF NOT EXISTS owner TEXT DEFAULT ''
+    """,
 ]
 
 _COL_RENAME = {
@@ -100,25 +112,67 @@ def connect():
 
 
 # ---------------------------------------------------------------------------
-# Session listing
+# Shares sync  (config/shares.yaml → session_shares table)
 # ---------------------------------------------------------------------------
 
-def list_sessions() -> list[dict]:
-    """Return all imported sessions ordered by imported_at desc.
+def sync_shares(shares_config: dict) -> None:
+    """Sync sharing config into the session_shares table.
 
-    Each item: {"session_id", "imported_at", "test_mode", "total_loops"}
+    shares_config format (from shares.yaml['shares']):
+        { session_id: { owner: str, shared_with: [username, ...] }, ... }
+    """
+    if not shares_config:
+        return
+
+    rows = []
+    for session_id, entry in shares_config.items():
+        for username in entry.get("shared_with", []):
+            rows.append((session_id, username))
+
+    with connect() as conn:
+        # Full replace: remove stale entries then insert current config
+        conn.execute("DELETE FROM session_shares")
+        if rows:
+            conn.executemany(
+                "INSERT OR IGNORE INTO session_shares (session_id, username) VALUES (?, ?)",
+                rows,
+            )
+
+
+# ---------------------------------------------------------------------------
+# Session listing  (access-controlled)
+# ---------------------------------------------------------------------------
+
+def list_sessions(username: str, is_admin: bool = False) -> list[dict]:
+    """Return sessions visible to *username*.
+
+    Admin sees all sessions.
+    Regular users see sessions they own + sessions shared with them.
     """
     with connect() as conn:
-        rows = conn.execute(
-            "SELECT session_id, imported_at, test_mode, total_loops "
-            "FROM sessions ORDER BY imported_at DESC"
-        ).fetchall()
+        if is_admin:
+            rows = conn.execute(
+                "SELECT session_id, owner, imported_at, test_mode, total_loops "
+                "FROM sessions ORDER BY imported_at DESC"
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT s.session_id, s.owner, s.imported_at, s.test_mode, s.total_loops "
+                "FROM sessions s "
+                "WHERE s.owner = ? "
+                "   OR s.session_id IN ("
+                "       SELECT session_id FROM session_shares WHERE username = ?"
+                "   ) "
+                "ORDER BY s.imported_at DESC",
+                [username, username],
+            ).fetchall()
     return [
         {
             "session_id":  r[0],
-            "imported_at": r[1],
-            "test_mode":   r[2],
-            "total_loops": r[3],
+            "owner":       r[1],
+            "imported_at": r[2],
+            "test_mode":   r[3],
+            "total_loops": r[4],
         }
         for r in rows
     ]
@@ -132,10 +186,24 @@ def session_exists(session_id: str) -> bool:
     return row is not None
 
 
-def delete_session(session_id: str) -> None:
+def get_session_owner(session_id: str) -> str:
     with connect() as conn:
-        for table in ("sessions", "loop_headers", "results", "legacy_results", "log_entries"):
+        row = conn.execute(
+            "SELECT owner FROM sessions WHERE session_id = ?", [session_id]
+        ).fetchone()
+    return row[0] if row else ""
+
+
+def delete_session(session_id: str, username: str, is_admin: bool = False) -> bool:
+    """Delete a session. Returns True if deleted, False if permission denied."""
+    owner = get_session_owner(session_id)
+    if not is_admin and owner != username:
+        return False
+    with connect() as conn:
+        for table in ("sessions", "loop_headers", "results", "legacy_results",
+                      "log_entries", "session_shares"):
             conn.execute(f"DELETE FROM {table} WHERE session_id = ?", [session_id])
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -149,10 +217,9 @@ def load_session(session_id: str) -> dict | None:
             "SELECT test_mode, total_loops FROM sessions WHERE session_id = ?",
             [session_id],
         ).fetchone()
-        if not sess_row is None:
-            test_mode, total_loops = sess_row
-        else:
+        if sess_row is None:
             return None
+        test_mode, total_loops = sess_row
 
         loop_rows = conn.execute(
             "SELECT loop_num, end_time, test_mode FROM loop_headers "
