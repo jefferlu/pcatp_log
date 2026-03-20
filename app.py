@@ -16,6 +16,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+
 st.markdown(
     """
     <style>
@@ -23,27 +24,25 @@ st.markdown(
     .block-container { padding-top: 1rem !important; }
     /* Sidebar top padding */
     [data-testid="stSidebarContent"] { padding-top: 0 !important; }
-    /* Logout button — underlined text style (covers stColumn and column testid variants) */
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="stColumn"]:last-child button,
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="column"]:last-child button {
+    /* Logout button — hyperlink style */
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] [data-testid="stColumn"]:last-child button,
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] [data-testid="column"]:last-child button {
         background: none !important;
         border: none !important;
         box-shadow: none !important;
-        padding: 0 !important;
-        min-height: 0 !important;
-        height: auto !important;
-        line-height: normal !important;
-        font-size: 0.85rem !important;
+        padding: 2px 0 !important;
+        line-height: 1.4 !important;
+        font-size: 0.875rem !important;
         text-decoration: underline !important;
         color: inherit !important;
         cursor: pointer !important;
     }
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="stColumn"]:last-child button:hover,
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="column"]:last-child button:hover {
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] [data-testid="stColumn"]:last-child button:hover,
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] [data-testid="column"]:last-child button:hover {
         background: none !important;
         color: var(--primary-color) !important;
     }
-    </style>
+</style>
     """,
     unsafe_allow_html=True,
 )
@@ -109,8 +108,8 @@ try:
             if st.session_state.get("authentication_status") is False:
                 st.error("帳號或密碼錯誤")
 
-        # Hide sidebar LAST — injected just before render completes,
-        # so sidebar and old page content disappear at the same time.
+        # Hide sidebar last — injected just before render completes so sidebar
+        # disappears together with page content, not before.
         st.markdown("""
         <style>
         section[data-testid="stSidebar"]      { display: none !important; }
@@ -125,6 +124,15 @@ try:
     _is_admin = _cred.get("role", "user") == "admin"
     st.session_state["_username"] = _username
     st.session_state["_is_admin"] = _is_admin
+
+    # Sidebar: username (left) + logout button (right) on same row
+    _col_name, _col_out = st.sidebar.columns([3, 1])
+    _col_name.markdown(
+        f":material/account_circle: *{st.session_state.get('name', _username)}*"
+        + (" `admin`" if _is_admin else "")
+    )
+    with _col_out:
+        authenticator.logout("登出", location="main", key="logout_btn")
 
 
 except Exception as e:
@@ -226,19 +234,3 @@ pg = st.navigation(
     }
 )
 pg.run()
-
-# Sidebar footer: username (left) + logout button (right) — rendered after pg.run() so it appears at the bottom
-if st.session_state.get("authentication_status") is True:
-    st.sidebar.divider()
-    _b_name, _b_logout = st.sidebar.columns([3, 1])
-    _b_name.markdown(
-        f":material/account_circle: *{st.session_state.get('name', st.session_state.get('_username', ''))}*"
-        + (" `admin`" if st.session_state.get("_is_admin") else "")
-    )
-    with _b_logout:
-        if st.button("登出", key="logout_btn"):
-            if authenticator is not None:
-                authenticator.cookie_handler.delete_cookie()
-            for _k in ("authentication_status", "username", "name", "_username", "_is_admin"):
-                st.session_state.pop(_k, None)
-            st.rerun()
