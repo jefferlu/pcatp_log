@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: pcatp-log
     ports:
-      - "8502:8501"
+      - "8501:8501"
     volumes:
       # DuckDB persistent storage
       - atp-data:/data
