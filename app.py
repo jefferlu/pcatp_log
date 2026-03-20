@@ -20,9 +20,29 @@ st.markdown(
     """
     <style>
     /* Main content top padding */
-    .block-container { padding: 1.5rem !important; }
+    .block-container { padding-top: 1rem !important; }
     /* Sidebar top padding */
     [data-testid="stSidebarContent"] { padding-top: 0 !important; }
+    /* Logout button — underlined text style (covers stColumn and column testid variants) */
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="stColumn"]:last-child button,
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="column"]:last-child button {
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        line-height: normal !important;
+        font-size: 0.85rem !important;
+        text-decoration: underline !important;
+        color: inherit !important;
+        cursor: pointer !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="stColumn"]:last-child button:hover,
+    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"]:last-of-type [data-testid="column"]:last-child button:hover {
+        background: none !important;
+        color: var(--primary-color) !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -33,11 +53,14 @@ st.markdown(
 # ---------------------------------------------------------------------------
 _CONFIG_PATH = Path(__file__).parent / "config" / "users.yaml"
 
-try:
-    import streamlit_authenticator as stauth
-    with open(_CONFIG_PATH) as f:
-        _auth_config = yaml.safe_load(f)
+@st.cache_resource
+def _load_auth_config():
+    with open(_CONFIG_PATH, encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
+try:
+    import streamlit_authenticator as stauth  # type: ignore[import-untyped]
+    _auth_config = _load_auth_config()
     authenticator = stauth.Authenticate(
         _auth_config["credentials"],
         _auth_config["cookie"]["name"],
@@ -46,21 +69,22 @@ try:
     )
 
     if st.session_state.get("authentication_status") is not True:
-        # Not authenticated — hide sidebar and show centered login card
+        # Render form-specific CSS (does not affect sidebar/page transition timing)
         st.markdown("""
         <style>
-        section[data-testid="stSidebar"]      { display: none !important; }
-        button[data-testid="collapsedControl"] { display: none !important; }
-        /* Replace form's "Login" title text with our own (hidden) */
+        /* Hide "Press Enter to submit form" hint on input focus */
+        [data-testid="InputInstructions"],
+        small[data-testid="InputInstructions"],
+        .stTextInput small { display: none !important; visibility: hidden !important; }
+        /* Center the form title rendered by streamlit-authenticator */
         [data-testid="stForm"] h2,
-        [data-testid="stForm"] h3 { display: none !important; }
+        [data-testid="stForm"] h3 { text-align: center !important; }
         /* Remove form card border and padding */
         [data-testid="stForm"] {
             border: none !important;
             padding: 0 !important;
             box-shadow: none !important;
         }
-     
         /* Button fills parent width — override fit-content at every layer */
         [data-testid="stForm"] [data-testid="stElementContainer"][width="fit-content"],
         [data-testid="stForm"] [data-testid="stElementContainer"][width="fit-content"] > div,
@@ -76,13 +100,23 @@ try:
         st.markdown("<br>" * 3, unsafe_allow_html=True)
         _, center_col, _ = st.columns([1, 0.7, 1])
         with center_col:
-            st.markdown(
-                "<h2 style='margin-bottom:1.5rem;text-align:center;'>ATP Log Analyzer</h2>",
-                unsafe_allow_html=True,
-            )
-            authenticator.login()
+            authenticator.login(fields={
+                'Form name': 'ATP Log Analyzer',
+                'Username': 'Username',
+                'Password': 'Password',
+                'Login': 'Login',
+            })
             if st.session_state.get("authentication_status") is False:
                 st.error("帳號或密碼錯誤")
+
+        # Hide sidebar LAST — injected just before render completes,
+        # so sidebar and old page content disappear at the same time.
+        st.markdown("""
+        <style>
+        section[data-testid="stSidebar"]      { display: none !important; }
+        button[data-testid="collapsedControl"] { display: none !important; }
+        </style>
+        """, unsafe_allow_html=True)
         st.stop()
 
     # Authenticated — expose helpers via session_state
@@ -92,27 +126,13 @@ try:
     st.session_state["_username"] = _username
     st.session_state["_is_admin"] = _is_admin
 
-    # Sync shares.yaml → session_shares table
-    _shares_path = Path(__file__).parent / "config" / "shares.yaml"
-    if _shares_path.exists():
-        with open(_shares_path) as f:
-            _shares_cfg = yaml.safe_load(f) or {}
-        from db.database import sync_shares
-        sync_shares(_shares_cfg.get("shares", {}))
-
-    # Logout button in sidebar
-    authenticator.logout("登出", "sidebar")
-    st.sidebar.markdown(
-        f"👤 **{st.session_state.get('name', _username)}**"
-        + (" `admin`" if _is_admin else "")
-    )
-    st.sidebar.divider()
 
 except Exception as e:
     # If auth config missing or library not installed, run without auth (dev mode)
     st.warning(f"⚠️ Auth not configured ({e}). Running in dev mode.")
     st.session_state.setdefault("_username", "dev")
     st.session_state.setdefault("_is_admin", True)
+    authenticator = None
 
 
 # ---------------------------------------------------------------------------
@@ -125,8 +145,6 @@ def home_page():
     from utils.helpers import get_loop_numbers
 
     session_data, _ = render_sidebar(show_loop_selector=False)
-
-    st.title("ATP Log Analyzer")
 
     if session_data is None:
         st.info("No test sessions found. Please import log files via **Import Sessions**.")
@@ -208,3 +226,19 @@ pg = st.navigation(
     }
 )
 pg.run()
+
+# Sidebar footer: username (left) + logout button (right) — rendered after pg.run() so it appears at the bottom
+if st.session_state.get("authentication_status") is True:
+    st.sidebar.divider()
+    _b_name, _b_logout = st.sidebar.columns([3, 1])
+    _b_name.markdown(
+        f":material/account_circle: *{st.session_state.get('name', st.session_state.get('_username', ''))}*"
+        + (" `admin`" if st.session_state.get("_is_admin") else "")
+    )
+    with _b_logout:
+        if st.button("登出", key="logout_btn"):
+            if authenticator is not None:
+                authenticator.cookie_handler.delete_cookie()
+            for _k in ("authentication_status", "username", "name", "_username", "_is_admin"):
+                st.session_state.pop(_k, None)
+            st.rerun()

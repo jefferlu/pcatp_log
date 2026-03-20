@@ -25,7 +25,7 @@ def hash_password(password: str) -> str:
 
 
 def main():
-    with open(CONFIG_PATH) as f:
+    with open(CONFIG_PATH, encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
     print("=== ATP Log Analyzer — Create / Update User ===\n")
@@ -47,7 +47,7 @@ def main():
         "role":     role,
     }
 
-    with open(CONFIG_PATH, "w") as f:
+    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
         yaml.dump(config, f, allow_unicode=True, default_flow_style=False)
 
     print(f"\n✅  User '{username}' saved to {CONFIG_PATH}")

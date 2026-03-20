@@ -162,12 +162,45 @@ pcatp_log/
 
 ---
 
+## 變更紀錄
+
+### 2026-03-20 — ZIP 匯入 Session ID 命名規則調整
+
+**修改檔案**：`pages/00_Upload.py` — `_prepare_zip_sessions()`
+
+**背景**：原本 session ID 固定來自 ZIP 檔名（stem），導致將多個 session 目錄打包成一個 ZIP 上傳時，產生的 session ID 為 `<zip檔名>_<子目錄名>` 而非子目錄本身的名稱。
+
+**新邏輯**（以 CSV 的直接父目錄是否為 ZIP 解壓根目錄來判斷）：
+
+| ZIP 結構 | Session ID 來源 |
+|----------|----------------|
+| CSV 直接在 ZIP 根目錄（flat） | ZIP 檔名（`zip_stem`）— 行為與修改前相同 |
+| CSV 在單一子目錄 | 子目錄名稱（`src_dir.name`）|
+| CSV 在多個子目錄（all sessions 打包） | 各子目錄名稱（`src_dir.name`）|
+
+**修改前後對照**：
+
+```
+# 修改前
+all_sessions.zip / EMM/ → session ID = "all_sessions_EMM"
+
+# 修改後
+all_sessions.zip / EMM/ → session ID = "EMM"
+```
+
+flat ZIP 行為不受影響：
+```
+session_20260301.zip / (flat) → session ID = "session_20260301"  ← 不變
+```
+
+---
+
 ## 開發規範
 
 ### 命名規則
 - Python 模組：`snake_case`
 - Streamlit page 檔名：`NN_PascalCase.py`（NN 為排序號）
-- Session ID：來自上傳的 ZIP 檔名或資料夾名稱
+- Session ID：來自上傳的 ZIP 檔名（flat）或子目錄名稱（有子目錄時）
 
 ### 資料流
 
@@ -210,24 +243,12 @@ session = {
 | 角色 | 可見 Session | 刪除權限 |
 |------|-------------|---------|
 | `admin` | 所有 session | 任意 session |
-| `user`  | 自己匯入 + 被共享的 session | 僅自己的 |
+| `user`  | 自己匯入的 session | 僅自己的 |
 
 ### 新增使用者
 ```bash
 python scripts/create_user.py
 ```
-
-### Session 共享
-編輯 `config/shares.yaml`：
-```yaml
-shares:
-  session_id_A:
-    owner: alice
-    shared_with:
-      - bob
-      - carol
-```
-每次頁面載入時自動同步至 `session_shares` 資料表。
 
 ---
 

@@ -8,6 +8,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+if not st.session_state.get("_username"):
+    st.stop()
+
 from components.sidebar import render_sidebar
 from components.metrics_card import render_metrics_card, compute_counts
 from utils.helpers import get_loop_numbers
