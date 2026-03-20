@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build pcatp_log_wpf/pcatp_log_wpf.csproj)"
+    ]
+  }
+}
