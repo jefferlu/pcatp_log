@@ -13,6 +13,9 @@ build/
 venv/
 env/
 ENV/
+.venv/
+Pipfile
+Pipfile.lock
 
 # IDE
 .vscode/
@@ -29,9 +32,13 @@ Thumbs.db
 .git/
 .gitignore
 
-# Database (will be created by volume)
-data/*.db
-data/*.db-journal
+# Database (persisted via Docker volume, never bake into image)
+*.duckdb
+*.duckdb.wal
+
+# Local test data (large, not needed in image)
+.log_files/
+.img_files/
 
 # Logs
 *.log

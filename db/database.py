@@ -4,16 +4,18 @@ DuckDB database layer for ATP Log Analyzer.
 from __future__ import annotations
 
 import contextlib
+import os
 import sys
 from pathlib import Path
 
 import duckdb
 import pandas as pd
 
-# When running as a PyInstaller bundle, store the DB next to the executable
-# so that data persists between runs. In development, store at project root.
+# Priority: ATP_DATA_DIR env var (Docker) > PyInstaller bundle > project root (dev)
 if getattr(sys, "frozen", False):
     _BASE_DIR = Path(sys.executable).parent
+elif os.environ.get("ATP_DATA_DIR"):
+    _BASE_DIR = Path(os.environ["ATP_DATA_DIR"])
 else:
     _BASE_DIR = Path(__file__).parent.parent
 
