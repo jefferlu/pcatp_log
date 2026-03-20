@@ -7,6 +7,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+if not st.session_state.get("_username"):
+    st.stop()
+
 from components.sidebar import render_sidebar
 from utils.helpers import get_loop_numbers
 from utils.chart_theme import light_layout

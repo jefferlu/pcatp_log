@@ -54,13 +54,13 @@ def render_sidebar(
         # Show owner info for admin
         sess_meta = next((s for s in sessions if s["session_id"] == selected_name), {})
         owner = sess_meta.get("owner", "")
-        st.sidebar.caption(f"Session: `{selected_name}`")
+        st.sidebar.markdown(f"Session: `{selected_name}`")
         loops_count = len(session_data.get("loops", {}))
-        st.sidebar.caption(f"Loops loaded: **{loops_count}**")
+        st.sidebar.markdown(f"Loops loaded: **{loops_count}**")
         meta = session_data.get("header_meta", {})
         if meta.get("Test Mode"):
-            st.sidebar.caption(f"Mode: **{meta['Test Mode']}**")
+            st.sidebar.markdown(f"Test Mode: **{meta['Test Mode']}**")
         if is_admin and owner:
-            st.sidebar.caption(f"Owner: `{owner}`")
+            st.sidebar.markdown(f"Owner: `{owner}`")
 
     return session_data, selected_loop

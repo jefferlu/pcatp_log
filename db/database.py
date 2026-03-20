@@ -31,14 +31,6 @@ _DDL_STATEMENTS = [
         total_loops  INTEGER
     )
     """,
-    # Grant read access to a session for additional users (beyond the owner)
-    """
-    CREATE TABLE IF NOT EXISTS session_shares (
-        session_id  TEXT,
-        username    TEXT,
-        PRIMARY KEY (session_id, username)
-    )
-    """,
     """
     CREATE TABLE IF NOT EXISTS loop_headers (
         session_id  TEXT,
@@ -114,42 +106,13 @@ def connect():
 
 
 # ---------------------------------------------------------------------------
-# Shares sync  (config/shares.yaml → session_shares table)
-# ---------------------------------------------------------------------------
-
-def sync_shares(shares_config: dict) -> None:
-    """Sync sharing config into the session_shares table.
-
-    shares_config format (from shares.yaml['shares']):
-        { session_id: { owner: str, shared_with: [username, ...] }, ... }
-    """
-    if not shares_config:
-        return
-
-    rows = []
-    for session_id, entry in shares_config.items():
-        for username in entry.get("shared_with", []):
-            rows.append((session_id, username))
-
-    with connect() as conn:
-        # Full replace: remove stale entries then insert current config
-        conn.execute("DELETE FROM session_shares")
-        if rows:
-            conn.executemany(
-                "INSERT OR IGNORE INTO session_shares (session_id, username) VALUES (?, ?)",
-                rows,
-            )
-
-
-# ---------------------------------------------------------------------------
 # Session listing  (access-controlled)
 # ---------------------------------------------------------------------------
 
 def list_sessions(username: str, is_admin: bool = False) -> list[dict]:
     """Return sessions visible to *username*.
 
-    Admin sees all sessions.
-    Regular users see sessions they own + sessions shared with them.
+    Admin sees all sessions. Regular users see only sessions they own.
     """
     with connect() as conn:
         if is_admin:
@@ -159,14 +122,10 @@ def list_sessions(username: str, is_admin: bool = False) -> list[dict]:
             ).fetchall()
         else:
             rows = conn.execute(
-                "SELECT s.session_id, s.owner, s.imported_at, s.test_mode, s.total_loops "
-                "FROM sessions s "
-                "WHERE s.owner = ? "
-                "   OR s.session_id IN ("
-                "       SELECT session_id FROM session_shares WHERE username = ?"
-                "   ) "
-                "ORDER BY s.imported_at DESC",
-                [username, username],
+                "SELECT session_id, owner, imported_at, test_mode, total_loops "
+                "FROM sessions WHERE owner = ? "
+                "ORDER BY imported_at DESC",
+                [username],
             ).fetchall()
     return [
         {
@@ -202,8 +161,7 @@ def delete_session(session_id: str, username: str, is_admin: bool = False) -> bo
     if not is_admin and owner != username:
         return False
     with connect() as conn:
-        for table in ("sessions", "loop_headers", "results", "legacy_results",
-                      "log_entries", "session_shares"):
+        for table in ("sessions", "loop_headers", "results", "legacy_results", "log_entries"):
             conn.execute(f"DELETE FROM {table} WHERE session_id = ?", [session_id])
     return True
 

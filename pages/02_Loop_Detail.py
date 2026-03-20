@@ -7,6 +7,9 @@ Shows categorised test results, value gauges, and the raw log timeline.
 import pandas as pd
 import streamlit as st
 
+if not st.session_state.get("_username"):
+    st.stop()
+
 from components.sidebar import render_sidebar
 from components.metrics_card import render_metrics_card, compute_counts
 from components.result_table import (

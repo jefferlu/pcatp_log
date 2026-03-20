@@ -12,6 +12,9 @@ from pathlib import Path
 
 import streamlit as st
 
+if not st.session_state.get("_username"):
+    st.stop()
+
 from components.sidebar import render_sidebar
 from db.database import list_sessions, delete_session
 from db.importer import import_session
@@ -58,12 +61,10 @@ def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
     """
     Extract one ZIP and return a list of session directories to import.
 
-    Session ID always comes from the ZIP filename (stem).
-    Compatible with both:
-      - CSVs packed directly into the ZIP (flat)
-      - CSVs inside a subfolder in the ZIP (any folder name)
-    For ZIPs with multiple subfolders each containing CSVs, each subfolder
-    becomes a separate session named  <zip_stem>_<subfolder>.
+    Session ID rules:
+      - CSVs packed directly into the ZIP (flat) → session ID = ZIP stem
+      - CSVs inside a single subfolder → session ID = subfolder name
+      - CSVs across multiple subfolders → one session per subfolder, ID = subfolder name
     """
     zip_stem = Path(zf_file.name).stem
     extract_dir = tmp_path / f"_zip_{zip_stem}"
@@ -87,18 +88,19 @@ def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
     session_dirs: list[Path] = []
 
     if len(groups) == 1:
-        # All CSVs in one place → single session named after ZIP
         src_dir = next(iter(groups))
-        sess_dir = tmp_path / zip_stem
+        # Flat ZIP (CSVs directly in extract_dir) → use ZIP stem as session ID
+        # Single-subfolder ZIP → use subfolder name as session ID
+        sess_id = zip_stem if src_dir == extract_dir else src_dir.name
+        sess_dir = tmp_path / sess_id
         sess_dir.mkdir(exist_ok=True)
         for f in all_csvs + [t for t in all_txts if t.parent == src_dir]:
             shutil.move(str(f), sess_dir / f.name)
         session_dirs.append(sess_dir)
     else:
-        # Multiple directories → one session per directory
+        # Multiple directories → one session per directory, named after subfolder
         for src_dir, csvs in sorted(groups.items()):
-            suffix = src_dir.name
-            sess_id = f"{zip_stem}_{suffix}" if suffix else zip_stem
+            sess_id = src_dir.name if src_dir != extract_dir else zip_stem
             sess_dir = tmp_path / sess_id
             sess_dir.mkdir(exist_ok=True)
             txts_here = [t for t in all_txts if t.parent == src_dir]
