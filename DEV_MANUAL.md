@@ -55,27 +55,40 @@ Test ID, Category, Test Name, Sub Item, Result, Value, [Hex ID]
 
 ```
 pcatp_log/
-├── app.py                    # Streamlit 主入口
-├── pages/                    # Multi-page 頁面
-│   ├── 01_Session_Overview.py    # Session 彙總總覽
-│   ├── 02_Loop_Detail.py         # 單一 Loop 詳細結果
-│   └── 03_Comparison.py          # 多 Loop / Session 比較
-├── components/               # 可重用 UI 元件
+├── app.py                        # Streamlit 主入口 + 登入驗證
+├── pages/                        # Multi-page 頁面
+│   ├── __init__.py                   # 空檔；防止 Streamlit 自動掃描 pages/
+│   ├── 00_Upload.py                  # 匯入 Session (ZIP / CSV)
+│   ├── 01_Session_Overview.py        # Session 彙總總覽
+│   ├── 02_Loop_Detail.py             # 單一 Loop 詳細結果 + 失敗根因分析
+│   └── 03_Comparison.py              # 多 Loop / Session 比較
+├── components/                   # 可重用 UI 元件
 │   ├── __init__.py
-│   ├── metrics_card.py           # PASS/FAIL/BLOCK 統計卡片
-│   ├── result_table.py           # 測試結果表格 (帶色彩標示)
-│   └── sidebar.py                # 側欄 Session/Loop 選擇器
-├── parsers/                  # Log 解析模組
+│   ├── metrics_card.py               # PASS/FAIL/BLOCK 統計卡片
+│   ├── result_table.py               # 測試結果表格 (帶色彩標示)
+│   └── sidebar.py                    # 側欄 Session/Loop 選擇器
+├── parsers/                      # Log 解析模組
 │   ├── __init__.py
-│   ├── csv_parser.py             # CSV 結果解析
-│   └── log_parser.py             # TestSetResponse.txt 解析
-├── utils/                    # 工具函式
+│   ├── csv_parser.py                 # CSV 結果解析 (內容分類，不依賴檔名)
+│   └── log_parser.py                 # TestSetResponse.txt 解析
+├── db/                           # 資料庫層
+│   ├── database.py                   # DuckDB schema / CRUD / 存取控制
+│   └── importer.py                   # 將解析結果寫入 DuckDB
+├── utils/                        # 工具函式
 │   ├── __init__.py
-│   └── helpers.py                # 共用工具 (顏色、格式化等)
+│   ├── helpers.py                    # 共用工具 (顏色、格式化等)
+│   ├── chart_theme.py                # Plotly 圖表通用樣式
+│   └── failure_analysis.py           # 失敗根因分析 (CSV ↔ TXT 交叉比對)
+├── config/                       # 設定檔 (不進版控)
+│   ├── users.yaml                    # 使用者帳號 (bcrypt hash)
+│   └── shares.yaml                   # Session 共享設定
+├── scripts/
+│   └── create_user.py                # CLI 建立 / 更新使用者
 ├── .streamlit/
-│   └── config.toml               # Streamlit 主題設定
+│   └── config.toml                   # Streamlit 主題設定
+├── atp_log.duckdb                # 本地資料庫 (runtime 產生，不進版控)
 ├── requirements.txt
-└── DEV_MANUAL.md             # 本開發手冊
+└── DEV_MANUAL.md                 # 本開發手冊
 ```
 
 ---
@@ -169,12 +182,117 @@ pcatp_log/
 session = {
     "id": "test_20260316163640",
     "summary": DataFrame,        # 來自 test_*.csv (無結果，只有清單)
+    "header_meta": dict,         # 來自第一個 loop CSV 的 header 欄位
     "loops": {
         1: {
+            "header":  dict,         # Test Mode, Test End Time 等
             "results": DataFrame,    # 來自 N_EMM_*.csv
-            "log": list[dict],       # 來自 N_EMM_*_TestSetResponse.txt
+            "legacy":  DataFrame,    # 第二段 Test ID 區塊 (CAN/LIN legacy rows)
         },
         ...
     }
 }
 ```
+
+---
+
+## 失敗根因分析模組
+
+### 概述
+
+`utils/failure_analysis.py` 提供 `analyze_failures(results_df, log_entries)` 函式，
+將 CSV 結果中每一筆 FAIL / BLOCK 項目與對應的 TXT log entries 交叉比對，
+自動分類失敗原因並補充實際量測值。
+
+### CSV ↔ TXT 連結方式
+
+| 連結鍵 | CSV 欄位 | TXT log 欄位 |
+|--------|----------|-------------|
+| 訊號 Hex ID | `Hex ID`（如 `0x45`） | `[UDP Data] ID:45 (...)` |
+| 訊號名稱 | `Test Name` | `[FAIL] CCS-S2 (0x45): ...` |
+| 通道名稱 | `Sub Item` / `Test Name` | `[CAN] FAIL detected (CAN03--)` |
+
+### Value 欄位格式解析
+
+CSV `Value` 欄位有兩種格式，由 `_parse_value()` 負責解析：
+
+```
+# 量測範圍格式
+Min:2508.00 Max:2529.00 | Limit[3128~3920]
+  → type = "range"
+  → min_val, max_val, lo_limit, hi_limit
+
+# 離散比對格式
+Cur:0 | Exp:0
+  → type = "compare"
+  → cur_val, exp_val
+```
+
+### 根因分類規則
+
+`_classify_root_cause()` 依以下優先順序判斷：
+
+| 條件 | 根因類別 |
+|------|---------|
+| Result = BLOCK / BLOCKED | `Blocked` |
+| type = range，max > hi_limit | `Out of Range (High)` |
+| type = range，min < lo_limit | `Out of Range (Low)` |
+| type = range，兩端皆超出 | `Out of Range (Both)` |
+| type = compare，cur ≠ exp | `Value Mismatch` |
+| CAN category + log 有 "No CAN result found" | `No Response` |
+| 其他 | `Unknown` |
+
+### Log 索引建立（`_build_log_index`）
+
+掃描 log entries，建立以下查詢表：
+
+```
+udp          : { HEX_ID → { name, cur, avg, min, max } | { name, raw } }
+fail_msgs    : { HEX_ID → "Out of Range" 等原因字串 }
+retry        : { channel → 最大重試次數 }
+no_response  : [ "No CAN result found, ..." 訊息列表 ]
+blocked_proc : [ "CR1001 not connected. Skipping ..." 訊息列表 ]
+```
+
+對應的 TXT log module：
+
+| Module | 用途 |
+|--------|------|
+| `UDP Data` | 實際量測值（Cur/Avg/Min/Max 或 RawData） |
+| `FAIL` | 失敗原因字串，含 Hex ID |
+| `CAN` | No Response 或 retry 記錄 |
+| `PROC` | Blocked 的前置條件失敗訊息 |
+
+### Log Evidence 補充邏輯
+
+依根因類別取得對應的 log 佐證：
+
+```
+Blocked      → blocked_proc[0]（第一個 PROC skip 訊息）
+No Response  → no_response[0]
+其他 FAIL    → fail_msgs[hex_id]（依 Hex ID 精確比對）
+CAN 類別     → 若 retry 記錄中 channel 符合，在前方加上 "Retried N×;"
+```
+
+若 CSV `Value` 欄為空，額外從 `udp[hex_id]` 補充 Cur/Avg/Min/Max。
+
+### 輸出欄位
+
+`analyze_failures()` 回傳 DataFrame，欄位如下：
+
+| 欄位 | 說明 |
+|------|------|
+| `Test ID` | 測試項目編號 |
+| `Category` | 測試分類 |
+| `Test Name` | 測試名稱 |
+| `Sub Item` | 子項目 |
+| `Root Cause` | 根因類別（文字，如 `Out of Range (High)`）|
+| `Actual` | 實際量測值（`X ~ Y` 或 `Cur:X`）|
+| `Limit` | 限制範圍（`A ~ B` 或 `Exp:Y`）|
+| `Deviation` | 偏差百分比（如 `+15.2%` / `-3.1%`）|
+| `Log Evidence` | 佐證 log 訊息（來自 TXT）|
+
+### 顯示常數
+
+`ROOT_CAUSE_COLOR`：各根因類別的顏色代碼（用於 badge 背景）
+`ROOT_CAUSE_ICON`：各根因類別的符號（↑ ↓ ↕ ≠ — ⊘ ?）

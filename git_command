@@ -1,0 +1,11 @@
+# 新增remote repo
+git remote add github https://github.com/jefferlu/easein_store.git
+
+# 同步所有遠端資訊
+git fetch --all
+
+# 切換到本地 main 分支（對應 GitHub）
+git checkout main
+
+# 強制將 GitHub 的內容推送到 GitLab 的 main
+git push gitlab main:main --force

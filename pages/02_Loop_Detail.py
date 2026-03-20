@@ -15,6 +15,7 @@ from components.result_table import (
     render_result_filter,
 )
 from utils.helpers import get_loop_numbers, LOG_LEVEL_COLORS
+from utils.failure_analysis import analyze_failures, ROOT_CAUSE_COLOR, ROOT_CAUSE_ICON
 
 session_data, selected_loop = render_sidebar(show_loop_selector=True)
 
@@ -148,13 +149,59 @@ st.divider()
 #     st.info("No range-type measurement data available for this loop.")
 
 # ---------------------------------------------------------------------------
+# Failure Analysis
+# ---------------------------------------------------------------------------
+from db.database import load_log_entries
+log_entries = load_log_entries(session_data["id"], selected_loop)
+
+st.divider()
+st.subheader("Failure Analysis")
+
+fail_df = analyze_failures(results_df, log_entries)
+
+if fail_df.empty:
+    st.success("No failures to analyse in this loop.")
+else:
+    # Summary badges
+    cause_counts = fail_df["Root Cause"].value_counts()
+    badge_cols = st.columns(min(len(cause_counts), 5))
+    for i, (cause, cnt) in enumerate(cause_counts.items()):
+        color = ROOT_CAUSE_COLOR.get(cause, "#999999")
+        icon  = ROOT_CAUSE_ICON.get(cause, "?")
+        badge_cols[i % len(badge_cols)].markdown(
+            f"<div style='background:{color}22;border-left:4px solid {color};"
+            f"padding:0.4rem 0.8rem;border-radius:4px;margin-bottom:0.4rem'>"
+            f"<span style='color:{color};font-weight:600'>{icon} {cause}</span>"
+            f"<span style='float:right;font-weight:700;color:{color}'>{cnt}</span></div>",
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("")
+
+    # Detail table
+    display_df = fail_df.copy()
+    st.dataframe(
+        display_df,
+        hide_index=True,
+        use_container_width=True,
+        column_config={
+            "Test ID":      st.column_config.NumberColumn("ID",       width=60),
+            "Category":     st.column_config.TextColumn("Category",   width=160),
+            "Test Name":    st.column_config.TextColumn("Test Name",  width=130),
+            "Sub Item":     st.column_config.TextColumn("Sub Item",   width=180),
+            "Root Cause":   st.column_config.TextColumn("Root Cause", width=170),
+            "Actual":       st.column_config.TextColumn("Actual",     width=180),
+            "Limit":        st.column_config.TextColumn("Limit",      width=180),
+            "Deviation":    st.column_config.TextColumn("Dev",        width=70),
+            "Log Evidence": st.column_config.TextColumn("Log Evidence"),
+        },
+    )
+
+# ---------------------------------------------------------------------------
 # Log timeline
 # ---------------------------------------------------------------------------
 st.divider()
 st.subheader("Log Timeline")
-
-from db.database import load_log_entries
-log_entries = load_log_entries(session_data["id"], selected_loop)
 
 if log_entries:
     level_filter = st.multiselect(
