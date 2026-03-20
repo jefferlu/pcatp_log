@@ -1,5 +1,5 @@
 # 新增remote repo
-git remote add github https://github.com/jefferlu/easein_store.git
+git remote add gitlab https://gitlab.com/giantcld/pcatp_log.git
 
 # 同步所有遠端資訊
 git fetch --all
