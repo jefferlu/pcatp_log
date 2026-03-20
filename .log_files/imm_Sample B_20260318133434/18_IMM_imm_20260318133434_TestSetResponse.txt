@@ -1,0 +1,180 @@
+=== Test Start (Loop 18): 2026-03-18 14:04:29 ===
+[14:04:29] [System] PV Rows Reset for Loop 18, Mode=IMM
+[14:04:29] [Info ] *************  Information  ***************
+[14:04:29] [Info ] Project Name  = Front
+[14:04:29] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[14:04:29] [Info ] Box  Index    = 01
+[14:04:29] [Info ] Serial Number = imm
+[14:04:29] [Info ] EMC Mode  = IMM
+[14:04:29] [Info ] Loop Number   = 18
+[14:04:29] [Info ] *************  Information  ***************
+[14:04:29] [PROC ] EMC IMM Test Start
+[14:04:29] [MQTT] Set All Analog Type-1 Pins with 5V
+[14:04:29] [MQTT] Set All Analog Type-2 Group 2 Pins with 5V
+[14:04:29] [MQTT] Set All DIN Pins with High Level
+[14:04:29] [MQTT] Set All ITK Pins with Cross Mode
+[14:04:29] [PROC ] CCS SLAC Handshake Test already passed. Skipping...
+[14:04:29] [PROC ] Ping Test Start
+[14:04:29] [PROC ] IPv6 Ping Test Start
+[14:04:32] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%29 (使用 32 位元組的資料): | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=7ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=6ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=6ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=9ms  |  | fe80::3e42:7eff:feb0:4352%29 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 4, 已遺失 = 0 (0% 遺失)， | 大約的來回時間 (毫秒): |     最小值 = 6ms，最大值 = 9ms，平均 = 7ms | 
+[14:04:32] [PING6] IPv6 Ping PASS
+[14:04:32] [PROC ] IPv6 Ping Test End
+[14:04:32] [PROC ] Ping Test End
+[14:04:32] LIN Test Start
+[14:04:40] [LIN  ] No Lin result found, treat as FAIL
+[14:04:48] [LIN  ] No Lin result found, treat as FAIL
+[14:04:56] [UDS] Send EOL_LINSetLoopback Timeout RID:0311, Type:01, Payload:0200
+[14:05:04] [LIN  ] No Lin result found, treat as FAIL
+[14:05:12] [LIN  ] No Lin result found, treat as FAIL
+[14:05:12] CAN Test Start
+[14:05:20] [CAN  ] No CAN result found, treat as FAIL
+[14:05:28] [CAN  ] No CAN result found, treat as FAIL
+[14:05:36] [CAN  ] No CAN result found, treat as FAIL
+[14:05:44] [CAN  ] No CAN result found, treat as FAIL
+[14:05:52] [CAN  ] No CAN result found, treat as FAIL
+[14:06:00] [CAN  ] No CAN result found, treat as FAIL
+[14:06:00] Pre PV Test - Monitoring Enable Start
+[14:06:00] [PROC] Pre PV Test - Monitoring Enable Control Succeess
+[14:06:01] Pre PV Test - Monitoring Enable End
+[14:06:05] [UDP Data] ID:2F (BRKSW REDU) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:03 (CANFD3) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:04 (CAN4) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:05 (CANFD5) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:01 (CANFD14) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:02 (CANFD15) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:45 (CCS-S2) | Cur:2.186026E-43 Avg:2.186026E-43 Min:2.186026E-43 Max:2.186026E-43
+[14:06:05] [FAIL] CCS-S2 (0x45): Out of Range
+[14:06:05] [UDP Data] ID:6D (CCB) | Cur:1.401298E-45 Avg:0 Min:0 Max:1.401298E-45
+[14:06:05] [FAIL] CCB (0x6D): Out of Range
+[14:06:05] [UDP Data] ID:6E (RBT) | Cur:1.401298E-45 Avg:0 Min:0 Max:1.401298E-45
+[14:06:05] [FAIL] RBT (0x6E): Out of Range
+[14:06:05] [UDP Data] ID:6F (ONINFO) | Cur:1.401298E-45 Avg:0 Min:0 Max:1.401298E-45
+[14:06:05] [FAIL] ONINFO (0x6F): Out of Range
+[14:06:05] [UDP Data] ID:48 (Unknown) | Cur:2.802597E-45 Avg:2.802597E-45 Min:2.802597E-45 Max:2.802597E-45
+[14:06:05] [UDP Data] ID:5B (EEPROM) | RawData:FF-6C-AB-0B-FF-6C-AB-0B-FF-6C-AB-0B-FF-6C-AB-0B
+[14:06:05] [UDP Data] ID:5A (EEPROM) | RawData:00-20-00-0D-00-20-00-0D-00-20-00-0D-00-20-00-0D
+[14:06:05] [UDP Data] ID:58 (Unknown) | Cur:2.54686E-41 Avg:2.54686E-41 Min:2.54686E-41 Max:2.54686E-41
+[14:06:05] [UDP Data] ID:5E (Flash) | RawData:FE-A8-A8-21-FE-A8-A8-21-FE-A8-A8-21-FE-A8-A8-21
+[14:06:05] [UDP Data] ID:5D (Flash) | RawData:00-C2-20-18-00-C2-20-18-00-C2-20-18-00-C2-20-18
+[14:06:05] [UDP Data] ID:1C (AIN16) | Cur:4593 Avg:4592.012 Min:4581 Max:4597
+[14:06:05] [UDP Data] ID:1D (AIN11) | Cur:4595 Avg:4592.037 Min:4582 Max:4597
+[14:06:05] [UDP Data] ID:1E (AIN28) | Cur:3405 Avg:3402.875 Min:3396 Max:3407
+[14:06:05] [UDP Data] ID:1F (AIN23) | Cur:3405 Avg:3402.6 Min:3396 Max:3407
+[14:06:05] [UDP Data] ID:69 (CAL2) | Cur:236 Avg:236.05 Min:234 Max:237
+[14:06:05] [UDP Data] ID:67 (AIN44) | Cur:4306 Avg:4305.125 Min:4296 Max:4311
+[14:06:05] [UDP Data] ID:25 (AIN12) | Cur:5000 Avg:4999.337 Min:4998 Max:5000
+[14:06:05] [FAIL] AIN12 (0x25): Out of Range
+[14:06:05] [UDP Data] ID:26 (AIN64) | Cur:5000 Avg:4999.487 Min:4998 Max:5000
+[14:06:05] [FAIL] AIN64 (0x26): Out of Range
+[14:06:05] [UDP Data] ID:27 (AIN32) | Cur:4769 Avg:4768.813 Min:4768 Max:4770
+[14:06:05] [FAIL] AIN32 (0x27): Out of Range
+[14:06:05] [UDP Data] ID:28 (AIN51) | Cur:4768 Avg:4768.175 Min:4767 Max:4770
+[14:06:05] [FAIL] AIN51 (0x28): Out of Range
+[14:06:05] [UDP Data] ID:29 (AIN14) | Cur:5000 Avg:4999.65 Min:4998 Max:5000
+[14:06:05] [FAIL] AIN14 (0x29): Out of Range
+[14:06:05] [UDP Data] ID:2A (AIN9) | Cur:4768 Avg:4768.063 Min:4766 Max:4770
+[14:06:05] [FAIL] AIN9 (0x2A): Out of Range
+[14:06:05] [UDP Data] ID:49 (CCS-S2) | Cur:1.401298E-45 Avg:0 Min:0 Max:2.802597E-45
+[14:06:05] [FAIL] CCS-S2 (0x49): Out of Range
+[14:06:05] [UDP Data] ID:68 (AIN46) | Cur:4306 Avg:4304.125 Min:4296 Max:4311
+[14:06:05] [UDP Data] ID:22 (AIN34) | Cur:4306 Avg:4304.375 Min:4296 Max:4311
+[14:06:05] [UDP Data] ID:23 (AIN42) | Cur:5000 Avg:4999.975 Min:4999 Max:5000
+[14:06:05] [FAIL] AIN42 (0x23): Out of Range
+[14:06:05] [UDP Data] ID:24 (AIN33) | Cur:5000 Avg:4999.875 Min:4999 Max:5000
+[14:06:05] [FAIL] AIN33 (0x24): Out of Range
+[14:06:05] [UDP Data] ID:2B (AIN58) | Cur:5000 Avg:4999.725 Min:4999 Max:5000
+[14:06:05] [UDP Data] ID:2C (AIN13) | Cur:4999 Avg:4999.4 Min:4998 Max:5000
+[14:06:05] [UDP Data] ID:2D (AIN53) | Cur:4999 Avg:4999.35 Min:4998 Max:5000
+[14:06:05] [UDP Data] ID:31 (BPCM) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:2E (BRKSW) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:32 (ETAT) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:6A (E-STOP) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:6C (IGNSTART) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:30 (RES01) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:6B (RES02) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[14:06:05] [UDP Data] ID:56 (Unknown) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:55 (Unknown) | Cur:9.183409E-41 Avg:9.183409E-41 Min:9.183409E-41 Max:9.183409E-41
+[14:06:05] [UDP Data] ID:60 (Unknown) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:61 (RTC1) | Cur:8.380272E-24 Avg:1.312693E-19 Min:8.18287E-27 Max:2.331103E-09
+[14:06:05] [UDP Data] ID:63 (Unknown) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:05] [UDP Data] ID:64 (RTC2) | Cur:8.18287E-27 Avg:1.281764E-22 Min:7.990117E-30 Max:2.276189E-12
+[14:06:05] [UDP Data] ID:3A (O_S_R1-RELAY) | Cur:0 Avg:1.121822E-14 Min:0 Max:674
+[14:06:05] [FAIL] O_S_R1-RELAY (0x3A): Out of Range
+[14:06:05] [UDP Data] ID:3B (O_S_R2-RELAY) | Cur:0 Avg:6.737249E-14 Min:0 Max:676
+[14:06:05] [FAIL] O_S_R2-RELAY (0x3B): Out of Range
+[14:06:05] [UDP Data] ID:3F (O_S_CHARSUP) | Cur:0 Avg:4.034894E-19 Min:0 Max:971
+[14:06:05] [FAIL] O_S_CHARSUP (0x3F): Out of Range
+[14:06:05] [UDP Data] ID:3E (O_S_HSD_RES03) | Cur:1 Avg:1.475887E-18 Min:0 Max:243
+[14:06:05] [FAIL] O_S_HSD_RES03 (0x3E): Out of Range
+[14:06:05] [UDP Data] ID:3D (O_S_R13-RELAY) | Cur:0 Avg:1.693161E-22 Min:0 Max:679
+[14:06:05] [FAIL] O_S_R13-RELAY (0x3D): Out of Range
+[14:06:05] [UDP Data] ID:40 (I_S_RDC_CM) | Cur:315 Avg:305.0247 Min:283 Max:326
+[14:06:05] [UDP Data] ID:39 (O_S_HSD2) | Cur:0 Avg:3.742562E-19 Min:0 Max:685
+[14:06:05] [FAIL] O_S_HSD2 (0x39): Out of Range
+[14:06:05] [UDP Data] ID:38 (O_S_HSD_RES01) | Cur:0 Avg:7.226838E-20 Min:0 Max:648
+[14:06:05] [FAIL] O_S_HSD_RES01 (0x38): Out of Range
+[14:06:05] [UDP Data] ID:42 (CCS-S2) | Cur:2550 Avg:2554.45 Min:2548 Max:2570
+[14:06:05] [FAIL] CCS-S2 (0x42): Out of Range
+[14:06:05] [UDP Data] ID:09 (BOX Output) | Cur:357 Avg:352.4 Min:342 Max:359
+[14:06:05] [FAIL] BOX Output (0x09): Out of Range
+[14:06:05] [UDP Data] ID:0A (BOX Input) | Cur:206 Avg:201.975 Min:192 Max:209
+[14:06:05] [FAIL] BOX Input (0x0A): Out of Range
+[14:06:05] [UDP Data] ID:4B (CS-DIA OFF) | Cur:1 Avg:2.504633E-30 Min:0 Max:2
+[14:06:05] [FAIL] CS-DIA OFF (0x4B): Out of Range
+[14:06:05] [UDP Data] ID:4C (CS-DIA OFF) | Cur:5000 Avg:5000 Min:5000 Max:5000
+[14:06:05] [FAIL] CS-DIA OFF (0x4C): Out of Range
+[14:06:05] [UDP Data] ID:4F (CP12-DIA OFF) | Cur:1 Avg:4.053185E-24 Min:0 Max:2
+[14:06:05] [FAIL] CP12-DIA OFF (0x4F): Out of Range
+[14:06:05] [UDP Data] ID:50 (CP12-DIA OFF) | Cur:3062 Avg:3061.6 Min:3060 Max:3063
+[14:06:05] [FAIL] CP12-DIA OFF (0x50): Out of Range
+[14:06:05] [UDP Data] ID:53 (CP3-DIA OFF) | Cur:1662 Avg:1661.512 Min:1659 Max:1662
+[14:06:05] [FAIL] CP3-DIA OFF (0x53): Out of Range
+[14:06:05] [UDP Data] ID:54 (CP3-DIA OFF) | Cur:3330 Avg:3329.563 Min:3327 Max:3331
+[14:06:05] [FAIL] CP3-DIA OFF (0x54): Out of Range
+[14:06:05] [UDP Data] ID:43 (CCS-S2) | Cur:1037 Avg:996.5234 Min:355 Max:5000
+[14:06:05] [FAIL] CCS-S2 (0x43): Out of Range
+[14:06:05] [UDP Data] ID:41 (HBR1) | Cur:1853 Avg:1859.525 Min:1816 Max:1921
+[14:06:05] [FAIL] HBR1 (0x41): Out of Range
+[14:06:05] [UDP Data] ID:17 (Unknown) | Cur:673 Avg:668.2125 Min:603 Max:788
+[14:06:05] [UDP Data] ID:35 (EVCMD) | Cur:5000 Avg:3782.625 Min:1686 Max:5000
+[14:06:05] [FAIL] EVCMD (0x35): Out of Range
+[14:06:05] [UDP Data] ID:70 (CCB) | Cur:2 Avg:3.09883E-09 Min:0 Max:50
+[14:06:05] [FAIL] CCB (0x70): Out of Range
+[14:06:05] [UDP Data] ID:71 (RBT) | Cur:51 Avg:6.503125 Min:0 Max:54
+[14:06:05] [FAIL] RBT (0x71): Out of Range
+[14:06:05] [UDP Data] ID:72 (ONINFO) | Cur:7 Avg:17.48047 Min:6 Max:381
+[14:06:05] [FAIL] ONINFO (0x72): Out of Range
+[14:06:05] [UDP Data] ID:37 (LSD_RES01) | Cur:5000 Avg:3774.2 Min:1667 Max:5000
+[14:06:05] [FAIL] LSD_RES01 (0x37): Out of Range
+[14:06:05] [UDP Data] ID:36 (LSD_RES02) | Cur:5000 Avg:3775.375 Min:1670 Max:5000
+[14:06:05] [FAIL] LSD_RES02 (0x36): Out of Range
+[14:06:05] [UDP Data] ID:33 (SOLVAL1) | Cur:5000 Avg:3782.625 Min:1686 Max:5000
+[14:06:05] [FAIL] SOLVAL1 (0x33): Out of Range
+[14:06:05] [UDP Data] ID:34 (SOLVAL2) | Cur:5000 Avg:3780.425 Min:1681 Max:5000
+[14:06:05] [FAIL] SOLVAL2 (0x34): Out of Range
+[14:06:05] [UDP Data] ID:46 (CCS-S2) | Cur:2919 Avg:2954.112 Min:2648 Max:4878
+[14:06:05] [UDP Data] ID:0E (O_V_5V_G1) | Cur:2499 Avg:2498.975 Min:2498 Max:2501
+[14:06:05] [UDP Data] ID:0F (O_V_5V_G2) | Cur:2498 Avg:2498.212 Min:2497 Max:2499
+[14:06:05] [UDP Data] ID:16 (STBY-Sup5V) | Cur:2475 Avg:2475.175 Min:2471 Max:2477
+[14:06:05] [UDP Data] ID:07 (SBW Output) | Cur:2540 Avg:2534.313 Min:2520 Max:2542
+[14:06:05] [FAIL] SBW Output (0x07): Out of Range
+[14:06:05] [UDP Data] ID:08 (SBW Input) | Cur:2355 Avg:2350.362 Min:2336 Max:2359
+[14:06:05] [FAIL] SBW Input (0x08): Out of Range
+[14:06:05] [UDP Data] ID:11 (UBR_BL) | Cur:2465 Avg:2451.25 Min:2409 Max:2468
+[14:06:05] [UDP Data] ID:10 (UBR_RDBL) | Cur:2416 Avg:2401.438 Min:2361 Max:2420
+[14:06:05] [UDP Data] ID:12 (UBR_RD) | Cur:2466 Avg:2453.362 Min:2418 Max:2470
+[14:06:05] [UDP Data] ID:0C (VDD5A(APP2)) | Cur:4109 Avg:4109.787 Min:4109 Max:4111
+[14:06:05] [UDP Data] ID:14 (VV_BAT_RDBL) | Cur:1199 Avg:1191.587 Min:1175 Max:1199
+[14:06:05] [UDP Data] ID:15 (VV_D_BL) | Cur:1231 Avg:1224.775 Min:1209 Max:1233
+[14:06:05] [UDP Data] ID:13 (VV_D_RD) | Cur:1231 Avg:1223.837 Min:1206 Max:1232
+[14:06:05] [UDP Data] ID:18 (V_V_PERMBATBL) | Cur:1355 Avg:1348.775 Min:1330 Max:1358
+[14:06:05] [FAIL] V_V_PERMBATBL (0x18): Out of Range
+[14:06:05] [UDP Data] ID:1A (V_V_PERMBATBL) | Cur:1265 Avg:1258.25 Min:1239 Max:1267
+[14:06:05] [UDP Data] ID:19 (V_V_PERMBATRD) | Cur:1269 Avg:1265.012 Min:1250 Max:1271
+[14:06:05] [UDP Data] ID:1B (V_V_PERMBATRD) | Cur:1267 Avg:1261.438 Min:1245 Max:1270
+[14:06:05] [UDP Data] ID:0D (VDD5A) | Cur:3411 Avg:3410.625 Min:3409 Max:3413
+[14:06:05] [UDP Data] ID:06 (CANFD_WAKE) | Cur:0 Avg:0 Min:0 Max:0
+[14:06:08] [EMC IMM] Data transmission finished and processed.
+[14:06:08] [EMC IMM] EMC Test End
+[14:06:08] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260318\BOX_1\imm_20260318133434\18_IMM_imm_20260318133434.csv
+[14:06:08] imm:Interlock Feedback Test FAIL

@@ -1,0 +1,26 @@
+# ATP Log Analyzer — Session sharing configuration
+#
+# Grant other users read-only access to sessions owned by someone else.
+# Changes take effect immediately on next page load (no restart needed).
+#
+# Format:
+#   shares:
+#     <session_id>:
+#       owner: <username who imported this session>
+#       shared_with:
+#         - <username>
+#         - <username>
+#
+# Example:
+# shares:
+#   test_20260316173550:
+#     owner: alice
+#     shared_with:
+#       - bob
+#       - charlie
+#   imm_20260318133434:
+#     owner: alice
+#     shared_with:
+#       - bob
+
+shares: {}
