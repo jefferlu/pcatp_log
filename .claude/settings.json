@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet package search \"lepoco\" --take 5)",
+      "Bash(dotnet restore pcatp_log_wpf/pcatp_log_wpf.csproj)"
+    ]
+  }
+}

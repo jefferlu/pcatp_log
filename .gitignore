@@ -164,3 +164,4 @@ cython_debug/
 .python-version
 .DS_Store
 media-root/
+pcatp_log_wpf
