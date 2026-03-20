@@ -1,0 +1,43 @@
+=== Test Start: 2026-03-16 22:09:47 ===
+[22:09:47] PV Mode: Report Structure Initialized.
+[22:09:47] [System] PV Report Enabled. (Mode: EMC/)
+[22:09:47] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\.Sample A_Emission_20260316220947_details.tmp'
+[22:09:47] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[22:09:47] [Info ] *************  Information  ***************
+[22:09:47] [Info ] Project Name  = Front
+[22:09:47] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[22:09:47] [Info ] Box  Index    = 01
+[22:09:47] [Info ] Serial Number = Sample A_Emission
+[22:09:47] [Info ] *************  Information  ***************
+[22:09:47] [MQTT ] Test Board Connection Pass
+[22:09:47] [MQTT ] Test Board Switch Pass:Front
+[22:09:48] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[22:09:48] [DoIP ] Ping ZCU: 192.168.5.1...
+[22:09:48] [DoIP ] ZCU Ping OK (192.168.5.1)
+[22:09:48] [DoIP ] Creating Session...
+[22:09:48] [DoIP ] ZCU Connected
+[22:09:48] [UDS  ] Session Ctrl: 4
+[22:09:48] [UDS  ] Session Control Pass
+[22:09:48] [PROC ] Get EMC Test Criteria
+[22:09:48] [PROC ] EMC Mode: EMM
+[22:09:48] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv
+[22:09:48] PV Mode: Report Structure Initialized.
+[22:09:48] [System] PV Report Enabled. (Mode: EMC/)
+[22:09:48] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\.Sample A_Emission_20260316220947_details.tmp'
+[22:09:48] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[22:09:48] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv
+[22:11:20] PV Mode: Report Structure Initialized.
+[22:11:20] [System] PV Report Enabled. (Mode: EMC/)
+[22:11:20] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\.Sample A_Emission_20260316220947_details.tmp'
+[22:11:20] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[22:11:20] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv
+[22:12:28] PV Mode: Report Structure Initialized.
+[22:12:28] [System] PV Report Enabled. (Mode: EMC/)
+[22:12:28] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\.Sample A_Emission_20260316220947_details.tmp'
+[22:12:28] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[22:12:28] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv
+[22:13:43] PV Mode: Report Structure Initialized.
+[22:13:43] [System] PV Report Enabled. (Mode: EMC/)
+[22:13:43] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\.Sample A_Emission_20260316220947_details.tmp'
+[22:13:43] [System] New Session. QTest: EMC, PrePV: , Loop: 4
+[22:13:43] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample A_Emission_20260316220947\Sample A_Emission_20260316220947.csv

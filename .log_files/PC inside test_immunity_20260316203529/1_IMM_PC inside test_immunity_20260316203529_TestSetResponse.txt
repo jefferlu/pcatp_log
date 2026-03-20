@@ -1,0 +1,913 @@
+=== Test Start (Loop 1): 2026-03-16 20:35:30 ===
+[20:35:30] [System] PV Rows Reset for Loop 1, Mode=IMM
+[20:35:30] [Info ] *************  Information  ***************
+[20:35:30] [Info ] Project Name  = Front
+[20:35:30] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[20:35:30] [Info ] Box  Index    = 01
+[20:35:30] [Info ] Serial Number = PC inside test_immunity
+[20:35:30] [Info ] EMC Mode  = IMM
+[20:35:30] [Info ] Loop Number   = 1
+[20:35:30] [Info ] *************  Information  ***************
+[20:35:30] [PROC ] EMC IMM Test Start
+[20:35:30] [MQTT] Set All Analog Type-1 Pins with 5V
+[20:35:30] [MQTT] Set All Analog Type-2 Group 0 Pins with 5V
+[20:35:30] [MQTT] Set All DIN Pins with High Level
+[20:35:30] [MQTT] Set All ITK Pins with Cross Mode
+[20:35:30] [PROC ] SLAC Handshake Test Start
+[20:35:30] [SLAC ] Wake pulse (Duty 0%) sent to CR1001.
+[20:35:30] [SLAC ] Listener Started. Waiting for State 1...
+[20:35:30] [SLAC_INT] Starting SLAC handshake...
+[20:35:30] [SLAC_INT] Duty 5% set.
+[20:35:30] [SLAC_INT] Packet sent successfully: CM_SET_KEY.REQ
+[20:35:31] [SLAC_INT] Recv CM_SET_KEY.CNF
+[20:35:31] [SLAC ] State 2 Reached. Waiting for DUT readiness...
+[20:35:31] [SLAC_INT] Recv CM_SLAC_PARM.REQ
+[20:35:31] [SLAC_INT] [SLAC_INT] Valid SLAC Trigger Packet (MME: 6064)
+[20:35:31] [SLAC_INT] Learned EV MAC: 3C-42-7E-B0-43-52
+[20:35:31] [SLAC_INT] Learned Run ID: 00-00-00-00-00-00-00-00
+[20:35:31] [SLAC_INT] Packet sent successfully: CM_SLAC_PARM.CNF
+[20:35:31] [UDS  ] Send EOL_WriteDigitalOutput success RID:0701, Status:0,Type:01, Payload:01
+[20:35:31] [SLAC_INT] Recv CM_START_ATTEN_CHAR.IND
+[20:35:31] [SLAC_INT] Recv CM_START_ATTEN_CHAR.IND
+[20:35:31] [SLAC_INT] Recv CM_START_ATTEN_CHAR.IND
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 1/10
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 2/10
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 3/10
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 4/10
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 5/10
+[20:35:31] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:31] [SLAC_INT] [SLAC_INT] Profile Count: 6/10
+[20:35:32] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:32] [SLAC_INT] [SLAC_INT] Profile Count: 7/10
+[20:35:32] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:32] [SLAC_INT] [SLAC_INT] Profile Count: 8/10
+[20:35:32] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:32] [SLAC_INT] [SLAC_INT] Profile Count: 9/10
+[20:35:32] [SLAC_INT] Recv CM_ATTEN_PROFILE.IND
+[20:35:32] [SLAC_INT] [SLAC_INT] Profile Count: 10/10
+[20:35:32] [SLAC_INT] Packet sent successfully: CM_ATTEN_CHAR.IND
+[20:35:32] [SLAC_INT] Recv CM_ATTEN_CHAR.RSP
+[20:35:32] [SLAC_INT] Recv CM_SLAC_MATCH.REQ
+[20:35:32] [SLAC_INT] Packet sent successfully: CM_SLAC_MATCH.CNF
+[20:35:32] [SLAC_INT] SLAC Handshake Complete!
+[20:35:32] [SLAC_INT] SLAC handshake completed.
+[20:35:33] [SLAC ] SLAC Handshake PASS
+[20:35:33] [PROC ] SLAC Handshake Test End
+[20:35:33] [PROC ] Ping Test Start
+[20:35:33] [PROC ] IPv6 Ping Test Start
+[20:35:37] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%21 (使用 32 位元組的資料): | 要求等候逾時。 | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=19ms  | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=8ms  | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=6ms  |  | fe80::3e42:7eff:feb0:4352%21 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 3, 已遺失 = 1 (25% 遺失)， | 大約的來回時間 (毫秒): |     最小值 = 6ms，最大值 = 19ms，平均 = 11ms | 
+[20:35:37] [PING6] IPv6 Ping PASS
+[20:35:37] [PROC ] IPv6 Ping Test End
+[20:35:37] [PROC ] Ping Test End
+[20:35:37] LIN Test Start
+[20:35:40] [MSG  ] TestItem: lin, Channel: 01CM, Result: PASS
+[20:35:40] [MSG  ] TestItem: lin, Channel: 01CE, Result: PASS
+[20:35:43] [MSG  ] TestItem: lin, Channel: 02CM, Result: PASS
+[20:35:43] [MSG  ] TestItem: lin, Channel: 02CE, Result: PASS
+[20:35:46] [MSG  ] TestItem: lin, Channel: 03CM, Result: PASS
+[20:35:46] [MSG  ] TestItem: lin, Channel: 03CE, Result: PASS
+[20:35:49] [MSG  ] TestItem: lin, Channel: 04CM, Result: PASS
+[20:35:49] [MSG  ] TestItem: lin, Channel: 04CE, Result: PASS
+[20:35:49] CAN Test Start
+[20:35:52] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:35:52] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:35:52] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:35:55] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:35:55] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:35:55] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:35:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:35:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:35:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:00] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:00] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:00] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:03] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:03] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:03] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:05] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:05] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:05] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:08] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:08] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:08] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:11] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:11] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:11] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:13] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:13] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:13] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:16] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:16] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:16] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:18] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:18] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:18] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:21] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:21] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:21] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:26] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:26] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:26] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:29] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:29] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:29] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:31] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:31] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:31] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:34] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:34] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:34] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:37] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:37] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:37] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:39] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:39] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:39] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:42] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:42] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:42] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:47] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:47] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:47] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:50] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:50] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:50] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:52] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:52] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:52] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:55] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:55] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:55] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:36:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:36:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:36:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:00] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:00] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:00] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:03] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:03] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:03] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:08] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:08] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:08] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:11] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:11] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:11] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:13] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:13] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:13] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:16] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:16] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:16] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:21] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:21] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:21] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:26] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:26] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:26] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:29] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:29] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:29] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:34] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:34] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:34] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:37] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:37] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:37] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:42] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:42] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:42] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:47] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:47] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:47] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:50] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:50] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:50] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:55] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:55] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:55] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:37:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:37:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:37:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:03] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:03] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:03] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:08] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:08] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:08] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:11] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:11] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:11] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:16] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:16] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:16] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:21] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:21] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:21] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:29] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:29] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:29] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:37] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:37] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:37] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:42] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:42] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:42] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:50] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:50] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:50] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:55] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:55] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:55] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:38:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:38:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:38:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:03] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:03] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:03] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:11] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:11] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:11] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:16] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:16] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:16] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:24] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:24] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:24] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:39:58] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:39:58] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:39:58] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:45] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:45] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:45] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:40:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:40:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:40:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:19] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:19] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:19] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:32] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:32] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:32] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:53] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:53] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:53] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:41:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:41:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:41:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:06] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:06] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:06] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:40] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:40] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:40] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:48] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:48] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:48] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:42:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:42:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:42:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:01] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:01] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:01] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:07] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:07] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:07] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:14] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:14] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:14] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:27] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:27] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:27] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:35] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:35] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:35] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:41] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:41] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:41] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:49] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:49] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:49] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:43:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:43:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:43:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:02] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:02] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:02] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:07] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:07] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:07] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:15] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:15] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:15] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:22] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:22] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:22] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:28] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:28] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:28] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:36] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:36] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:36] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:41] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:41] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:41] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:49] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:49] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:49] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:56] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:56] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:56] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:44:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:44:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:44:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:02] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:02] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:02] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:07] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:07] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:07] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:09] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:09] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:09] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:15] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:15] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:15] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:23] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:23] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:23] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:28] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:28] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:28] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:36] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:36] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:36] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:41] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:41] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:41] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:49] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:49] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:49] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:57] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:57] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:57] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:45:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:45:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:45:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:02] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:02] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:02] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:07] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:07] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:07] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:10] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:10] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:10] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:15] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:15] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:15] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:23] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:23] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:23] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:28] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:28] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:28] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:36] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:36] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:36] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:41] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:41] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:41] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:43] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:43] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:43] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:49] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:49] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:49] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:57] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:57] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:57] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:46:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:46:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:46:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:02] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:02] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:02] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:04] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:04] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:04] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:07] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:07] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:07] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:10] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:10] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:10] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:15] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:15] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:15] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:17] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:17] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:17] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:20] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:20] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:20] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:23] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:23] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:23] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:25] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:25] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:25] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:28] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:28] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:28] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:30] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:30] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:30] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:33] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:33] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:33] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:36] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:36] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:36] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:38] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:38] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:38] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:41] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:41] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:41] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:44] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:44] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:44] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:46] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:46] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:46] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:49] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:49] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:49] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:51] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:51] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:51] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:54] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:54] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:54] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:57] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:57] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:57] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[20:47:59] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[20:47:59] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[20:47:59] [CAN  ] FAIL detected (CAN14CE), retry 1/5

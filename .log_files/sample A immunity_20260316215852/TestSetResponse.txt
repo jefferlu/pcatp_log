@@ -1,0 +1,22 @@
+=== Test Start: 2026-03-16 21:58:52 ===
+[21:58:52] PV Mode: Report Structure Initialized.
+[21:58:52] [System] PV Report Enabled. (Mode: EMC/)
+[21:58:52] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\sample A immunity_20260316215852.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\.sample A immunity_20260316215852_details.tmp'
+[21:58:52] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[21:58:52] [MQTT ] Test Board Connection Pass
+[21:58:53] [MQTT ] Test Board Switch Pass:Front
+[21:58:53] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[21:58:53] [DoIP ] Ping ZCU: 192.168.5.1...
+[21:58:53] [DoIP ] ZCU Ping OK (192.168.5.1)
+[21:58:53] [DoIP ] Creating Session...
+[21:58:53] [DoIP ] ZCU Connected
+[21:58:53] [UDS  ] Session Ctrl: 4
+[21:58:53] [UDS  ] Session Control Pass
+[21:58:53] [PROC ] Get EMC Test Criteria
+[21:58:53] [PROC ] EMC Mode: IMM
+[21:58:53] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\sample A immunity_20260316215852.csv
+[21:58:53] PV Mode: Report Structure Initialized.
+[21:58:53] [System] PV Report Enabled. (Mode: EMC/)
+[21:58:53] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\sample A immunity_20260316215852.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\.sample A immunity_20260316215852_details.tmp'
+[21:58:53] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[21:58:53] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\sample A immunity_20260316215852\sample A immunity_20260316215852.csv

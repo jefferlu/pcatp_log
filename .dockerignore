@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+Pipfile
+Pipfile.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Database (persisted via Docker volume, never bake into image)
+*.duckdb
+*.duckdb.wal
+
+# Local test data (large, not needed in image)
+.log_files/
+.img_files/
+
+# Logs
+*.log
+
+# Documentation
+*.md
+docs/
+
+# Development
+.env
+.env.local

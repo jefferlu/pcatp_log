@@ -1,0 +1,24 @@
+=== Test Start (Loop 3): 2026-03-16 20:18:14 ===
+[20:18:14] [System] PV Rows Reset for Loop 3, Mode=EMM
+[20:18:14] [Info ] *************  Information  ***************
+[20:18:14] [Info ] Project Name  = Front
+[20:18:14] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[20:18:14] [Info ] Box  Index    = 01
+[20:18:14] [Info ] Serial Number = RE
+[20:18:14] [Info ] EMC Mode  = EMM
+[20:18:14] [Info ] Loop Number   = 3
+[20:18:14] [Info ] *************  Information  ***************
+[20:18:15] [PROC ] EMC EMM Test Start
+[20:18:15] [MQTT] Set All Analog Type-1 Pins with 5V
+[20:18:15] [MQTT] Set All Analog Type-2 Group 2 Pins with 5V
+[20:18:15] [MQTT] Set All DIN Pins with High Level
+[20:18:15] [MQTT] Set All ITK Pins with Cross Mode
+[20:18:15] [PROC ] CCS SLAC Handshake Test already passed. Skipping...
+[20:18:15] [PROC ] Ping Test Start
+[20:18:15] [PROC ] IPv6 Ping Test Start
+[20:18:22] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%21 (使用 32 位元組的資料): | 要求等候逾時。 | 目的地主機無法連線。 | 要求等候逾時。 | 目的地主機無法連線。 |  | fe80::3e42:7eff:feb0:4352%21 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 0, 已遺失 = 4 (100% 遺失)， | 
+[20:18:22] [PING6] IPv6 Ping FAIL
+[20:18:22] [PROC ] IPv6 Ping Test End
+[20:18:22] [PROC ] Ping Test End
+[20:18:22] LIN Test Start
+[20:18:25] [LIN  ] No Lin result found, treat as FAIL

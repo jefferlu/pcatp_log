@@ -1,0 +1,39 @@
+=== Test Start (Loop 4): 2026-03-16 22:13:43 ===
+[22:13:43] [System] PV Rows Reset for Loop 4, Mode=EMM
+[22:13:43] [Info ] *************  Information  ***************
+[22:13:43] [Info ] Project Name  = Front
+[22:13:43] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[22:13:43] [Info ] Box  Index    = 01
+[22:13:43] [Info ] Serial Number = Sample A_Emission
+[22:13:43] [Info ] EMC Mode  = EMM
+[22:13:43] [Info ] Loop Number   = 4
+[22:13:43] [Info ] *************  Information  ***************
+[22:13:44] [PROC ] EMC EMM Test Start
+[22:13:44] [MQTT] Set All Analog Type-1 Pins with 5V
+[22:13:44] [MQTT] Set All Analog Type-2 Group 3 Pins with 5V
+[22:13:44] [MQTT] Set All DIN Pins with High Level
+[22:13:44] [MQTT] Set All ITK Pins with Cross Mode
+[22:13:44] [PROC ] CCS SLAC Handshake Test already passed. Skipping...
+[22:13:44] [PROC ] Ping Test Start
+[22:13:44] [PROC ] IPv6 Ping Test Start
+[22:13:47] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%29 (使用 32 位元組的資料): | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=8ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=7ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=10ms  | 回覆自 fe80::3e42:7eff:feb0:4352%29: 時間=8ms  |  | fe80::3e42:7eff:feb0:4352%29 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 4, 已遺失 = 0 (0% 遺失)， | 大約的來回時間 (毫秒): |     最小值 = 7ms，最大值 = 10ms，平均 = 8ms | 
+[22:13:47] [PING6] IPv6 Ping PASS
+[22:13:47] [PROC ] IPv6 Ping Test End
+[22:13:47] [PROC ] Ping Test End
+[22:13:47] LIN Test Start
+[22:13:50] [MSG  ] TestItem: lin, Channel: 01CM, Result: PASS
+[22:13:50] [MSG  ] TestItem: lin, Channel: 01CE, Result: PASS
+[22:13:53] [MSG  ] TestItem: lin, Channel: 02CM, Result: PASS
+[22:13:53] [MSG  ] TestItem: lin, Channel: 02CE, Result: PASS
+[22:14:01] [LIN  ] No Lin result found, treat as FAIL
+[22:14:09] [LIN  ] No Lin result found, treat as FAIL
+[22:14:09] CAN Test Start
+[22:14:12] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:14:12] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:14:12] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:14:15] [MSG  ] TestItem: can, Channel: 14CM, Result: PASS
+[22:14:15] [MSG  ] TestItem: can, Channel: 14CE, Result: FAIL
+[22:14:15] [CAN  ] FAIL detected (CAN14CE), retry 1/5
+[22:14:22] [CAN  ] No CAN result found, treat as FAIL
+[22:14:30] [CAN  ] No CAN result found, treat as FAIL
+[22:14:38] [CAN  ] No CAN result found, treat as FAIL

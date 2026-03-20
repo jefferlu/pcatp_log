@@ -1,0 +1,11 @@
+=== Test Start: 2026-03-16 20:53:00 ===
+[20:53:00] PV Mode: Report Structure Initialized.
+[20:53:00] [System] PV Report Enabled. (Mode: EMC/)
+[20:53:00] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\123_20260316205300\123_20260316205300.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\123_20260316205300\.123_20260316205300_details.tmp'
+[20:53:00] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[20:53:00] [Info ] *************  Information  ***************
+[20:53:00] [Info ] Project Name  = Front
+[20:53:00] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[20:53:00] [Info ] Box  Index    = 01
+[20:53:00] [Info ] Serial Number = 123
+[20:53:00] [Info ] *************  Information  ***************

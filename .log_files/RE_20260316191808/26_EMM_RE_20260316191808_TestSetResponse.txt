@@ -1,0 +1,30 @@
+=== Test Start (Loop 26): 2026-03-16 20:00:16 ===
+[20:00:16] [System] PV Rows Reset for Loop 26, Mode=EMM
+[20:00:16] [Info ] *************  Information  ***************
+[20:00:16] [Info ] Project Name  = Front
+[20:00:16] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[20:00:16] [Info ] Box  Index    = 01
+[20:00:16] [Info ] Serial Number = RE
+[20:00:16] [Info ] EMC Mode  = EMM
+[20:00:16] [Info ] Loop Number   = 26
+[20:00:16] [Info ] *************  Information  ***************
+[20:00:16] [PROC ] EMC EMM Test Start
+[20:00:16] [MQTT] Set All Analog Type-1 Pins with 5V
+[20:00:16] [MQTT] Set All Analog Type-2 Group 2 Pins with 5V
+[20:00:16] [MQTT] Set All DIN Pins with High Level
+[20:00:16] [MQTT] Set All ITK Pins with Cross Mode
+[20:00:16] [PROC ] CCS SLAC Handshake Test already passed. Skipping...
+[20:00:17] [PROC ] Ping Test Start
+[20:00:17] [PROC ] IPv6 Ping Test Start
+[20:00:20] [PING6_CMD]  | Ping fe80::3e42:7eff:feb0:4352%21 (使用 32 位元組的資料): | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=5ms  | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=5ms  | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=8ms  | 回覆自 fe80::3e42:7eff:feb0:4352%21: 時間=6ms  |  | fe80::3e42:7eff:feb0:4352%21 的 Ping 統計資料: |     封包: 已傳送 = 4，已收到 = 4, 已遺失 = 0 (0% 遺失)， | 大約的來回時間 (毫秒): |     最小值 = 5ms，最大值 = 8ms，平均 = 6ms | 
+[20:00:20] [PING6] IPv6 Ping PASS
+[20:00:20] [PROC ] IPv6 Ping Test End
+[20:00:20] [PROC ] Ping Test End
+[20:00:20] LIN Test Start
+[20:00:28] [LIN  ] No Lin result found, treat as FAIL
+[20:00:36] [LIN  ] No Lin result found, treat as FAIL
+[20:00:44] [LIN  ] No Lin result found, treat as FAIL
+[20:00:52] [LIN  ] No Lin result found, treat as FAIL
+[20:00:52] CAN Test Start
+[20:01:00] [CAN  ] No CAN result found, treat as FAIL
+[20:01:08] [CAN  ] No CAN result found, treat as FAIL

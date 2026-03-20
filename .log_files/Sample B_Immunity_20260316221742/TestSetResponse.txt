@@ -1,0 +1,37 @@
+=== Test Start: 2026-03-16 22:17:42 ===
+[22:17:42] PV Mode: Report Structure Initialized.
+[22:17:42] [System] PV Report Enabled. (Mode: EMC/)
+[22:17:42] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\.Sample B_Immunity_20260316221742_details.tmp'
+[22:17:42] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[22:17:42] [MQTT ] Test Board Connection Pass
+[22:17:42] [MQTT ] Test Board Switch Pass:Front
+[22:17:42] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[22:17:42] [DoIP ] Ping ZCU: 192.168.5.1...
+[22:17:42] [DoIP ] ZCU Ping OK (192.168.5.1)
+[22:17:42] [DoIP ] Creating Session...
+[22:17:42] [DoIP ] ZCU Connected
+[22:17:42] [UDS  ] Session Ctrl: 4
+[22:17:43] [UDS  ] Session Control Pass
+[22:17:43] [PROC ] Get EMC Test Criteria
+[22:17:43] [PROC ] EMC Mode: IMM
+[22:17:43] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv
+[22:17:43] PV Mode: Report Structure Initialized.
+[22:17:43] [System] PV Report Enabled. (Mode: EMC/)
+[22:17:43] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\.Sample B_Immunity_20260316221742_details.tmp'
+[22:17:43] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[22:17:43] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv
+[22:18:52] PV Mode: Report Structure Initialized.
+[22:18:52] [System] PV Report Enabled. (Mode: EMC/)
+[22:18:52] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\.Sample B_Immunity_20260316221742_details.tmp'
+[22:18:52] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[22:18:52] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv
+[22:20:14] PV Mode: Report Structure Initialized.
+[22:20:14] [System] PV Report Enabled. (Mode: EMC/)
+[22:20:14] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\.Sample B_Immunity_20260316221742_details.tmp'
+[22:20:14] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[22:20:14] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv
+[22:21:17] PV Mode: Report Structure Initialized.
+[22:21:17] [System] PV Report Enabled. (Mode: EMC/)
+[22:21:17] [System] PV Report Paths: csv='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv', tmp='C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\.Sample B_Immunity_20260316221742_details.tmp'
+[22:21:17] [System] New Session. QTest: EMC, PrePV: , Loop: 4
+[22:21:17] PV Report saved successfully to: C:\Users\usr\Desktop\20260312_pcatp\Debug\Log_file\20260316\BOX_1\Sample B_Immunity_20260316221742\Sample B_Immunity_20260316221742.csv
