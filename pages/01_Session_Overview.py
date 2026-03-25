@@ -1,7 +1,7 @@
 """
 Page 1 — Session Overview
 ===========================
-Shows per-loop PASS/FAIL/BLOCK trends and test-item heatmap.
+Shows aggregate summary, per-loop PASS/FAIL/BLOCK trends and test-item heatmap.
 """
 import pandas as pd
 import plotly.express as px
@@ -18,8 +18,6 @@ from utils.chart_theme import light_layout
 
 session_data, _ = render_sidebar(show_loop_selector=False)
 
-st.title("Session Overview")
-
 if session_data is None:
     st.info("No session selected. Please import log files via **Import Sessions** and select a session from the sidebar.")
     st.stop()
@@ -32,13 +30,49 @@ if not loop_nums:
     st.stop()
 
 # ---------------------------------------------------------------------------
-# Per-loop stats table
+# Aggregate Summary (All Loops)
 # ---------------------------------------------------------------------------
-rows = []
+total_p = total_f = total_b = total_t = 0
 for ln in loop_nums:
     counts = compute_counts(loops[ln].get("results"))
-    rows.append({"Loop": ln, **counts})
-stats_df = pd.DataFrame(rows)
+    total_p += counts["passed"]
+    total_f += counts["failed"]
+    total_b += counts["blocked"]
+    total_t += counts["total"]
+
+render_metrics_card(total=total_t, passed=total_p, failed=total_f, blocked=total_b, title="")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# Per-Loop Summary table
+# ---------------------------------------------------------------------------
+st.subheader("Per-Loop Summary")
+rows = []
+for ln in loop_nums:
+    ldata = loops[ln]
+    hdr = ldata.get("header", {})
+    counts = compute_counts(ldata.get("results"))
+    rows.append({
+        "Loop":     ln,
+        "End Time": hdr.get("Test End Time", "—"),
+        "Total":    counts["total"],
+        "✅ Pass":   counts["passed"],
+        "❌ Fail":   counts["failed"],
+        "🚫 Block":  counts["blocked"],
+    })
+st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# Per-loop stats for charts
+# ---------------------------------------------------------------------------
+chart_rows = []
+for ln in loop_nums:
+    counts = compute_counts(loops[ln].get("results"))
+    chart_rows.append({"Loop": ln, **counts})
+stats_df = pd.DataFrame(chart_rows)
 
 # ---------------------------------------------------------------------------
 # Trend line chart
@@ -65,7 +99,7 @@ with st.container(border=True):
         xaxis=dict(title="Loop"),
         yaxis=dict(title="Count"),
     ))
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------------------------------
 # Overall donut chart for first loop with data
@@ -85,7 +119,7 @@ with col_donut:
             hole=0.45,
         )
         fig_pie.update_layout(**light_layout())
-        st.plotly_chart(fig_pie, width="stretch")
+        st.plotly_chart(fig_pie, use_container_width=True)
 
 with col_stats:
     render_metrics_card(
@@ -137,6 +171,6 @@ if heatmap_data and all_ids:
             coloraxis_showscale=False,
             height=max(400, len(all_ids) * 8),
         ))
-        st.plotly_chart(fig_heat, width="stretch")
+        st.plotly_chart(fig_heat, use_container_width=True)
 else:
     st.info("Not enough data for heatmap.")
