@@ -60,7 +60,5 @@ def render_sidebar(
         meta = session_data.get("header_meta", {})
         if meta.get("Test Mode"):
             st.sidebar.markdown(f"Test Mode: **{meta['Test Mode']}**")
-        if is_admin and owner:
-            st.sidebar.markdown(f"Owner: `{owner}`")
 
     return session_data, selected_loop

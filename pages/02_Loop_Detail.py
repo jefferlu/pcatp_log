@@ -22,7 +22,6 @@ from utils.failure_analysis import analyze_failures, ROOT_CAUSE_COLOR, ROOT_CAUS
 
 session_data, selected_loop = render_sidebar(show_loop_selector=True)
 
-st.title("Loop Detail")
 
 if session_data is None or selected_loop is None:
     st.info("Select a session and loop from the sidebar.")
@@ -37,19 +36,6 @@ loop_data = loops[selected_loop]
 results_df = loop_data.get("results", pd.DataFrame())
 legacy_df  = loop_data.get("legacy",  pd.DataFrame())
 header     = loop_data.get("header",  {})
-
-# ---------------------------------------------------------------------------
-# Header info
-# ---------------------------------------------------------------------------
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("Loop", selected_loop)
-with col2:
-    st.metric("End Time", header.get("Test End Time", "—"))
-with col3:
-    st.metric("Mode", header.get("Test Mode", "—"))
-
-st.divider()
 
 # ---------------------------------------------------------------------------
 # Summary metrics
@@ -188,7 +174,7 @@ else:
         hide_index=True,
         use_container_width=True,
         column_config={
-            "Test ID":      st.column_config.NumberColumn("ID",       width=60),
+            "Test ID":      st.column_config.NumberColumn("Monitor ID", width=80),
             "Category":     st.column_config.TextColumn("Category",   width=160),
             "Test Name":    st.column_config.TextColumn("Test Name",  width=130),
             "Sub Item":     st.column_config.TextColumn("Sub Item",   width=180),

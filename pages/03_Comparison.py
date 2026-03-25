@@ -16,7 +16,6 @@ from utils.chart_theme import light_layout
 
 session_data, _ = render_sidebar(show_loop_selector=False)
 
-st.title("Comparison")
 
 if session_data is None:
     st.info("No session selected. Please import log files via **Import Sessions** and select a session from the sidebar.")
