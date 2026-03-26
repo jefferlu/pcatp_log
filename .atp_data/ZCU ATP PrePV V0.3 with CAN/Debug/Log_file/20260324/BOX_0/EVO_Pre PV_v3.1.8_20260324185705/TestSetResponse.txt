@@ -1,0 +1,6 @@
+=== Test Start: 2026-03-24 18:57:05 ===
+[18:57:05] PV Mode: Report Structure Initialized.
+[18:57:05] [System] PV Report Enabled. (Mode: EMC/)
+[18:57:05] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260324\BOX_0\EVO_Pre PV_v3.1.8_20260324185705\EVO_Pre PV_v3.1.8_20260324185705.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260324\BOX_0\EVO_Pre PV_v3.1.8_20260324185705\.EVO_Pre PV_v3.1.8_20260324185705_details.tmp'
+[18:57:05] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[18:57:05] [MQTT ] Test Board Connection Pass

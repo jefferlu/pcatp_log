@@ -1,0 +1,25 @@
+=== Test Start (Loop 1): 2026-03-18 11:46:26 ===
+[11:46:26] [System] PV Rows Reset for Loop 1, Mode=SUMMER DRIVING CONSTANT
+[11:46:26] [Info ] *************  Information  ***************
+[11:46:26] [Info ] Project Name  = Cabin
+[11:46:26] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[11:46:26] [Info ] Box  Index    = 00
+[11:46:26] [Info ] Serial Number = TEST
+[11:46:26] [Info ] Driving Mode  = SUMMER DRIVING CONSTANT
+[11:46:26] [Info ] Loop Number   = 1
+[11:46:26] [Info ] *************  Information  ***************
+[11:46:26] [PROC ] PrePV Test Start
+[11:46:26] [MQTT] Set All Analog Type-1 Pins with 5V
+[11:46:26] [MQTT] Set All Analog Type-2 IAN_43 Pin with 5V
+[11:46:26] [MQTT] Set All Analog Type-2 Group 0 Pins with 5V
+[11:46:26] [MQTT] Set All DIN Pins with High Level
+[11:46:26] [MQTT] Set All ITK Pins with Cross Mode
+[11:46:26] Pre PV Test - Monitoring Enable Start
+[11:46:34] [UDS] Send PV_SetOperationMode Timeout RID:A001, Type:03, Payload:02
+[11:46:34] [PROC] Pre PV Test - Monitoring Enable Control Fail
+[11:46:34] Pre PV Test - Monitoring Enable End
+[11:46:54] [PrePV] Error: Timeout - No data received in 20 seconds.
+[11:46:54] [DoIP ] PrePV timeout -> try reconnect ZCU for 120s
+[11:46:54] [DoIP ] Ping ZCU: 192.168.5.1...
+[11:46:54] [DoIP ] ZCU Ping OK (192.168.5.1)
+[11:46:54] [DoIP ] Creating Session...

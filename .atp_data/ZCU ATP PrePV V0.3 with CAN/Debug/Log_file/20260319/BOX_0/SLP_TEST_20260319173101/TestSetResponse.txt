@@ -1,0 +1,11 @@
+=== Test Start: 2026-03-19 17:31:01 ===
+[17:31:01] PV Mode: Report Structure Initialized.
+[17:31:01] [System] PV Report Enabled. (Mode: EMC/)
+[17:31:01] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\SLP_TEST_20260319173101\SLP_TEST_20260319173101.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\SLP_TEST_20260319173101\.SLP_TEST_20260319173101_details.tmp'
+[17:31:01] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:31:10] [MQTT ] Test Board Connection Pass
+[17:31:10] [MQTT ] Test Board Switch Pass:Cabin
+[17:31:11] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[17:31:11] [FAIL ] BurnInResult=FAIL, Reason: TB Version Check Fail : C-TestBoard-FACTORY-5.4.3
+[17:31:11] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\SLP_TEST_20260319173101\SLP_TEST_20260319173101.csv
+[17:31:11] SLP_TEST Test PASS

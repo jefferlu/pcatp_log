@@ -1,0 +1,16 @@
+=== Test Start: 2026-03-25 14:20:22 ===
+[14:20:49] PV Mode: Report Structure Initialized.
+[14:20:49] [System] PV Report Enabled. (Mode: EMC/)
+[14:20:49] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\.EVO_PrePV IMMC_20260325142022_details.tmp'
+[14:20:49] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[14:20:49] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv
+[14:22:24] PV Mode: Report Structure Initialized.
+[14:22:24] [System] PV Report Enabled. (Mode: EMC/)
+[14:22:24] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\.EVO_PrePV IMMC_20260325142022_details.tmp'
+[14:22:24] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[14:22:24] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv
+[14:23:59] PV Mode: Report Structure Initialized.
+[14:23:59] [System] PV Report Enabled. (Mode: EMC/)
+[14:23:59] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\.EVO_PrePV IMMC_20260325142022_details.tmp'
+[14:23:59] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[14:23:59] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\EVO_PrePV IMMC_20260325142022\EVO_PrePV IMMC_20260325142022.csv

@@ -1,0 +1,25 @@
+=== Test Start: 2026-03-25 15:02:29 ===
+[15:02:29] PV Mode: Report Structure Initialized.
+[15:02:29] [System] PV Report Enabled. (Mode: EMC/)
+[15:02:29] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\_20260325150229\_20260325150229.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\_20260325150229\._20260325150229_details.tmp'
+[15:02:29] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[15:02:53] [Info ] *************  Information  ***************
+[15:02:53] [Info ] Project Name  = Cabin
+[15:02:53] [Info ] SW Version    = C-TestProgram-PrePV-V0.3(Test)
+[15:02:53] [Info ] Box  Index    = 00
+[15:02:53] [Info ] Serial Number = test
+[15:02:53] [Info ] *************  Information  ***************
+[15:02:53] [MQTT ] Test Board Connection Pass
+[15:02:53] [MQTT ] Test Board Switch Pass:Cabin
+[15:02:54] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[15:02:54] [DoIP ] Ping ZCU: 192.168.5.1...
+[15:02:54] [DoIP ] ZCU Ping OK (192.168.5.1)
+[15:02:54] [DoIP ] Creating Session...
+[15:02:54] [DoIP ] SetUDS_Callbacks...
+[15:02:54] [DoIP ] ZCU Connected
+[15:02:54] [UDS  ] Session Ctrl: 4
+[15:02:54] [UDS  ] Session Control Pass
+[15:02:54] [UDS  ] ZCU SW Version:V3.1.8
+[15:02:54] [PROC ] Get EMC Test Criteria
+[15:02:54] [PROC ] EMC Mode: IMM
+[15:02:55] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\_20260325150229\_20260325150229.csv

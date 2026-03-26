@@ -1,0 +1,18 @@
+=== Test Start: 2026-03-19 09:49:15 ===
+[09:49:15] PV Mode: Report Structure Initialized.
+[09:49:15] [System] PV Report Enabled. (Mode: EMC/)
+[09:49:15] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\NEW_CRITERIA_20260319094915\NEW_CRITERIA_20260319094915.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\NEW_CRITERIA_20260319094915\.NEW_CRITERIA_20260319094915_details.tmp'
+[09:49:15] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[09:49:15] [MQTT ] Test Board Connection Pass
+[09:49:16] [MQTT ] Test Board Switch Pass:Cabin
+[09:49:16] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[09:49:16] [DoIP ] Ping ZCU: 192.168.5.1...
+[09:49:16] [DoIP ] ZCU Ping OK (192.168.5.1)
+[09:49:16] [DoIP ] Creating Session...
+[09:49:16] [DoIP ] SetUDS_Callbacks...
+[09:49:16] [DoIP ] ZCU Connected
+[09:49:16] [UDS  ] Session Ctrl: 4
+[09:49:16] [UDS  ] Session Control Pass
+[09:49:16] [UDS  ] ZCU SW Version:V3.1.8
+[09:49:16] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\NEW_CRITERIA_20260319094915\NEW_CRITERIA_20260319094915.csv
+[09:49:16] NEW_CRITERIA Test PASS
