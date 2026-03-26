@@ -160,7 +160,7 @@ pg = st.navigation(
             st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
         ],
         "Tools": [
-            
+            st.Page("pages/04_Criteria_Tuning.py", title="Criteria Tuning", icon=":material/tune:"),
         ]
     }
 )

@@ -31,12 +31,20 @@ def render_sidebar(
     # Only shown when there are 2+ distinct non-empty log types in the session list.
     _available_types = sorted({s["log_type"] for s in sessions if s.get("log_type")})
     if len(_available_types) >= 2:
+        _persisted_type = st.session_state.get("_sidebar_log_type")
+        _type_index = (
+            _available_types.index(_persisted_type)
+            if _persisted_type in _available_types
+            else 0
+        )
         selected_type = st.sidebar.radio(
             "Type",
             _available_types,
+            index=_type_index,
             horizontal=True,
             key="sidebar_log_type",
         )
+        st.session_state["_sidebar_log_type"] = selected_type
         filtered_sessions = [s for s in sessions if s.get("log_type") == selected_type]
         if not filtered_sessions:
             filtered_sessions = sessions
