@@ -87,13 +87,21 @@ def _aggregate_failures(
             actual_str = str(row.get("Actual", ""))
             limit_str  = str(row.get("Limit",  ""))
 
-            a_m = re.match(r"([\d.]+)\s*~\s*([\d.]+)", actual_str)
+            # limit is always "lo ~ hi"
             l_m = re.match(r"([\d.]+)\s*~\s*([\d.]+)", limit_str)
-            if not a_m or not l_m:
+            if not l_m:
                 continue
 
-            act_min = float(a_m.group(1))
-            act_max = float(a_m.group(2))
+            # actual can be "lo ~ hi" (range) or "Avg: X" (single point)
+            a_range = re.match(r"([\d.]+)\s*~\s*([\d.]+)", actual_str)
+            a_avg   = re.search(r"Avg:\s*([\d.]+)", actual_str)
+            if a_range:
+                act_min = float(a_range.group(1))
+                act_max = float(a_range.group(2))
+            elif a_avg:
+                act_min = act_max = float(a_avg.group(1))
+            else:
+                continue
 
             # Try Sub Item first, then Test Name
             matched_norm = None
