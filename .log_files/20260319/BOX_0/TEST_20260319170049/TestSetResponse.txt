@@ -1,0 +1,69 @@
+=== Test Start: 2026-03-19 17:00:49 ===
+[17:00:49] PV Mode: Report Structure Initialized.
+[17:00:49] [System] PV Report Enabled. (Mode: EMC/)
+[17:00:49] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:00:49] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:00:49] [MQTT ] Test Board Connection Pass
+[17:00:49] [MQTT ] Test Board Switch Pass:Cabin
+[17:00:49] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.1
+[17:00:49] [DoIP ] Ping ZCU: 192.168.5.1...
+[17:00:49] [DoIP ] ZCU Ping OK (192.168.5.1)
+[17:00:49] [DoIP ] Creating Session...
+[17:00:49] [DoIP ] SetUDS_Callbacks...
+[17:00:49] [DoIP ] ZCU Connected
+[17:00:50] [UDS  ] Session Ctrl: 4
+[17:00:50] [UDS  ] Session Control Pass
+[17:00:50] [UDS  ] ZCU SW Version:V3.6.0
+[17:00:50] [PROC ] Get EMC Test Criteria
+[17:00:50] [PROC ] EMC Mode: MIN
+[17:01:14] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:01:14] PV Mode: Report Structure Initialized.
+[17:01:14] [System] PV Report Enabled. (Mode: EMC/)
+[17:01:14] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:01:14] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:01:14] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:01:43] PV Mode: Report Structure Initialized.
+[17:01:43] [System] PV Report Enabled. (Mode: EMC/)
+[17:01:43] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:01:43] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[17:01:43] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:02:16] PV Mode: Report Structure Initialized.
+[17:02:16] [System] PV Report Enabled. (Mode: EMC/)
+[17:02:16] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:02:16] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[17:02:16] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:02:46] PV Mode: Report Structure Initialized.
+[17:02:46] [System] PV Report Enabled. (Mode: EMC/)
+[17:02:46] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:02:46] [System] New Session. QTest: EMC, PrePV: , Loop: 4
+[17:02:46] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:03:13] PV Mode: Report Structure Initialized.
+[17:03:13] [System] PV Report Enabled. (Mode: EMC/)
+[17:03:13] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:03:13] [System] New Session. QTest: EMC, PrePV: , Loop: 5
+[17:03:13] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:03:40] PV Mode: Report Structure Initialized.
+[17:03:40] [System] PV Report Enabled. (Mode: EMC/)
+[17:03:40] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:03:40] [System] New Session. QTest: EMC, PrePV: , Loop: 6
+[17:03:40] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:04:08] PV Mode: Report Structure Initialized.
+[17:04:08] [System] PV Report Enabled. (Mode: EMC/)
+[17:04:08] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:04:08] [System] New Session. QTest: EMC, PrePV: , Loop: 7
+[17:04:08] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:04:38] PV Mode: Report Structure Initialized.
+[17:04:38] [System] PV Report Enabled. (Mode: EMC/)
+[17:04:38] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:04:38] [System] New Session. QTest: EMC, PrePV: , Loop: 8
+[17:04:38] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:05:05] PV Mode: Report Structure Initialized.
+[17:05:05] [System] PV Report Enabled. (Mode: EMC/)
+[17:05:05] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:05:05] [System] New Session. QTest: EMC, PrePV: , Loop: 9
+[17:05:05] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv
+[17:05:30] PV Mode: Report Structure Initialized.
+[17:05:30] [System] PV Report Enabled. (Mode: EMC/)
+[17:05:30] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\.TEST_20260319170049_details.tmp'
+[17:05:30] [System] New Session. QTest: EMC, PrePV: , Loop: 10
+[17:05:30] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319170049\TEST_20260319170049.csv

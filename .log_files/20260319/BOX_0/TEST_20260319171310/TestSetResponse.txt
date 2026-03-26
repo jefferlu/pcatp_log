@@ -1,0 +1,36 @@
+=== Test Start: 2026-03-19 17:13:10 ===
+[17:13:10] PV Mode: Report Structure Initialized.
+[17:13:10] [System] PV Report Enabled. (Mode: EMC/)
+[17:13:10] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\.TEST_20260319171310_details.tmp'
+[17:13:10] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:13:19] [UDP Server] Started on 0.0.0.0:1000
+[17:13:19] [Info ] *************  Information  ***************
+[17:13:19] [Info ] Project Name  = Cabin
+[17:13:19] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[17:13:19] [Info ] Box  Index    = 00
+[17:13:19] [Info ] Serial Number = TEST
+[17:13:19] [Info ] *************  Information  ***************
+[17:13:19] [MQTT ] Test Board Connection Pass
+[17:13:19] [MQTT ] Test Board Switch Pass:Cabin
+[17:13:19] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.1
+[17:13:19] [DoIP ] Ping ZCU: 192.168.5.1...
+[17:13:19] [DoIP ] ZCU Ping OK (192.168.5.1)
+[17:13:19] [DoIP ] Creating Session...
+[17:13:19] [DoIP ] SetUDS_Callbacks...
+[17:13:19] [DoIP ] ZCU Connected
+[17:13:19] [UDS  ] Session Ctrl: 4
+[17:13:20] [UDS  ] Session Control Pass
+[17:13:20] [UDS  ] ZCU SW Version:V3.6.0
+[17:13:20] [PROC ] Get EMC Test Criteria
+[17:13:20] [PROC ] EMC Mode: EMM
+[17:13:42] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv
+[17:13:42] PV Mode: Report Structure Initialized.
+[17:13:42] [System] PV Report Enabled. (Mode: EMC/)
+[17:13:42] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\.TEST_20260319171310_details.tmp'
+[17:13:42] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[17:13:42] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv
+[17:14:11] PV Mode: Report Structure Initialized.
+[17:14:11] [System] PV Report Enabled. (Mode: EMC/)
+[17:14:11] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\.TEST_20260319171310_details.tmp'
+[17:14:11] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[17:14:11] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260319\BOX_0\TEST_20260319171310\TEST_20260319171310.csv

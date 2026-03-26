@@ -19,6 +19,9 @@ import pandas as pd
 _RANGE_RE = re.compile(
     r"Min:([\d.Ee+\-]+)\s+Max:([\d.Ee+\-]+)\s*\|\s*Limit\[([\d.Ee+\-]+)~([\d.Ee+\-]+)\]"
 )
+_AVG_LIMIT_RE = re.compile(
+    r"Avg:([\d.Ee+\-]+)\s*\|\s*Limit\[([\d.Ee+\-]+)~([\d.Ee+\-]+)\]"
+)
 _CMP_RE = re.compile(r"Cur:([\d.Ee+\-]+)\s*\|\s*Exp:([\d.Ee+\-]+)")
 
 
@@ -32,6 +35,14 @@ def _parse_value(value_str: str) -> dict:
             "max_val":  float(m.group(2)),
             "lo_limit": float(m.group(3)),
             "hi_limit": float(m.group(4)),
+        }
+    m = _AVG_LIMIT_RE.search(s)
+    if m:
+        return {
+            "type":     "avg_limit",
+            "avg_val":  float(m.group(1)),
+            "lo_limit": float(m.group(2)),
+            "hi_limit": float(m.group(3)),
         }
     m = _CMP_RE.search(s)
     if m:
@@ -58,22 +69,34 @@ def _classify_root_cause(result: str, parsed: dict, category: str = "") -> str:
         if under:
             return "Out of Range (Low)"
         return "Out of Range"
+    if parsed["type"] == "avg_limit":
+        avg = parsed["avg_val"]
+        lo, hi = parsed["lo_limit"], parsed["hi_limit"]
+        if avg > hi:
+            return "Out of Range (High)"
+        if avg < lo:
+            return "Out of Range (Low)"
+        return "Out of Range"
     if parsed["type"] == "compare":
         return "Value Mismatch"
     return "Unknown"
 
 
 def _format_deviation(parsed: dict) -> str:
-    if parsed["type"] != "range":
-        return ""
-    mn, mx = parsed["min_val"], parsed["max_val"]
-    lo, hi = parsed["lo_limit"], parsed["hi_limit"]
-    if hi != 0 and mx > hi:
-        pct = (mx - hi) / hi * 100
-        return f"+{pct:.1f}%"
-    if lo != 0 and mn < lo:
-        pct = (lo - mn) / lo * 100
-        return f"-{pct:.1f}%"
+    if parsed["type"] == "range":
+        mn, mx = parsed["min_val"], parsed["max_val"]
+        lo, hi = parsed["lo_limit"], parsed["hi_limit"]
+        if hi != 0 and mx > hi:
+            return f"+{(mx - hi) / hi * 100:.1f}%"
+        if lo != 0 and mn < lo:
+            return f"-{(lo - mn) / lo * 100:.1f}%"
+    if parsed["type"] == "avg_limit":
+        avg = parsed["avg_val"]
+        lo, hi = parsed["lo_limit"], parsed["hi_limit"]
+        if hi != 0 and avg > hi:
+            return f"+{(avg - hi) / hi * 100:.1f}%"
+        if lo != 0 and avg < lo:
+            return f"-{(lo - avg) / lo * 100:.1f}%"
     return ""
 
 
@@ -246,6 +269,9 @@ def analyze_failures(
 
         if parsed["type"] == "range":
             actual    = f"{parsed['min_val']:.1f} ~ {parsed['max_val']:.1f}"
+            limit_str = f"{parsed['lo_limit']:.1f} ~ {parsed['hi_limit']:.1f}"
+        elif parsed["type"] == "avg_limit":
+            actual    = f"Avg: {parsed['avg_val']:.2f}"
             limit_str = f"{parsed['lo_limit']:.1f} ~ {parsed['hi_limit']:.1f}"
         elif parsed["type"] == "compare":
             actual    = str(parsed["cur_val"])

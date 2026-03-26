@@ -1,0 +1,259 @@
+=== Test Start (Loop 2): 2026-03-24 18:40:28 ===
+[18:40:28] [System] PV Rows Reset for Loop 2, Mode=IMMA
+[18:40:28] [Info ] *************  Information  ***************
+[18:40:28] [Info ] Project Name  = Cabin
+[18:40:28] [Info ] SW Version    = C-TestProgram-PrePV-V0.3(Test)
+[18:40:28] [Info ] Box  Index    = 00
+[18:40:28] [Info ] Serial Number = EVO_Pre PV_v3.1.8_IMMA
+[18:40:28] [Info ] EMC Mode  = IMM Mode A
+[18:40:28] [Info ] Loop Number   = 2
+[18:40:28] [Info ] *************  Information  ***************
+[18:40:28] [PROC ] EMC IMM Test Start
+[18:40:28] [MQTT] Set All Analog Type-1 Pins with 5V
+[18:40:28] [MQTT] Set All Analog Type-2 IAN_43 Pin with 5V
+[18:40:28] [MQTT] Set All Analog Type-2 Group 1 Pins with 5V
+[18:40:28] [MQTT] Set All DIN Pins with High Level
+[18:40:28] [MQTT] Set All ITK Pins with Cross Mode
+[18:40:28] LIN Test Start
+[18:40:29] [MSG  ] TestItem: lin, Channel: 01--, Result: PASS
+[18:40:31] [MSG  ] TestItem: lin, Channel: 03--, Result: PASS
+[18:40:32] [MSG  ] TestItem: lin, Channel: 04--, Result: PASS
+[18:40:51] [MSG  ] TestItem: lin, Channel: 08--, Result: FAIL
+[18:40:53] [MSG  ] TestItem: lin, Channel: 09--, Result: PASS
+[18:40:53] LIN Test End
+[18:40:53] CAN Test Start
+[18:40:56] [MSG  ] TestItem: can, Channel: 02--, Result: FAIL
+[18:40:56] [CAN  ] FAIL detected (CAN02--), retry 1/5
+[18:40:58] [MSG  ] TestItem: can, Channel: 02--, Result: FAIL
+[18:40:58] [CAN  ] FAIL detected (CAN02--), retry 2/5
+[18:41:01] [MSG  ] TestItem: can, Channel: 02--, Result: FAIL
+[18:41:01] [CAN  ] FAIL detected (CAN02--), retry 3/5
+[18:41:03] [MSG  ] TestItem: can, Channel: 02--, Result: FAIL
+[18:41:03] [CAN  ] FAIL detected (CAN02--), retry 4/5
+[18:41:06] [MSG  ] TestItem: can, Channel: 02--, Result: FAIL
+[18:41:06] [CAN  ] FAIL detected (CAN02--), retry 5/5
+[18:41:06] [CAN ] FAIL exceed MAX retry, end test.
+[18:41:14] [CAN  ] No CAN result found, treat as FAIL
+[18:41:21] [CAN  ] No CAN result found, treat as FAIL
+[18:41:24] [MSG  ] TestItem: can, Channel: 05--, Result: PASS
+[18:41:32] [CAN  ] No CAN result found, treat as FAIL
+[18:41:40] [CAN  ] No CAN result found, treat as FAIL
+[18:41:42] [MSG  ] TestItem: can, Channel: WK--, Result: PASS
+[18:41:45] [MSG  ] TestItem: can, Channel: VA--, Result: PASS
+[18:41:48] [MSG  ] TestItem: can, Channel: 12--, Result: FAIL
+[18:41:48] [CAN  ] FAIL detected (CAN12--), retry 1/5
+[18:41:50] [MSG  ] TestItem: can, Channel: 12--, Result: FAIL
+[18:41:50] [CAN  ] FAIL detected (CAN12--), retry 2/5
+[18:41:53] [MSG  ] TestItem: can, Channel: 12--, Result: FAIL
+[18:41:53] [CAN  ] FAIL detected (CAN12--), retry 3/5
+[18:41:56] [MSG  ] TestItem: can, Channel: 12--, Result: FAIL
+[18:41:56] [CAN  ] FAIL detected (CAN12--), retry 4/5
+[18:41:58] [MSG  ] TestItem: can, Channel: 12--, Result: FAIL
+[18:41:58] [CAN  ] FAIL detected (CAN12--), retry 5/5
+[18:41:58] [CAN ] FAIL exceed MAX retry, end test.
+[18:41:58] Pre PV Test - Monitoring Enable Start
+[18:41:59] [PROC] Pre PV Test - Monitoring Enable Control Succeess
+[18:41:59] Pre PV Test - Monitoring Enable End
+[18:42:04] [UDP Data] ID:03 (CAN02) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:04 (CAN03) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:05 (CAN04) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:06 (CAN05) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:07 (CAN06) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:08 (CAN13) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:02 (COM_FD_CAN_VEH_ACCESS) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:01 (COM_FD_CAN_WAKE) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:A8 (Unknown) | Cur:-3.145859E+38 Avg:-3.145859E+38 Min:-3.145859E+38 Max:-3.145859E+38
+[18:42:04] [UDP Data] ID:AB (Unknown) | Cur:2.509726E-42 Avg:2.509726E-42 Min:2.509726E-42 Max:2.509726E-42
+[18:42:04] [UDP Data] ID:AA (Flash CRC) | RawData:FE-A8-A8-21-F8-4D-19-A4-00-5A-64-B3-FE-A8-A8-21
+[18:42:04] [UDP Data] ID:A9 (Flash ID) | RawData:00-01-60-18-00-01-60-18-00-01-60-18-00-01-60-18
+[18:42:04] [UDP Data] ID:15 (IAN_02 ANA_IN_02) | Cur:5073 Avg:5077.05 Min:5073 Max:5079
+[18:42:04] [UDP Data] ID:16 (Unknown) | Cur:35 Avg:35 Min:35 Max:35
+[18:42:04] [UDP Data] ID:19 (IAN_12 ANA_IN_18) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:1D (IAN_18 ANA_IN_07) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:1A (IAN_20 ANA_IN_22) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:1E (IAN_21 ANA_IN_23) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:18 (IAN_24 ANA_IN_26) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:1B (IAN_28 ANA_IN_28) | Cur:5079 Avg:5078.625 Min:5073 Max:5079
+[18:42:04] [UDP Data] ID:1C (IAN_29 ANA_IN_29) | Cur:5073 Avg:5075.175 Min:5073 Max:5079
+[18:42:04] [UDP Data] ID:13 (Unknown) | Cur:5771 Avg:5774.225 Min:5771 Max:5777
+[18:42:04] [UDP Data] ID:29 (ID_01  DIG_IN_01) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:2A (Unknown) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:28 (Unknown) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:2B (ID_08  DIG_IN_05) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:27 (ID_09  DIG_IN_06) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:2C (ID_16  DIG_IN_11) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:37 (ID_22  DIG_IN_15) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:31 (ID_23  DIG_IN_22) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3B (ID_26  DIG_IN_25) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3E (ID_28  DIG_IN_26) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:40 (ID_29  DIG_IN_27) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3C (ID_30  DIG_IN_16) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:30 (ID_31 DIG_IN_28) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3A (Unknown) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:34 (Unknown) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:41 (ID_34  DIG_IN_31) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3F (ID_35  DIG_IN_32) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:2E (Unknown) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:2D (Unknown) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:39 (ID_39  DIG_IN_34) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:38 (ID_40  DIG_IN_35) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:3D (ID_41  DIG_IN_36) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:36 (ID_42  DIG_IN_37) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:35 (ID_43  DIG_IN_38) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:33 (ID_44  DIG_IN_39) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:32 (ID_45  DIG_IN_40) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:2F (ID_46  DIG_IN_19) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:09 (Interlock Return) | Cur:59 Avg:59.6375 Min:57 Max:61
+[18:42:04] [FAIL] Interlock Return (0x09): Avg (59.6375) Out of Range (2880~3520)
+[18:42:04] [UDP Data] ID:0A (Interlock Source) | Cur:5000 Avg:5000 Min:5000 Max:5000
+[18:42:04] [FAIL] Interlock Source (0x0A): Avg (5000) Out of Range (3150~3850)
+[18:42:04] [UDP Data] ID:0D (KL30_BL) | Cur:2332 Avg:2349.225 Min:2317 Max:2386
+[18:42:04] [UDP Data] ID:0E (KL30_RD) | Cur:2331 Avg:2347.55 Min:2315 Max:2385
+[18:42:04] [UDP Data] ID:0C (KL30_Y) | Cur:2357 Avg:2373.737 Min:2339 Max:2411
+[18:42:04] [UDP Data] ID:23 (IAN_15 ANA_IN_19) | Cur:371 Avg:371.125 Min:370 Max:372
+[18:42:04] [FAIL] IAN_15 ANA_IN_19 (0x23): Avg (371.125) Out of Range (4500~5500)
+[18:42:04] [UDP Data] ID:24 (IAN_16 ANA_IN_20) | Cur:371 Avg:371.5875 Min:371 Max:374
+[18:42:04] [FAIL] IAN_16 ANA_IN_20 (0x24): Avg (371.5875) Out of Range (4500~5500)
+[18:42:04] [UDP Data] ID:21 (IAN_38 ANA_IN_10) | Cur:5000 Avg:5000 Min:5000 Max:5000
+[18:42:04] [UDP Data] ID:1F (IAN_41 ANA_IN_12) | Cur:5000 Avg:5000 Min:5000 Max:5000
+[18:42:04] [UDP Data] ID:20 (Unknown) | Cur:5000 Avg:5000 Min:5000 Max:5000
+[18:42:04] [UDP Data] ID:22 (ID_37  DIG_IN_18) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:10 (NTC_1) | Cur:2234 Avg:2331.85 Min:2234 Max:2495
+[18:42:04] [UDP Data] ID:11 (NTC_2) | Cur:2501 Avg:2520.612 Min:2501 Max:2552
+[18:42:04] [UDP Data] ID:99 (ODHE_09_EFUSE_5) | Cur:10 Avg:9.320987 Min:7 Max:11
+[18:42:04] [UDP Data] ID:9A (ODHE_10_EFUSE_8) | Cur:7 Avg:8.209876 Min:7 Max:11
+[18:42:04] [UDP Data] ID:9B (ODHE_13_EFUSE_26) | Cur:4 Avg:3.580247 Min:2 Max:5
+[18:42:04] [FAIL] ODHE_13_EFUSE_26 (0x9B): Avg (3.580247) Out of Range (90.9~200.2)
+[18:42:04] [UDP Data] ID:9C (ODHE_14_EFUSE_3) | Cur:13 Avg:11.75309 Min:11 Max:13
+[18:42:04] [UDP Data] ID:9D (ODHE_16_EFUSE_12) | Cur:10 Avg:8.9625 Min:7 Max:11
+[18:42:04] [UDP Data] ID:9E (ODHE_17_EFUSE_15) | Cur:18 Avg:18.22222 Min:17 Max:20
+[18:42:04] [FAIL] ODHE_17_EFUSE_15 (0x9E): Avg (18.22222) Out of Range (317.7~717.2)
+[18:42:04] [UDP Data] ID:9F (ODHE_20_EFUSE_13) | Cur:10 Avg:8 Min:7 Max:11
+[18:42:04] [UDP Data] ID:A0 (ODHE_21_EFUSE_16) | Cur:10 Avg:9 Min:7 Max:11
+[18:42:04] [UDP Data] ID:A1 (ODHE_24_EFUSE_14) | Cur:18 Avg:18.025 Min:17 Max:20
+[18:42:04] [FAIL] ODHE_24_EFUSE_14 (0xA1): Avg (18.025) Out of Range (194.4~435.6)
+[18:42:04] [UDP Data] ID:A2 (ODHE_25_EFUSE_17) | Cur:12 Avg:11.75309 Min:11 Max:13
+[18:42:04] [UDP Data] ID:A3 (ODHE_26_EFUSE_20) | Cur:18 Avg:17.95062 Min:17 Max:20
+[18:42:04] [UDP Data] ID:A4 (ODHE_27_EFUSE_23) | Cur:7 Avg:9.222221 Min:6 Max:12
+[18:42:04] [UDP Data] ID:A5 (ODHE_29_EFUSE_10) | Cur:7 Avg:8.320987 Min:6 Max:11
+[18:42:04] [UDP Data] ID:98 (ODHE_30_EFUSE_4) | Cur:10 Avg:9.28395 Min:7 Max:11
+[18:42:04] [UDP Data] ID:97 (ODHE_31_EFUSE_1) | Cur:10 Avg:8.765431 Min:7 Max:11
+[18:42:04] [UDP Data] ID:A6 (ODHE_33_EFUSE_9) | Cur:18 Avg:18.07407 Min:17 Max:20
+[18:42:04] [UDP Data] ID:43 (ODH_03_HSD_H5_0) | Cur:10 Avg:9.15 Min:7 Max:10
+[18:42:04] [UDP Data] ID:4D (ODH_04_HSD_H4_4) | Cur:470 Avg:127.2562 Min:4 Max:470
+[18:42:04] [FAIL] ODH_04_HSD_H4_4 (0x4D): Avg (127.2562) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:5A (ODH_06_HSD_H1_5) | Cur:10 Avg:10.43902 Min:7 Max:12
+[18:42:04] [UDP Data] ID:56 (ODH_07_HSD_H1_1) | Cur:10 Avg:8.121951 Min:7 Max:11
+[18:42:04] [UDP Data] ID:57 (ODH_08_HSD_H1_0) | Cur:9 Avg:12.22752 Min:6 Max:731
+[18:42:04] [FAIL] ODH_08_HSD_H1_0 (0x57): Avg (12.22752) Out of Range (427.5~947.1)
+[18:42:04] [UDP Data] ID:58 (ODH_09_HSD_H1_2) | Cur:7 Avg:8.799999 Min:6 Max:12
+[18:42:04] [UDP Data] ID:59 (ODH_10_HSD_H1_3) | Cur:11 Avg:9.549999 Min:7 Max:12
+[18:42:04] [UDP Data] ID:5F (ODH_14_HSD_H3_3) | Cur:9 Avg:9.365853 Min:7 Max:11
+[18:42:04] [FAIL] ODH_14_HSD_H3_3 (0x5F): Avg (9.365853) Out of Range (129.6~316.8)
+[18:42:04] [UDP Data] ID:5C (ODH_16_HSD_H3_1) | Cur:7 Avg:8.219512 Min:6 Max:10
+[18:42:04] [UDP Data] ID:5D (ODH_18_HSD_H3_4) | Cur:10 Avg:8.463414 Min:7 Max:10
+[18:42:04] [UDP Data] ID:63 (ODH_19_HSD_H6_2) | Cur:2 Avg:2.04878 Min:2 Max:4
+[18:42:04] [UDP Data] ID:64 (ODH_21_HSD_H6_3) | Cur:2 Avg:2.2 Min:1 Max:4
+[18:42:04] [FAIL] ODH_21_HSD_H6_3 (0x64): Avg (2.2) Out of Range (142.2~316.8)
+[18:42:04] [UDP Data] ID:61 (ODH_23_HSD_H6_0) | Cur:2 Avg:2.146341 Min:2 Max:4
+[18:42:04] [UDP Data] ID:67 (ODH_30_HSD_H2_3) | Cur:10 Avg:9.780487 Min:7 Max:11
+[18:42:04] [UDP Data] ID:6A (ODH_32_HSD_H2_0) | Cur:6 Avg:8.756097 Min:6 Max:11
+[18:42:04] [UDP Data] ID:6D (ODH_33_HSD_D25_1) | Cur:7 Avg:7.8875 Min:6 Max:10
+[18:42:04] [UDP Data] ID:53 (ODH_38_HSD_D23_0) | Cur:2 Avg:2 Min:1 Max:4
+[18:42:04] [FAIL] ODH_38_HSD_D23_0 (0x53): Avg (2) Out of Range (250.2~557.7)
+[18:42:04] [UDP Data] ID:54 (ODH_40_HSD_D23_1) | Cur:2 Avg:2.05 Min:1 Max:4
+[18:42:04] [UDP Data] ID:49 (ODH_41_HSD_H4_0) | Cur:464 Avg:111.6707 Min:5 Max:469
+[18:42:04] [FAIL] ODH_41_HSD_H4_0 (0x49): Avg (111.6707) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:47 (ODH_42_HSD_H5_4) | Cur:10 Avg:7.756097 Min:7 Max:10
+[18:42:04] [UDP Data] ID:48 (ODH_43_HSD_H5_5) | Cur:10 Avg:8.146341 Min:6 Max:11
+[18:42:04] [UDP Data] ID:68 (ODH_44_HSD_H2_2) | Cur:10 Avg:8.658536 Min:6 Max:11
+[18:42:04] [UDP Data] ID:42 (Unknown) | Cur:0 Avg:0 Min:0 Max:0
+[18:42:04] [UDP Data] ID:46 (ODH_47_HSD_H5_3) | Cur:10 Avg:8.4 Min:7 Max:10
+[18:42:04] [FAIL] ODH_47_HSD_H5_3 (0x46): Avg (8.4) Out of Range (438.3~970.2)
+[18:42:04] [UDP Data] ID:45 (ODH_49_HSD_H5_2) | Cur:10 Avg:9.025 Min:6 Max:10
+[18:42:04] [UDP Data] ID:88 (ODH_50_HSD_19) | Cur:20 Avg:19.2439 Min:18 Max:21
+[18:42:04] [FAIL] ODH_50_HSD_19 (0x88): Avg (19.2439) Out of Range (526.5~1177)
+[18:42:04] [UDP Data] ID:76 (ODH_53_HSD_D6_1) | Cur:5 Avg:5.175 Min:5 Max:6
+[18:42:04] [FAIL] ODH_53_HSD_D6_1 (0x76): Avg (5.175) Out of Range (246.6~572)
+[18:42:04] [UDP Data] ID:6C (ODH_55_HSD_D5_0) | Cur:5 Avg:5.04878 Min:4 Max:6
+[18:42:04] [UDP Data] ID:4F (ODH_64_HSD_Q3_1) | Cur:7 Avg:7.775 Min:6 Max:10
+[18:42:04] [UDP Data] ID:89 (ODH_66B_HSD_D11_1) | Cur:5 Avg:4.975 Min:4 Max:6
+[18:42:04] [UDP Data] ID:4A (ODH_66_HSD_H4_1) | Cur:459 Avg:110.8049 Min:4 Max:473
+[18:42:04] [FAIL] ODH_66_HSD_H4_1 (0x4A): Avg (110.8049) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:75 (ODH_84_HSD_D4_1) | Cur:9 Avg:9.025 Min:7 Max:11
+[18:42:04] [UDP Data] ID:5E (ODH_86_HSD_H3_2) | Cur:7 Avg:9.075 Min:7 Max:11
+[18:42:04] [UDP Data] ID:44 (ODH_90_HSD_H5_1) | Cur:7 Avg:7.890244 Min:6 Max:10
+[18:42:04] [UDP Data] ID:74 (ODH_92_HSD_21) | Cur:4 Avg:3.4 Min:2 Max:4
+[18:42:04] [UDP Data] ID:70 (ODH_93_HSD_Q1_1) | Cur:325 Avg:330.375 Min:325 Max:341
+[18:42:04] [FAIL] ODH_93_HSD_Q1_1 (0x70): Avg (330.375) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:78 (ODH_94_HSD_D8_1) | Cur:6 Avg:7.625 Min:6 Max:12
+[18:42:04] [UDP Data] ID:4B (ODH_100_HSD_H4_2) | Cur:469 Avg:111.3902 Min:5 Max:469
+[18:42:04] [UDP Data] ID:60 (ODH_103A_HSD_H3_0) | Cur:10 Avg:7.9 Min:6 Max:10
+[18:42:04] [UDP Data] ID:7A (ODH_106_HSD_D12_0) | Cur:10 Avg:9.95 Min:7 Max:11
+[18:42:04] [UDP Data] ID:69 (ODH_107_HSD_H2_1) | Cur:7 Avg:9.299999 Min:6 Max:11
+[18:42:04] [UDP Data] ID:72 (ODH_109_HSD_D3_0) | Cur:282 Avg:275.1463 Min:261 Max:292
+[18:42:04] [UDP Data] ID:4E (ODH_111_HSD_H4_5) | Cur:462 Avg:117.1125 Min:4 Max:469
+[18:42:04] [FAIL] ODH_111_HSD_H4_5 (0x4E): Avg (117.1125) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:66 (ODH_112_HSD_H2_5) | Cur:10 Avg:14.92891 Min:6 Max:295
+[18:42:04] [FAIL] ODH_112_HSD_H2_5 (0x66): Avg (14.92891) Out of Range (306.9~717.2)
+[18:42:04] [UDP Data] ID:7B (ODH_113_HSD_D12_1) | Cur:10 Avg:9.299999 Min:6 Max:11
+[18:42:04] [UDP Data] ID:82 (Unknown) | Cur:5 Avg:5.121951 Min:5 Max:6
+[18:42:04] [UDP Data] ID:80 (ODH_129_HSD_D15_1) | Cur:3105 Avg:3031.275 Min:1115 Max:3106
+[18:42:04] [FAIL] ODH_129_HSD_D15_1 (0x80): Avg (3031.275) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:7C (ODH_131_HSD_D13_1) | Cur:7 Avg:7.4125 Min:7 Max:9
+[18:42:04] [UDP Data] ID:52 (ODH_132_HSD_D22_0) | Cur:2 Avg:2 Min:1 Max:4
+[18:42:04] [UDP Data] ID:7F (ODH_133_HSD_D15_0) | Cur:2485 Avg:2496.78 Min:2482 Max:2966
+[18:42:04] [FAIL] ODH_133_HSD_D15_0 (0x7F): Avg (2496.78) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:8A (ODH_135_HSD_D1_0) | Cur:10 Avg:10 Min:6 Max:12
+[18:42:04] [UDP Data] ID:7E (ODH_136_HSD_D14_1) | Cur:2958 Avg:2894 Min:1117 Max:2968
+[18:42:04] [FAIL] ODH_136_HSD_D14_1 (0x7E): Avg (2894) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:8B (ODH_139_HSD_D1_1) | Cur:7 Avg:8.4 Min:6 Max:11
+[18:42:04] [UDP Data] ID:81 (ODH_140_HSD_D2_1) | Cur:5 Avg:4.975 Min:4 Max:6
+[18:42:04] [UDP Data] ID:84 (ODH_141_HSD_D9_0) | Cur:3084 Avg:2931.45 Min:393 Max:3085
+[18:42:04] [FAIL] ODH_141_HSD_D9_0 (0x84): Avg (2931.45) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:83 (ODH_142_HSD_D16_1) | Cur:393 Avg:375.7 Min:316 Max:1120
+[18:42:04] [FAIL] ODH_142_HSD_D16_1 (0x83): Avg (375.7) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:4C (ODH_143_HSD_H4_3) | Cur:463 Avg:465.1 Min:454 Max:482
+[18:42:04] [UDP Data] ID:62 (ODH_144_HSD_H6_1) | Cur:2 Avg:2.35 Min:2 Max:4
+[18:42:04] [UDP Data] ID:85 (ODH_146_HSD_D9_1) | Cur:1111 Avg:1110.425 Min:1101 Max:1121
+[18:42:04] [UDP Data] ID:86 (ODH_148_HSD_18) | Cur:524 Avg:526.2927 Min:515 Max:548
+[18:42:04] [FAIL] ODH_148_HSD_18 (0x86): Avg (526.2927) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:87 (ODH_149_HSD_17) | Cur:5 Avg:5 Min:5 Max:5
+[18:42:04] [UDP Data] ID:79 (ODH_152_HSD_D10_0) | Cur:7 Avg:7.292683 Min:7 Max:9
+[18:42:04] [UDP Data] ID:7D (ODH_153_HSD_20) | Cur:5 Avg:5 Min:4 Max:6
+[18:42:04] [UDP Data] ID:6B (ODH_155_HSD_H2_4) | Cur:9 Avg:8.099999 Min:7 Max:11
+[18:42:04] [UDP Data] ID:55 (ODH_156_HSD_H1_4) | Cur:10 Avg:9.275 Min:7 Max:10
+[18:42:04] [UDP Data] ID:6E (ODH_157_HSD_Q1_2) | Cur:20 Avg:19.175 Min:18 Max:21
+[18:42:04] [UDP Data] ID:6F (ODH_158_HSD_Q1_0) | Cur:20 Avg:19.21951 Min:18 Max:21
+[18:42:04] [UDP Data] ID:77 (ODH_159_HSD_D7_1) | Cur:7 Avg:7.45 Min:7 Max:9
+[18:42:04] [UDP Data] ID:71 (ODH_163_HSD_Q1_3) | Cur:330 Avg:325.8 Min:320 Max:331
+[18:42:04] [FAIL] ODH_163_HSD_Q1_3 (0x71): Avg (325.8) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:50 (ODH_166_HSD_Q3_0) | Cur:9 Avg:7.353658 Min:6 Max:10
+[18:42:04] [UDP Data] ID:65 (ODH_173_HSD_H6_4) | Cur:155 Avg:154.5854 Min:151 Max:159
+[18:42:04] [FAIL] ODH_173_HSD_H6_4 (0x65): Avg (154.5854) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:5B (ODH_174_HSD_H3_5) | Cur:10 Avg:9.025 Min:7 Max:10
+[18:42:04] [UDP Data] ID:73 (ODH_175_HSD_D3_1) | Cur:5 Avg:5.1 Min:5 Max:6
+[18:42:04] [UDP Data] ID:51 (ODH_176_HSD_Q3_3) | Cur:7 Avg:7.825 Min:6 Max:10
+[18:42:04] [UDP Data] ID:8C (OL_03_LSD_5) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:8D (OL_04_LSD_6) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[18:42:04] [UDP Data] ID:8E (OL_05_LSD_4) | Cur:3159 Avg:3158.925 Min:3158 Max:3160
+[18:42:04] [FAIL] OL_05_LSD_4 (0x8E): Avg (3158.925) Out of Range (0.22~0.3)
+[18:42:04] [UDP Data] ID:8F (OMH01_1_FBR_01_1) | Cur:1 Avg:3.922196E-13 Min:0 Max:1
+[18:42:04] [UDP Data] ID:90 (OMH01_2_FBR_01_2) | Cur:1 Avg:4.405365E-14 Min:0 Max:1
+[18:42:04] [UDP Data] ID:91 (OMHb01_B_HBR_02_2) | Cur:1 Avg:1.955032E-06 Min:0 Max:2
+[18:42:04] [FAIL] OMHb01_B_HBR_02_2 (0x91): Avg (1.955032E-06) Out of Range (476.1~1112.1)
+[18:42:04] [UDP Data] ID:93 (OMHb02_B_HBR_03_1) | Cur:807 Avg:811.825 Min:800 Max:824
+[18:42:04] [FAIL] OMHb02_B_HBR_03_1 (0x93): Avg (811.825) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:92 (OMHb03_B_HBR_02_1) | Cur:2 Avg:2.495944E-08 Min:0 Max:2
+[18:42:04] [FAIL] OMHb03_B_HBR_02_1 (0x92): Avg (2.495944E-08) Out of Range (476.1~1112.1)
+[18:42:04] [UDP Data] ID:94 (OMHb04_B_HBR_03_2) | Cur:807 Avg:811.825 Min:800 Max:824
+[18:42:04] [FAIL] OMHb04_B_HBR_03_2 (0x94): Avg (811.825) Out of Range (0~50)
+[18:42:04] [UDP Data] ID:95 (OMHb05_B_HBR_01_1) | Cur:598 Avg:599.875 Min:590 Max:612
+[18:42:04] [UDP Data] ID:96 (OMHb06_B_HBR_01_2) | Cur:598 Avg:599.825 Min:590 Max:612
+[18:42:04] [UDP Data] ID:0F (Unknown) | Cur:1295 Avg:1296.563 Min:1294 Max:1300
+[18:42:04] [UDP Data] ID:0B (VCC_5V_VDDM) | Cur:4259 Avg:4258.862 Min:4258 Max:4260
+[18:42:04] [FAIL] VCC_5V_VDDM (0x0B): Avg (4258.862) Out of Range (1814.5~2005.5)
+[18:42:07] [EMC IMM] Data transmission finished and processed.
+[18:42:07] [EMC IMM] EMC Test End
+[18:42:07] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260324\BOX_0\EVO_Pre PV_v3.1.8_IMMA_20260324183902\2_IMMA_EVO_Pre PV_v3.1.8_IMMA_20260324183902.csv
+[18:42:07] EVO_Pre PV_v3.1.8_IMMA:Interlock Feedback Test FAIL

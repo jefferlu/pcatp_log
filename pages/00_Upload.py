@@ -31,14 +31,20 @@ if "_import_results" in st.session_state:
     for r in st.session_state.pop("_import_results"):
         if r.get("error"):
             st.error(r["error"])
-        elif r["skipped"]:
-            st.warning(
-                f"**{r['session_id']}** — already exists (enable overwrite to replace)."
-            )
         else:
-            st.success(
-                f"**{r['session_id']}** — imported {r['loops_imported']} loop(s)."
-            )
+            log_type_tag = f" `{r['log_type']}`" if r.get("log_type") else ""
+            skipped = r.get("loops_skipped", [])
+            if skipped:
+                skipped_nums = ", ".join(str(s["loop"]) for s in skipped)
+                st.warning(
+                    f"**{r['session_id']}**{log_type_tag} — "
+                    f"imported {r['loops_imported']} loop(s), "
+                    f"skipped {len(skipped)} loop(s) (missing TXT): loop {skipped_nums}."
+                )
+            else:
+                st.success(
+                    f"**{r['session_id']}**{log_type_tag} — imported {r['loops_imported']} loop(s)."
+                )
 
 
 # ---------------------------------------------------------------------------
@@ -127,7 +133,7 @@ with st.container(border=True):
         accept_multiple_files=True,
     )
 
-    overwrite = st.checkbox("Overwrite if session already exists", value=True)
+    st.warning("Sessions with the same name will be overwritten automatically.")
 
     _, btn_col = st.columns([8, 1])
     if btn_col.button("Import", type="primary", disabled=not uploaded, use_container_width=True):
@@ -180,7 +186,7 @@ with st.container(border=True):
                     with st.spinner(f"Importing {sess_dir.name}…"):
                         try:
                             owner = st.session_state.get("_username", "")
-                            result = import_session(sess_dir, overwrite=overwrite, owner=owner)
+                            result = import_session(sess_dir, overwrite=True, owner=owner)
                         except Exception as e:
                             result = {
                                 "session_id": sess_dir.name,
@@ -209,15 +215,32 @@ sessions = list_sessions(_username, is_admin=_is_admin)
 if not sessions:
     st.info("No sessions imported yet.")
 else:
-    for sess in sessions:
+    _available_types = sorted({s["log_type"] for s in sessions if s.get("log_type")})
+    if len(_available_types) >= 2:
+        _filter_options = ["All"] + _available_types
+        _selected_filter = st.radio(
+            "Filter by type",
+            _filter_options,
+            horizontal=True,
+            key="upload_type_filter",
+        )
+        filtered_sessions = (
+            sessions if _selected_filter == "All"
+            else [s for s in sessions if s.get("log_type") == _selected_filter]
+        )
+    else:
+        filtered_sessions = sessions
+
+    for sess in filtered_sessions:
         col_info, col_del = st.columns([5, 1])
         with col_info:
             owner_tag = f" &nbsp;|&nbsp; Owner: `{sess['owner']}`" if _is_admin and sess.get("owner") else ""
+            type_tag = f" &nbsp;|&nbsp; Type: `{sess['log_type']}`" if sess.get("log_type") else ""
             st.markdown(
-                f"**{sess['session_id']}** &nbsp;|&nbsp; "
-                f"Mode: `{sess['test_mode'] or '—'}` &nbsp;|&nbsp; "
-                f"Loops: **{sess['total_loops']}** &nbsp;|&nbsp; "
-                f"Imported: {str(sess['imported_at'])[:19]}"
+                f"**{sess['session_id']}**"
+                + type_tag
+                + f" &nbsp;|&nbsp; Mode: `{sess['test_mode'] or '—'}`"
+                f" &nbsp;|&nbsp; Loops: **{sess['total_loops']}**"
                 + owner_tag
             )
         with col_del:

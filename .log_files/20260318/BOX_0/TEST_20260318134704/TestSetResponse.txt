@@ -1,0 +1,55 @@
+=== Test Start: 2026-03-18 13:47:04 ===
+[13:47:04] PV Mode: Report Structure Initialized.
+[13:47:04] [System] PV Report Enabled. (Mode: PrePV/)
+[13:47:04] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:47:04] [System] New Session. QTest: PrePV, PrePV: , Loop: 1
+[13:47:04] [MQTT ] Test Board Connection Pass
+[13:47:04] [MQTT ] Test Board Switch Pass:Front
+[13:47:05] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[13:47:05] [DoIP ] Ping ZCU: 192.168.5.1...
+[13:47:05] [DoIP ] ZCU Ping OK (192.168.5.1)
+[13:47:05] [DoIP ] Creating Session...
+[13:47:05] [DoIP ] SetUDS_Callbacks...
+[13:47:05] [DoIP ] ZCU Connected
+[13:47:05] [UDS  ] Session Ctrl: 4
+[13:47:05] [UDS  ] Session Control Pass
+[13:47:05] [UDS  ] ZCU SW Version:V3.1.1
+[13:47:05] [PROC ] Get PrePV Test Mode
+[13:47:05] [PROC ] PrePV Mode: PrePV, Voltage: 13.5
+[13:47:05] [PROC ] Get PrePV Test Criteria
+[13:47:08] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:47:08] PV Mode: Report Structure Initialized.
+[13:47:08] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:47:08] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:47:08] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 1
+[13:47:08] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:47:27] PV Mode: Report Structure Initialized.
+[13:47:27] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:47:27] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:47:27] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 2
+[13:47:27] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:47:46] PV Mode: Report Structure Initialized.
+[13:47:46] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:47:46] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:47:46] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 3
+[13:47:46] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:48:05] PV Mode: Report Structure Initialized.
+[13:48:05] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:48:05] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:48:05] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 4
+[13:48:05] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:48:24] PV Mode: Report Structure Initialized.
+[13:48:24] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:48:24] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:48:24] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 5
+[13:48:24] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:48:43] PV Mode: Report Structure Initialized.
+[13:48:43] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:48:43] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:48:43] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 6
+[13:48:43] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv
+[13:49:01] PV Mode: Report Structure Initialized.
+[13:49:01] [System] PV Report Enabled. (Mode: PrePV/PrePV)
+[13:49:01] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\.TEST_20260318134704_details.tmp'
+[13:49:01] [System] New Session. QTest: PrePV, PrePV: PrePV, Loop: 7
+[13:49:01] PV Report saved successfully to: C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\TEST_20260318134704\TEST_20260318134704.csv

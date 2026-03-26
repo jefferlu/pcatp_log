@@ -52,10 +52,12 @@ st.markdown(
 # ---------------------------------------------------------------------------
 _CONFIG_PATH = Path(__file__).parent / "config" / "users.yaml"
 
+
 @st.cache_resource
 def _load_auth_config():
     with open(_CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
 
 try:
     import streamlit_authenticator as stauth  # type: ignore[import-untyped]
@@ -106,7 +108,7 @@ try:
                 'Login': 'Login',
             })
             if st.session_state.get("authentication_status") is False:
-                st.error("帳號或密碼錯誤")
+                st.error("Invalid username or password")
 
         # Hide sidebar last — injected just before render completes so sidebar
         # disappears together with page content, not before.
@@ -132,7 +134,7 @@ try:
         + (" `admin`" if _is_admin else "")
     )
     with _col_out:
-        authenticator.logout("登出", location="main", key="logout_btn")
+        authenticator.logout("Logout", location="main", key="logout_btn")
 
 
 except Exception as e:
@@ -149,13 +151,17 @@ except Exception as e:
 pg = st.navigation(
     {
         "Analysis": [
-            st.Page("pages/01_Session_Overview.py", title="Session Overview", icon=":material/expand_circle_right:", default=True),
-            st.Page("pages/02_Loop_Detail.py",      title="Loop Detail",      icon=":material/expand_circle_right:"),
-            st.Page("pages/03_Comparison.py",       title="Comparison",       icon=":material/expand_circle_right:"),
+            st.Page("pages/01_Session_Overview.py", title="Session Overview",
+                    icon=":material/expand_circle_right:", default=True),
+            st.Page("pages/02_Loop_Detail.py", title="Loop Detail", icon=":material/expand_circle_right:"),
+            st.Page("pages/03_Comparison.py", title="Comparison", icon=":material/expand_circle_right:"),
         ],
         "Data": [
             st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
         ],
+        "Tools": [
+            st.Page("pages/04_Criteria_Tuning.py", title="Criteria Tuning", icon=":material/tune:"),
+        ]
     }
 )
 pg.run()

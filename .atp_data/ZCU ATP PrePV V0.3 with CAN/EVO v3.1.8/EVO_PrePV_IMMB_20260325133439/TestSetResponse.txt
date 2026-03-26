@@ -1,0 +1,39 @@
+=== Test Start: 2026-03-25 13:34:39 ===
+[13:34:39] PV Mode: Report Structure Initialized.
+[13:34:39] [System] PV Report Enabled. (Mode: EMC/)
+[13:34:39] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\.evo_prePV_immB_20260325133439_details.tmp'
+[13:34:39] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[13:34:39] [MQTT ] Test Board Connection Pass
+[13:34:39] [MQTT ] Test Board Switch Pass:Cabin
+[13:34:40] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[13:34:40] [DoIP ] Ping ZCU: 192.168.5.1...
+[13:34:40] [DoIP ] ZCU Ping OK (192.168.5.1)
+[13:34:40] [DoIP ] Creating Session...
+[13:34:40] [DoIP ] SetUDS_Callbacks...
+[13:34:40] [DoIP ] ZCU Connected
+[13:34:40] [UDS  ] Session Ctrl: 4
+[13:34:40] [UDS  ] Session Control Pass
+[13:34:40] [UDS  ] ZCU SW Version:V3.1.8
+[13:34:40] [PROC ] Get EMC Test Criteria
+[13:34:40] [PROC ] EMC Mode: IMM
+[13:34:41] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv
+[13:34:41] PV Mode: Report Structure Initialized.
+[13:34:41] [System] PV Report Enabled. (Mode: EMC/)
+[13:34:41] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\.evo_prePV_immB_20260325133439_details.tmp'
+[13:34:41] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[13:34:41] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv
+[13:36:17] PV Mode: Report Structure Initialized.
+[13:36:17] [System] PV Report Enabled. (Mode: EMC/)
+[13:36:17] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\.evo_prePV_immB_20260325133439_details.tmp'
+[13:36:17] [System] New Session. QTest: EMC, PrePV: , Loop: 2
+[13:36:17] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv
+[13:37:52] PV Mode: Report Structure Initialized.
+[13:37:52] [System] PV Report Enabled. (Mode: EMC/)
+[13:37:52] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\.evo_prePV_immB_20260325133439_details.tmp'
+[13:37:52] [System] New Session. QTest: EMC, PrePV: , Loop: 3
+[13:37:52] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv
+[13:39:27] PV Mode: Report Structure Initialized.
+[13:39:27] [System] PV Report Enabled. (Mode: EMC/)
+[13:39:27] [System] PV Report Paths: csv='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv', tmp='C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\.evo_prePV_immB_20260325133439_details.tmp'
+[13:39:27] [System] New Session. QTest: EMC, PrePV: , Loop: 4
+[13:39:27] PV Report saved successfully to: C:\Users\Administrator\Desktop\ZCU ATP PrePV V0.3 with CAN\Debug\Log_file\20260325\BOX_0\evo_prePV_immB_20260325133439\evo_prePV_immB_20260325133439.csv

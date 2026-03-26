@@ -69,7 +69,22 @@ def render_result_table(
     if "Result" in display_df.columns:
         styled = styled.map(_style_result, subset=["Result"])
 
-    st.dataframe(styled, height=height, use_container_width=True, key=key)
+    _col_config = {
+        "Monitor ID": st.column_config.NumberColumn("Monitor ID", width=90),
+        "Category":   st.column_config.TextColumn("Category",    width=150),
+        "Test Name":  st.column_config.TextColumn("Test Name",   width=150),
+        "Sub Item":   st.column_config.TextColumn("Sub Item",    width=170),
+        "Result":     st.column_config.TextColumn("Result",      width=80),
+        "Value":      st.column_config.TextColumn("Value",       width=280),
+    }
+
+    st.dataframe(
+        styled,
+        height=height,
+        use_container_width=True,
+        column_config=_col_config,
+        key=key,
+    )
 
 
 def render_category_filter(df: pd.DataFrame, key: str = "cat_filter") -> str:

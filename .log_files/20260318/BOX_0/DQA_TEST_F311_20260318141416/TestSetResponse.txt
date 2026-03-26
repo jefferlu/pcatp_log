@@ -1,0 +1,12 @@
+=== Test Start: 2026-03-18 14:14:16 ===
+[14:14:16] PV Mode: Report Structure Initialized.
+[14:14:16] [System] PV Report Enabled. (Mode: PrePV/)
+[14:14:16] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\DQA_TEST_F311_20260318141416\DQA_TEST_F311_20260318141416.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\DQA_TEST_F311_20260318141416\.DQA_TEST_F311_20260318141416_details.tmp'
+[14:14:16] [System] New Session. QTest: PrePV, PrePV: , Loop: 1
+[14:14:16] [MQTT ] Test Board Connection Pass
+[14:14:16] [MQTT ] Test Board Switch Pass:Front
+[14:14:16] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[14:14:16] [DoIP ] Ping ZCU: 192.168.5.1...
+[14:14:16] [DoIP ] ZCU Ping OK (192.168.5.1)
+[14:14:16] [DoIP ] Creating Session...
+[14:14:17] [DoIP ] SetUDS_Callbacks...

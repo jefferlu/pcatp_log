@@ -28,7 +28,8 @@ _DDL_STATEMENTS = [
         owner        TEXT DEFAULT '',
         imported_at  TIMESTAMP DEFAULT current_timestamp,
         test_mode    TEXT,
-        total_loops  INTEGER
+        total_loops  INTEGER,
+        log_type     TEXT DEFAULT ''
     )
     """,
     """
@@ -80,6 +81,10 @@ _DDL_STATEMENTS = [
     """
     ALTER TABLE sessions ADD COLUMN IF NOT EXISTS owner TEXT DEFAULT ''
     """,
+    # Migration: add log_type column to existing installations
+    """
+    ALTER TABLE sessions ADD COLUMN IF NOT EXISTS log_type TEXT DEFAULT ''
+    """,
 ]
 
 _COL_RENAME = {
@@ -117,12 +122,12 @@ def list_sessions(username: str, is_admin: bool = False) -> list[dict]:
     with connect() as conn:
         if is_admin:
             rows = conn.execute(
-                "SELECT session_id, owner, imported_at, test_mode, total_loops "
+                "SELECT session_id, owner, imported_at, test_mode, total_loops, log_type "
                 "FROM sessions ORDER BY imported_at DESC"
             ).fetchall()
         else:
             rows = conn.execute(
-                "SELECT session_id, owner, imported_at, test_mode, total_loops "
+                "SELECT session_id, owner, imported_at, test_mode, total_loops, log_type "
                 "FROM sessions WHERE owner = ? "
                 "ORDER BY imported_at DESC",
                 [username],
@@ -134,6 +139,7 @@ def list_sessions(username: str, is_admin: bool = False) -> list[dict]:
             "imported_at": r[2],
             "test_mode":   r[3],
             "total_loops": r[4],
+            "log_type":    r[5] or "",
         }
         for r in rows
     ]

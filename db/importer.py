@@ -9,21 +9,49 @@ import pandas as pd
 
 from db.database import connect, delete_session, session_exists, get_session_owner
 from parsers.csv_parser import load_session as parse_session
-from parsers.log_parser import parse_test_set_response
+from parsers.log_parser import parse_test_set_response, extract_project_name, extract_loop_number
+
+
+def _map_loop_txts(session_dir: Path) -> dict[int, Path]:
+    """Return {loop_num: txt_path} by reading the loop number from each TXT's content.
+
+    Per-loop TXT files contain ``=== Test Start (Loop N) ===`` on the first line
+    (or ``Loop Number = N`` within the first 15 lines).  The master session TXT
+    has no loop number in its content and is therefore excluded automatically.
+    """
+    mapping: dict[int, Path] = {}
+    for txt in session_dir.glob("*.txt"):
+        loop_num = extract_loop_number(txt)
+        if loop_num is not None:
+            mapping[loop_num] = txt
+    return mapping
 
 
 def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") -> dict:
     """Parse a session directory and import it into DuckDB.
 
-    Returns a status dict: {"session_id", "loops_imported", "skipped": bool}
+    Only loops that have **both** a CSV and a matching per-loop TXT file are
+    imported.  Loops missing their TXT are skipped and reported separately so
+    that a single missing file never blocks the rest of the session.
+
+    Returns::
+
+        {
+            "session_id":     str,
+            "loops_imported": int,
+            "loops_skipped":  list[{"loop": int, "reason": str}],
+            "skipped":        bool,   # True only when the whole session is skipped
+            "log_type":       str,    # "Front" | "Cabin" | ""
+            "error":          str,    # non-empty on hard failure
+        }
     """
     session_dir = Path(session_dir)
     session_id = session_dir.name
 
+    _empty = {"session_id": session_id, "loops_imported": 0,
+              "loops_skipped": [], "skipped": False, "log_type": "", "error": ""}
+
     if session_exists(session_id):
-        if not overwrite:
-            return {"session_id": session_id, "loops_imported": 0, "skipped": True}
-        # Preserve original owner when overwriting
         existing_owner = get_session_owner(session_id)
         if existing_owner:
             owner = existing_owner
@@ -33,47 +61,73 @@ def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") 
     loops = session_data.get("loops", {})
     meta = session_data.get("header_meta", {})
 
-    # Pre-parse all .txt files in the directory (sorted), then pair them with
-    # loops in sorted order — no filename convention assumed.
-    txt_files = sorted(session_dir.glob("*.txt"))
-    txt_entries: dict[int, list] = {}
-    sorted_loop_nums = sorted(loops.keys())
-    for idx, txt_file in enumerate(txt_files):
-        if idx >= len(sorted_loop_nums):
+    if not loops:
+        return {**_empty, "error": f"**{session_id}** — no loop CSV files found."}
+
+    # Map loop_num → per-loop TXT (by numeric filename prefix)
+    txt_map = _map_loop_txts(session_dir)
+
+    # Determine log_type from the first available per-loop TXT
+    log_type = ""
+    for loop_num in sorted(txt_map):
+        name = extract_project_name(txt_map[loop_num])
+        if name:
+            log_type = name
             break
-        entries = parse_test_set_response(txt_file)
+
+    loops_skipped: list[dict] = []
+    complete_loops: list[int] = []
+
+    for loop_num in sorted(loops.keys()):
+        if loop_num not in txt_map:
+            loops_skipped.append({"loop": loop_num, "reason": "missing TXT file"})
+        else:
+            complete_loops.append(loop_num)
+
+    if not complete_loops:
+        return {
+            **_empty,
+            "loops_skipped": loops_skipped,
+            "error": (
+                f"**{session_id}** — no complete loop pairs (CSV + TXT) found. "
+                f"{len(loops_skipped)} loop(s) missing TXT."
+            ),
+        }
+
+    # Pre-parse TXT entries for complete loops only
+    txt_entries: dict[int, list] = {}
+    for loop_num in complete_loops:
+        entries = parse_test_set_response(txt_map[loop_num])
         if entries:
-            txt_entries[sorted_loop_nums[idx]] = entries
+            txt_entries[loop_num] = entries
 
     with connect() as conn:
-        # sessions table
         conn.execute(
-            "INSERT INTO sessions (session_id, owner, test_mode, total_loops) VALUES (?, ?, ?, ?)",
-            [session_id, owner, meta.get("Test Mode", ""), len(loops)],
+            "INSERT INTO sessions (session_id, owner, test_mode, total_loops, log_type) "
+            "VALUES (?, ?, ?, ?, ?)",
+            [session_id, owner, meta.get("Test Mode", ""), len(complete_loops), log_type],
         )
 
-        for loop_num, ldata in loops.items():
+        for loop_num in complete_loops:
+            ldata = loops[loop_num]
             header  = ldata.get("header", {})
             res_df  = ldata.get("results", pd.DataFrame())
             leg_df  = ldata.get("legacy",  pd.DataFrame())
 
-            # loop_headers
             conn.execute(
-                "INSERT INTO loop_headers (session_id, loop_num, end_time, test_mode) VALUES (?, ?, ?, ?)",
+                "INSERT INTO loop_headers (session_id, loop_num, end_time, test_mode) "
+                "VALUES (?, ?, ?, ?)",
                 [session_id, loop_num,
                  header.get("Test End Time", ""),
                  header.get("Test Mode", "")],
             )
 
-            # results
             if not res_df.empty:
                 _insert_results(conn, "results", session_id, loop_num, res_df)
 
-            # legacy_results
             if not leg_df.empty:
                 _insert_results(conn, "legacy_results", session_id, loop_num, leg_df)
 
-            # log_entries
             entries = txt_entries.get(loop_num, [])
             if entries:
                 log_rows = [
@@ -81,24 +135,23 @@ def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") 
                     for e in entries
                 ]
                 conn.executemany(
-                    "INSERT INTO log_entries (session_id, loop_num, time_str, module, message, level) "
+                    "INSERT INTO log_entries "
+                    "(session_id, loop_num, time_str, module, message, level) "
                     "VALUES (?, ?, ?, ?, ?, ?)",
                     log_rows,
                 )
 
-    return {"session_id": session_id, "loops_imported": len(loops), "skipped": False}
+    return {
+        "session_id":     session_id,
+        "loops_imported": len(complete_loops),
+        "loops_skipped":  loops_skipped,
+        "skipped":        False,
+        "log_type":       log_type,
+        "error":          "",
+    }
 
 
 def _insert_results(conn, table: str, session_id: str, loop_num: int, df: pd.DataFrame) -> None:
-    col_map = {
-        "Test ID":   "test_id",
-        "Category":  "category",
-        "Test Name": "test_name",
-        "Sub Item":  "sub_item",
-        "Result":    "result",
-        "Value":     "value",
-        "Hex ID":    "hex_id",
-    }
     insert_df = pd.DataFrame()
     insert_df["test_id"]   = df.get("Test ID",   pd.Series(dtype="object")).astype(str)
     insert_df["category"]  = df.get("Category",  pd.Series(dtype="object")).fillna("")
@@ -108,7 +161,6 @@ def _insert_results(conn, table: str, session_id: str, loop_num: int, df: pd.Dat
     insert_df["value"]     = df.get("Value",     pd.Series(dtype="object")).fillna("")
     insert_df["hex_id"]    = df.get("Hex ID",    pd.Series(dtype="object")).fillna("")
 
-    # Convert test_id to int where possible
     try:
         insert_df["test_id"] = insert_df["test_id"].astype(int)
     except (ValueError, TypeError):

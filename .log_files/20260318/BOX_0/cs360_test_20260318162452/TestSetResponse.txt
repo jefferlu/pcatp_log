@@ -1,0 +1,19 @@
+=== Test Start: 2026-03-18 16:24:52 ===
+[16:24:52] PV Mode: Report Structure Initialized.
+[16:24:52] [System] PV Report Enabled. (Mode: EMC/)
+[16:24:52] [System] PV Report Paths: csv='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\cs360_test_20260318162452\cs360_test_20260318162452.csv', tmp='C:\Project_Program\STLA\ZCU\PrePV_20260316\ZCU_ATP\ZCU_ATP\bin\x64\Debug\Log_file\20260318\BOX_0\cs360_test_20260318162452\.cs360_test_20260318162452_details.tmp'
+[16:24:52] [System] New Session. QTest: EMC, PrePV: , Loop: 1
+[16:24:55] [UDP Server] Started on 0.0.0.0:1000
+[16:24:55] [Info ] *************  Information  ***************
+[16:24:55] [Info ] Project Name  = Cabin
+[16:24:55] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[16:24:55] [Info ] Box  Index    = 00
+[16:24:55] [Info ] Serial Number = cs360_test
+[16:24:55] [Info ] *************  Information  ***************
+[16:24:55] [MQTT ] Test Board Connection Pass
+[16:24:55] [MQTT ] Test Board Switch Pass:Cabin
+[16:24:55] [MQTT ] Test Board SW Version:C-TestBoard-FACTORY-5.4.3
+[16:24:55] [DoIP ] Ping ZCU: 192.168.5.1...
+[16:24:55] [DoIP ] ZCU Ping OK (192.168.5.1)
+[16:24:55] [DoIP ] Creating Session...
+[16:24:56] [DoIP ] SetUDS_Callbacks...

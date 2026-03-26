@@ -1,0 +1,28 @@
+=== Test Start (Loop 1): 2026-03-18 16:29:43 ===
+[16:29:43] [System] PV Rows Reset for Loop 1, Mode=IMMA
+[16:29:43] [Info ] *************  Information  ***************
+[16:29:43] [Info ] Project Name  = Cabin
+[16:29:43] [Info ] SW Version    = C-TestProgram-PrePV-V0.2(Test)
+[16:29:43] [Info ] Box  Index    = 00
+[16:29:43] [Info ] Serial Number = CS360_TEST
+[16:29:43] [Info ] EMC Mode  = IMM Mode A
+[16:29:43] [Info ] Loop Number   = 1
+[16:29:43] [Info ] *************  Information  ***************
+[16:29:43] [PROC ] EMC IMM Test Start
+[16:29:43] [MQTT] Set All Analog Type-1 Pins with 5V
+[16:29:43] [MQTT] Set All Analog Type-2 IAN_43 Pin with 5V
+[16:29:43] [MQTT] Set All Analog Type-2 Group 0 Pins with 5V
+[16:29:43] [MQTT] Set All DIN Pins with High Level
+[16:29:43] [MQTT] Set All ITK Pins with Cross Mode
+[16:29:43] Pre PV Test - Monitoring Enable Start
+[16:29:43] [UDP Data] ID:AC (Undervoltage Event) | Cur:1.401298E-45 Avg:1.401298E-45 Min:1.401298E-45 Max:1.401298E-45
+[16:29:43] [FAIL]  (0xAC): Expected 1, Got 0
+[16:29:51] [UDS] Send PV_SetMonitoringStatus Timeout RID:A002, Type:03, Payload:010103E805
+[16:29:51] [PROC] Pre PV Test - Monitoring Enable Control Fail
+[16:29:51] Pre PV Test - Monitoring Enable End
+[16:29:51] [EMC IMM] Warning: Discard early burst (elapsed=0.1s, count=1). Wait for next scheduled batch.
+[16:30:06] [EMC IMM] Error: Timeout - No data received in 15 seconds.
+[16:30:06] [DoIP ] EMC timeout -> try reconnect ZCU for 120s
+[16:30:06] [DoIP ] Ping ZCU: 192.168.5.1...
+[16:30:06] [DoIP ] ZCU Ping OK (192.168.5.1)
+[16:30:06] [DoIP ] Creating Session...
