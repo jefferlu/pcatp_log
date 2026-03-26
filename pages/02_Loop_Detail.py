@@ -151,11 +151,29 @@ fail_df = analyze_failures(results_df, log_entries)
 if fail_df.empty:
     st.success("No failures to analyse in this loop.")
 else:
-    # Summary badges
+    # Summary badges — assign colours without duplicates
+    _EXTRA_PALETTE = [
+        "#22AA55", "#FF6600", "#009999", "#8844CC",
+        "#AA6600", "#006699", "#CC2288", "#558800",
+    ]
+
     cause_counts = fail_df["Root Cause"].value_counts()
+    used_colors: set[str] = set()
+    cause_colors: dict[str, str] = {}
+    palette_iter = iter(_EXTRA_PALETTE)
+    for cause in cause_counts.index:
+        preferred = ROOT_CAUSE_COLOR.get(cause, "#999999")
+        if preferred not in used_colors:
+            cause_colors[cause] = preferred
+            used_colors.add(preferred)
+        else:
+            fallback = next((c for c in palette_iter if c not in used_colors), "#888888")
+            cause_colors[cause] = fallback
+            used_colors.add(fallback)
+
     badge_cols = st.columns(min(len(cause_counts), 5))
     for i, (cause, cnt) in enumerate(cause_counts.items()):
-        color = ROOT_CAUSE_COLOR.get(cause, "#999999")
+        color = cause_colors[cause]
         icon  = ROOT_CAUSE_ICON.get(cause, "?")
         badge_cols[i % len(badge_cols)].markdown(
             f"<div style='background:{color}22;border-left:4px solid {color};"
@@ -167,10 +185,16 @@ else:
 
     st.markdown("")
 
-    # Detail table
+    # Detail table — row background matches badge colour (15% opacity)
     display_df = fail_df.copy()
+
+    def _row_color(row):
+        color = cause_colors.get(row["Root Cause"], "#999999")
+        bg = f"{color}26"  # ~15 % opacity (hex 26 ≈ 0.15 * 255)
+        return [f"background-color: {bg}"] * len(row)
+
     st.dataframe(
-        display_df,
+        display_df.style.apply(_row_color, axis=1),
         hide_index=True,
         use_container_width=True,
         column_config={
