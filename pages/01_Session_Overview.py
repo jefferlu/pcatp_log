@@ -107,34 +107,9 @@ with st.container(border=True):
 first_loop = loop_nums[0]
 first_counts = compute_counts(loops[first_loop].get("results"))
 
-col_donut, col_stats = st.columns([1, 2])
-with col_donut:
-    st.subheader(f"Loop {first_loop} Breakdown")
-    with st.container(border=True):
-        fig_pie = px.pie(
-            names=["PASS", "FAIL", "BLOCK"],
-            values=[first_counts["passed"], first_counts["failed"], first_counts["blocked"]],
-            color=["PASS", "FAIL", "BLOCK"],
-            color_discrete_map={"PASS": "#00AA55", "FAIL": "#EE3333", "BLOCK": "#DD8800"},
-            hole=0.45,
-        )
-        fig_pie.update_layout(**light_layout())
-        st.plotly_chart(fig_pie, use_container_width=True)
-
-with col_stats:
-    render_metrics_card(
-        total=first_counts["total"],
-        passed=first_counts["passed"],
-        failed=first_counts["failed"],
-        blocked=first_counts["blocked"],
-        title=f"Loop {first_loop} Summary",
-    )
-
 # ---------------------------------------------------------------------------
 # Heatmap: Result per Test ID × Loop
 # ---------------------------------------------------------------------------
-st.subheader("Result Heatmap (Test ID × Loop)")
-
 result_map = {"PASS": 1, "FAIL": -1, "BLOCK": 0, "": None}
 heatmap_data = {}
 all_ids: list[int] = []
@@ -151,26 +126,43 @@ for ln in loop_nums:
         heatmap_data[tid][ln] = result_map.get(res, None)
     all_ids = sorted(set(all_ids) | set(df["Test ID"].tolist()))
 
-if heatmap_data and all_ids:
-    heat_df = pd.DataFrame(heatmap_data, index=loop_nums).T  # Test ID × Loop
-    heat_df = heat_df.loc[sorted(heat_df.index)]
+col_breakdown, col_heatmap = st.columns([1, 2])
 
+with col_breakdown:
+    st.subheader(f"Loop {first_loop} Breakdown")
     with st.container(border=True):
-        fig_heat = px.imshow(
-            heat_df,
-            color_continuous_scale=[
-                [0.0,  "#EE3333"],   # FAIL = -1
-                [0.5,  "#DD8800"],   # BLOCK = 0
-                [1.0,  "#00AA55"],   # PASS = 1
-            ],
-            zmin=-1, zmax=1,
-            aspect="auto",
-            labels=dict(x="Loop", y="Test ID", color="Result"),
+        fig_pie = px.pie(
+            names=["PASS", "FAIL", "BLOCK"],
+            values=[first_counts["passed"], first_counts["failed"], first_counts["blocked"]],
+            color=["PASS", "FAIL", "BLOCK"],
+            color_discrete_map={"PASS": "#00AA55", "FAIL": "#EE3333", "BLOCK": "#DD8800"},
+            hole=0.45,
         )
-        fig_heat.update_layout(**light_layout(
-            coloraxis_showscale=False,
-            height=max(400, len(all_ids) * 8),
-        ))
-        st.plotly_chart(fig_heat, use_container_width=True)
-else:
-    st.info("Not enough data for heatmap.")
+        fig_pie.update_layout(**light_layout())
+        st.plotly_chart(fig_pie, use_container_width=True)
+
+with col_heatmap:
+    st.subheader("Result Heatmap (Test ID × Loop)")
+    if heatmap_data and all_ids:
+        heat_df = pd.DataFrame(heatmap_data, index=loop_nums).T  # Test ID × Loop
+        heat_df = heat_df.loc[sorted(heat_df.index)]
+
+        with st.container(border=True):
+            fig_heat = px.imshow(
+                heat_df,
+                color_continuous_scale=[
+                    [0.0,  "#EE3333"],   # FAIL = -1
+                    [0.5,  "#DD8800"],   # BLOCK = 0
+                    [1.0,  "#00AA55"],   # PASS = 1
+                ],
+                zmin=-1, zmax=1,
+                aspect="auto",
+                labels=dict(x="Loop", y="Test ID", color="Result"),
+            )
+            fig_heat.update_layout(**light_layout(
+                coloraxis_showscale=False,
+                height=max(400, len(all_ids) * 8),
+            ))
+            st.plotly_chart(fig_heat, use_container_width=True)
+    else:
+        st.info("Not enough data for heatmap.")

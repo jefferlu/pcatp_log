@@ -106,7 +106,7 @@ try:
                 'Login': 'Login',
             })
             if st.session_state.get("authentication_status") is False:
-                st.error("帳號或密碼錯誤")
+                st.error("Invalid username or password")
 
         # Hide sidebar last — injected just before render completes so sidebar
         # disappears together with page content, not before.
@@ -132,7 +132,7 @@ try:
         + (" `admin`" if _is_admin else "")
     )
     with _col_out:
-        authenticator.logout("登出", location="main", key="logout_btn")
+        authenticator.logout("Logout", location="main", key="logout_btn")
 
 
 except Exception as e:
