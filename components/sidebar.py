@@ -28,11 +28,25 @@ def render_sidebar(
         return None, None
 
     session_names = [s["session_id"] for s in sessions]
+
+    # st.navigation() clears widget-bound keys on page switch, so we cannot
+    # rely on "sidebar_session" to survive navigation.  Instead we persist the
+    # selected session_id in a plain (non-widget) key that Streamlit never
+    # touches automatically.
+    _persisted = st.session_state.get("_sidebar_session_id")
+    if isinstance(_persisted, str) and _persisted in session_names:
+        _default_index = session_names.index(_persisted)
+    else:
+        _default_index = 0
+
     selected_name = st.sidebar.selectbox(
         "Test Session",
         session_names,
+        index=_default_index,
         key="sidebar_session",
     )
+    # Keep the non-widget key in sync so it survives the next page switch.
+    st.session_state["_sidebar_session_id"] = selected_name
 
     session_data = _cached_load_session(selected_name)
 

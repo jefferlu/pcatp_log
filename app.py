@@ -52,10 +52,12 @@ st.markdown(
 # ---------------------------------------------------------------------------
 _CONFIG_PATH = Path(__file__).parent / "config" / "users.yaml"
 
+
 @st.cache_resource
 def _load_auth_config():
     with open(_CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
 
 try:
     import streamlit_authenticator as stauth  # type: ignore[import-untyped]
@@ -149,13 +151,17 @@ except Exception as e:
 pg = st.navigation(
     {
         "Analysis": [
-            st.Page("pages/01_Session_Overview.py", title="Session Overview", icon=":material/expand_circle_right:", default=True),
-            st.Page("pages/02_Loop_Detail.py",      title="Loop Detail",      icon=":material/expand_circle_right:"),
-            st.Page("pages/03_Comparison.py",       title="Comparison",       icon=":material/expand_circle_right:"),
+            st.Page("pages/01_Session_Overview.py", title="Session Overview",
+                    icon=":material/expand_circle_right:", default=True),
+            st.Page("pages/02_Loop_Detail.py", title="Loop Detail", icon=":material/expand_circle_right:"),
+            st.Page("pages/03_Comparison.py", title="Comparison", icon=":material/expand_circle_right:"),
         ],
         "Data": [
             st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
         ],
+        "Tools": [
+            
+        ]
     }
 )
 pg.run()
