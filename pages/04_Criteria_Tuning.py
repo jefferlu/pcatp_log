@@ -23,7 +23,7 @@ from utils.failure_analysis import analyze_failures
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-_MARGIN = 0.05          # 5 % headroom added beyond the worst measured value
+_MARGIN = 0.10          # 10 % headroom added beyond the worst measured value
 _OOR    = "Out of Range"
 
 
