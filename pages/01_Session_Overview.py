@@ -42,7 +42,7 @@ for ln in loop_nums:
 
 render_metrics_card(total=total_t, passed=total_p, failed=total_f, blocked=total_b, title="")
 
-st.divider()
+# st.divider()
 
 # ---------------------------------------------------------------------------
 # Per-Loop Summary table
@@ -57,9 +57,9 @@ for ln in loop_nums:
         "Loop":     ln,
         "End Time": hdr.get("Test End Time", "—"),
         "Total":    counts["total"],
-        "✅ Pass":   counts["passed"],
-        "❌ Fail":   counts["failed"],
-        "🚫 Block":  counts["blocked"],
+        "Pass":   counts["passed"],
+        "Fail":   counts["failed"],
+        "Block":  counts["blocked"],
     })
 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 

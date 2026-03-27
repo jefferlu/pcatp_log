@@ -43,10 +43,10 @@ header     = loop_data.get("header",  {})
 counts = compute_counts(results_df)
 render_metrics_card(**counts)
 
-st.divider()
+# st.divider()
 
 # ---------------------------------------------------------------------------
-# Result Table (with filters)
+# Result Table (with filters)3
 # ---------------------------------------------------------------------------
 st.subheader("Test Results")
 fcol1, fcol2 = st.columns(2)
@@ -74,7 +74,7 @@ if not legacy_df.empty:
             key=f"legacy_{selected_loop}",
         )
 
-st.divider()
+# st.divider()
 
 # ---------------------------------------------------------------------------
 # Value gauge chart for range-type items (disabled)

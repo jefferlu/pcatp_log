@@ -149,10 +149,20 @@ with tab_session:
     unstable_count = len(transition_df)
     total_flips    = int(transition_df["Transitions"].sum()) if not transition_df.empty else 0
 
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Total Test Items", total_items)
-    m2.metric("Unstable Items", unstable_count)
-    m3.metric("Total Transitions", total_flips)
+    st.markdown(
+        """
+        <style>
+        [data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
+        [data-testid="stMetricValue"] { font-size: 1.75rem !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.container(border=True):
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Total Test Items", total_items)
+        m2.metric("Unstable Items", unstable_count)
+        m3.metric("Total Transitions", total_flips)
 
     st.divider()
 

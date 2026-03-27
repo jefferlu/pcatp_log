@@ -22,8 +22,6 @@ from parsers.csv_parser import _is_loop_csv
 
 render_sidebar(show_loop_selector=False)
 
-st.title("Import Sessions")
-
 # ---------------------------------------------------------------------------
 # Show import results carried over from the previous run (after st.rerun)
 # ---------------------------------------------------------------------------

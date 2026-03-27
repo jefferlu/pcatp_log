@@ -24,22 +24,32 @@ def render_metrics_card(
         blocked: number of BLOCK results
         title:   optional section title above the metrics
     """
-    if title:
-        st.subheader(title)
+    st.markdown(
+        """
+        <style>
+        [data-testid="stMetricLabel"] { font-size: 0.75rem !important; }
+        [data-testid="stMetricValue"] { font-size: 1.75rem !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    # if title:
+    #     st.subheader(title)
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.container(border=True):
+        col1, col2, col3, col4 = st.columns(4)
 
-    with col1:
-        st.metric("Total", total)
-    with col2:
-        pass_pct = f"{passed / total * 100:.1f}%" if total else "—"
-        st.metric("✅ Passed", passed, delta=pass_pct, delta_color="normal")
-    with col3:
-        fail_pct = f"{failed / total * 100:.1f}%" if total else "—"
-        st.metric("❌ Failed", failed, delta=fail_pct, delta_color="inverse")
-    with col4:
-        blk_pct = f"{blocked / total * 100:.1f}%" if total else "—"
-        st.metric("🚫 Blocked", blocked, delta=blk_pct, delta_color="off")
+        with col1:
+            st.metric("Total", total)
+        with col2:
+            pass_pct = f"{passed / total * 100:.1f}%" if total else "—"
+            st.metric("Passed", passed, delta=pass_pct, delta_color="normal")
+        with col3:
+            fail_pct = f"{failed / total * 100:.1f}%" if total else "—"
+            st.metric("Failed", failed, delta=fail_pct, delta_color="inverse")
+        with col4:
+            blk_pct = f"{blocked / total * 100:.1f}%" if total else "—"
+            st.metric("Blocked", blocked, delta=blk_pct, delta_color="off")
 
 
 def compute_counts(results_df) -> dict:
