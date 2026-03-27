@@ -195,8 +195,6 @@ def _apply_and_export(config_bytes: bytes, edited_df: pd.DataFrame) -> str:
 # ---------------------------------------------------------------------------
 session_data, _ = render_sidebar(show_loop_selector=False)
 
-st.title("Criteria Tuning")
-
 if session_data is None:
     st.info("Select a session from the sidebar.")
     st.stop()
@@ -216,6 +214,15 @@ log_type = sess_meta.get("log_type", "")
 # ---------------------------------------------------------------------------
 # Session info + upload hint
 # ---------------------------------------------------------------------------
+st.markdown(
+    """
+    <style>
+    [data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
+    [data-testid="stMetricValue"] { font-size: 1.75rem !important; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 with st.container(border=True):
     c1, c2, c3 = st.columns(3)
     c1.metric("Session",   session_id)
@@ -226,7 +233,7 @@ with st.container(border=True):
         hint_name = f"TestCriteria_{test_mode}.config"
         st.caption(
             f":material/info: Based on the selected session, "
-            f"upload **{hint_name}**"
+            f"upload *{hint_name}*"
             + (f" from the **{log_type}** config directory." if log_type else ".")
         )
 
