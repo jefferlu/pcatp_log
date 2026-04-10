@@ -64,7 +64,7 @@ for username, info in list(users.items()):
         c_sessions.metric("Sessions", len(own_sessions))
 
         if username == current_user:
-            c_action.caption("(you)")
+            c_action.caption("")
         else:
             if c_action.button("Delete", key=f"del_{username}", type="primary"):
                 st.session_state[f"_confirm_delete_{username}"] = True

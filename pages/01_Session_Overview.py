@@ -4,7 +4,7 @@ Page 1 — Session Overview
 Shows aggregate summary, per-loop PASS/FAIL/BLOCK trends and test-item heatmap.
 """
 import pandas as pd
-import plotly.express as px
+import plotly.express as px  # used for pie chart
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -107,26 +107,7 @@ with st.container(border=True):
 first_loop = loop_nums[0]
 first_counts = compute_counts(loops[first_loop].get("results"))
 
-# ---------------------------------------------------------------------------
-# Heatmap: Result per Test ID × Loop
-# ---------------------------------------------------------------------------
-result_map = {"PASS": 1, "FAIL": -1, "BLOCK": 0, "": None}
-heatmap_data = {}
-all_ids: list[int] = []
-
-for ln in loop_nums:
-    df = loops[ln].get("results", pd.DataFrame())
-    if df.empty or "Test ID" not in df.columns:
-        continue
-    for _, row in df.iterrows():
-        tid = row.get("Test ID")
-        res = str(row.get("Result", "")).strip().upper()
-        if tid not in heatmap_data:
-            heatmap_data[tid] = {}
-        heatmap_data[tid][ln] = result_map.get(res, None)
-    all_ids = sorted(set(all_ids) | set(df["Test ID"].tolist()))
-
-col_breakdown, col_heatmap = st.columns([1, 2])
+col_breakdown, col_seq = st.columns([1, 2])
 
 with col_breakdown:
     st.subheader(f"Loop {first_loop} Breakdown")
@@ -141,28 +122,104 @@ with col_breakdown:
         fig_pie.update_layout(**light_layout())
         st.plotly_chart(fig_pie, width="stretch")
 
-with col_heatmap:
-    st.subheader("Result Heatmap (Test ID × Loop)")
-    if heatmap_data and all_ids:
-        heat_df = pd.DataFrame(heatmap_data, index=loop_nums).T  # Test ID × Loop
-        heat_df = heat_df.loc[sorted(heat_df.index)]
+# ---------------------------------------------------------------------------
+# Transition computation
+# ---------------------------------------------------------------------------
+VALID = {"PASS", "FAIL", "BLOCK"}
+all_results: dict[str, dict[int, str]] = {}
+ref_info:    dict[str, dict]           = {}
 
-        with st.container(border=True):
-            fig_heat = px.imshow(
-                heat_df,
-                color_continuous_scale=[
-                    [0.0,  "#EE3333"],   # FAIL = -1
-                    [0.5,  "#DD8800"],   # BLOCK = 0
-                    [1.0,  "#00AA55"],   # PASS = 1
-                ],
-                zmin=-1, zmax=1,
-                aspect="auto",
-                labels=dict(x="Loop", y="Test ID", color="Result"),
-            )
-            fig_heat.update_layout(**light_layout(
-                coloraxis_showscale=False,
-                height=max(400, len(all_ids) * 8),
-            ))
-            st.plotly_chart(fig_heat, width="stretch")
+for ln in loop_nums:
+    df = loops[ln].get("results", pd.DataFrame())
+    if df.empty or "Test ID" not in df.columns:
+        continue
+    for _, row in df.iterrows():
+        tid = str(row.get("Test ID", ""))
+        res = str(row.get("Result", "")).strip().upper()
+        if tid not in all_results:
+            all_results[tid] = {}
+            ref_info[tid] = {
+                "Category":  row.get("Category", ""),
+                "Test Name": row.get("Test Name", ""),
+                "Sub Item":  row.get("Sub Item", ""),
+            }
+        all_results[tid][ln] = res
+
+transition_rows: list[dict] = []
+for tid, loop_map in all_results.items():
+    sequence = [(ln, loop_map[ln]) for ln in loop_nums if ln in loop_map]
+    flips = []
+    for i in range(1, len(sequence)):
+        prev_loop, prev_res = sequence[i - 1]
+        curr_loop, curr_res = sequence[i]
+        if prev_res in VALID and curr_res in VALID and prev_res != curr_res:
+            flips.append(f"L{prev_loop}→L{curr_loop}: {prev_res}→{curr_res}")
+    if flips:
+        transition_rows.append({
+            "Test ID":     tid,
+            "Category":    ref_info[tid]["Category"],
+            "Test Name":   ref_info[tid]["Test Name"],
+            "Sub Item":    ref_info[tid]["Sub Item"],
+            "Transitions": len(flips),
+            "Detail":      "  |  ".join(flips),
+        })
+
+transition_df = (
+    pd.DataFrame(transition_rows).sort_values("Transitions", ascending=False)
+    if transition_rows else pd.DataFrame()
+)
+
+# ---------------------------------------------------------------------------
+# Result Sequence per Unstable Item
+# ---------------------------------------------------------------------------
+with col_seq:
+    st.subheader("Result Sequence per Unstable Item")
+    if transition_df.empty:
+        st.success("No state transitions detected across all loops.")
     else:
-        st.info("Not enough data for heatmap.")
+        top_ids = transition_df.head(30)["Test ID"].tolist()
+        selected_id = st.selectbox(
+            "Select Test ID to inspect",
+            top_ids,
+            format_func=lambda tid: (
+                f"{tid} — {ref_info[tid]['Test Name']} / {ref_info[tid]['Sub Item']}"
+            ),
+        )
+        if selected_id:
+            seq_data = [
+                {"Loop": ln, "Result": all_results[selected_id].get(ln, "N/A")}
+                for ln in loop_nums
+                if ln in all_results[selected_id]
+            ]
+            seq_df = pd.DataFrame(seq_data)
+            result_num = {"PASS": 1, "BLOCK": 0, "FAIL": -1}
+            seq_df["Value"] = seq_df["Result"].map(lambda r: result_num.get(r, None))
+
+            with st.container(border=True):
+                fig_seq = go.Figure()
+                fig_seq.add_trace(go.Scatter(
+                    x=seq_df["Loop"],
+                    y=seq_df["Value"],
+                    mode="lines+markers+text",
+                    text=seq_df["Result"],
+                    textposition="top center",
+                    marker=dict(
+                        size=10,
+                        color=seq_df["Result"].map({
+                            "PASS": "#00AA55", "FAIL": "#EE3333",
+                            "BLOCK": "#DD8800", "N/A": "#AAAAAA",
+                        }),
+                    ),
+                    line=dict(color="#AAAAAA", width=1, dash="dot"),
+                ))
+                fig_seq.update_layout(**light_layout(
+                    yaxis=dict(
+                        tickvals=[-1, 0, 1],
+                        ticktext=["FAIL", "BLOCK", "PASS"],
+                        range=[-1.5, 1.5],
+                        title="",
+                    ),
+                    xaxis=dict(title="Loop", dtick=1),
+                    height=365,
+                ))
+                st.plotly_chart(fig_seq, width="stretch")
