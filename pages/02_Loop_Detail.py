@@ -17,7 +17,7 @@ from components.result_table import (
     render_category_filter,
     render_result_filter,
 )
-from utils.helpers import get_loop_numbers, LOG_LEVEL_COLORS
+from utils.helpers import LOG_LEVEL_COLORS
 from utils.failure_analysis import analyze_failures, ROOT_CAUSE_COLOR, ROOT_CAUSE_ICON
 
 session_data, selected_loop = render_sidebar(show_loop_selector=True)
@@ -220,7 +220,7 @@ if log_entries:
     level_filter = st.multiselect(
         "Show log levels",
         options=["info", "pass", "fail", "error", "warning"],
-        default=["fail", "error", "warning", "pass"],
+        default=["info", "fail", "error", "warning", "pass"],
         key=f"logfilter_{selected_loop}",
     )
     filtered_entries = [e for e in log_entries if e["level"] in level_filter]
