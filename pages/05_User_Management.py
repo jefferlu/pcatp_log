@@ -81,6 +81,7 @@ for username, info in list(users.items()):
                 cfg = _load_config()
                 cfg["credentials"]["usernames"].pop(username, None)
                 _save_config(cfg)
+                st.cache_resource.clear()   # force app.py to reload users.yaml on next request
                 st.session_state.pop(f"_confirm_delete_{username}", None)
                 st.success(f"User **{username}** deleted ({deleted} session(s) removed).")
                 st.rerun()

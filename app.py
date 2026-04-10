@@ -6,6 +6,7 @@ Run with:
 """
 from pathlib import Path
 
+import bcrypt
 import streamlit as st
 import yaml
 
@@ -59,6 +60,12 @@ def _load_auth_config():
         return yaml.safe_load(f)
 
 
+def _reload_auth_config():
+    """Clear the cache and reload users.yaml. Call after any write to users.yaml."""
+    _load_auth_config.clear()
+    return _load_auth_config()
+
+
 try:
     import streamlit_authenticator as stauth  # type: ignore[import-untyped]
     _auth_config = _load_auth_config()
@@ -101,14 +108,49 @@ try:
         st.markdown("<br>" * 3, unsafe_allow_html=True)
         _, center_col, _ = st.columns([1, 0.7, 1])
         with center_col:
-            authenticator.login(fields={
-                'Form name': 'ATP Log Analyzer',
-                'Username': 'Username',
-                'Password': 'Password',
-                'Login': 'Login',
-            })
-            if st.session_state.get("authentication_status") is False:
-                st.error("Invalid username or password")
+            tab_login, tab_register = st.tabs(["Login", "Register"])
+
+            with tab_login:
+                authenticator.login(fields={
+                    'Form name': 'ATP Log Analyzer',
+                    'Username': 'Username',
+                    'Password': 'Password',
+                    'Login': 'Login',
+                })
+                if st.session_state.get("authentication_status") is False:
+                    st.error("Invalid username or password")
+
+            with tab_register:
+                with st.form("register_form"):
+                    st.markdown("### Create Account")
+                    reg_username    = st.text_input("Username")
+                    reg_name        = st.text_input("Display Name")
+                    reg_email       = st.text_input("Email")
+                    reg_password    = st.text_input("Password",         type="password")
+                    reg_confirm     = st.text_input("Confirm Password", type="password")
+                    submitted = st.form_submit_button("Register", use_container_width=True)
+
+                if submitted:
+                    _cfg = _load_auth_config()
+                    _users = _cfg.get("credentials", {}).get("usernames", {})
+                    if not reg_username or not reg_password:
+                        st.error("Username and password are required.")
+                    elif reg_username in _users:
+                        st.error(f"Username '{reg_username}' already exists.")
+                    elif reg_password != reg_confirm:
+                        st.error("Passwords do not match.")
+                    else:
+                        _hashed = bcrypt.hashpw(reg_password.encode(), bcrypt.gensalt(12)).decode()
+                        _cfg["credentials"]["usernames"][reg_username] = {
+                            "name":     reg_name or reg_username,
+                            "email":    reg_email,
+                            "password": _hashed,
+                            "role":     "user",
+                        }
+                        with open(_CONFIG_PATH, "w", encoding="utf-8") as _f:
+                            yaml.dump(_cfg, _f, allow_unicode=True, default_flow_style=False)
+                        _reload_auth_config()
+                        st.success(f"Account '{reg_username}' created. You can now log in.")
 
         # Hide sidebar last — injected just before render completes so sidebar
         # disappears together with page content, not before.
@@ -120,9 +162,16 @@ try:
         """, unsafe_allow_html=True)
         st.stop()
 
-    # Authenticated — expose helpers via session_state
+    # Authenticated — verify the user still exists (guards against stale cookies
+    # left over after an account was deleted via User Management)
     _username = st.session_state.get("username", "")
-    _cred = _auth_config["credentials"]["usernames"].get(_username, {})
+    _fresh_config = _reload_auth_config()
+    _cred = _fresh_config["credentials"]["usernames"].get(_username)
+    if _cred is None:
+        # Account no longer exists — force logout and clear session
+        for _k in list(st.session_state.keys()):
+            del st.session_state[_k]
+        st.rerun()
     _is_admin = _cred.get("role", "user") == "admin"
     st.session_state["_username"] = _username
     st.session_state["_is_admin"] = _is_admin
