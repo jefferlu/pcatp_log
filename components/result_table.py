@@ -81,7 +81,7 @@ def render_result_table(
     st.dataframe(
         styled,
         height=height,
-        use_container_width=True,
+        width="stretch",
         column_config=_col_config,
         key=key,
     )

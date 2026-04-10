@@ -224,6 +224,22 @@ def load_session(session_id: str) -> dict | None:
     }
 
 
+def delete_sessions_by_owner(username: str) -> int:
+    """Delete all sessions (and related data) owned by *username*.
+
+    Returns the number of sessions deleted.
+    """
+    with connect() as conn:
+        rows = conn.execute(
+            "SELECT session_id FROM sessions WHERE owner = ?", [username]
+        ).fetchall()
+        session_ids = [r[0] for r in rows]
+        for sid in session_ids:
+            for table in ("sessions", "loop_headers", "results", "legacy_results", "log_entries"):
+                conn.execute(f"DELETE FROM {table} WHERE session_id = ?", [sid])
+    return len(session_ids)
+
+
 def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
     """Load log entries for a specific loop."""
     with connect() as conn:

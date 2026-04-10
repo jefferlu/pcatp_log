@@ -1,5 +1,5 @@
 """
-Page 4 — Criteria Tuning
+Page 4 — Criteria Optimization
 =========================
 Upload a TestCriteria_*.config, automatically suggest adjusted _Min/_Max
 values based on out-of-range failures across all loops of the selected
@@ -13,6 +13,10 @@ import pandas as pd
 import streamlit as st
 
 if not st.session_state.get("_username"):
+    st.stop()
+
+if not st.session_state.get("_is_admin"):
+    st.error("Access denied. This page is available to administrators only.")
     st.stop()
 
 from components.sidebar import render_sidebar
@@ -305,7 +309,7 @@ def _style_table(df: pd.DataFrame) -> pd.DataFrame:
 st.dataframe(
     suggestions[_DISPLAY_COLS].style.apply(_style_table, axis=None),
     hide_index=True,
-    use_container_width=True,
+    width="stretch",
     column_config={
         "Parameter":     st.column_config.TextColumn("Parameter",   width=180),
         "Root Cause":    st.column_config.TextColumn("Root Cause",  width=160),
@@ -326,7 +330,7 @@ edited = st.data_editor(
     column_order=["Parameter", "Suggested Min", "Suggested Max"],
     disabled=["Parameter"],
     hide_index=True,
-    use_container_width=True,
+    width="stretch",
     column_config={
         "Parameter":     st.column_config.TextColumn("Parameter",   width=200),
         "Suggested Min": st.column_config.NumberColumn("Sug Min ✏", width=120),

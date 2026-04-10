@@ -148,20 +148,25 @@ except Exception as e:
 # ---------------------------------------------------------------------------
 # Navigation
 # ---------------------------------------------------------------------------
-pg = st.navigation(
-    {
-        "Analysis": [
-            st.Page("pages/01_Session_Overview.py", title="Session Overview",
-                    icon=":material/expand_circle_right:", default=True),
-            st.Page("pages/02_Loop_Detail.py", title="Loop Detail", icon=":material/expand_circle_right:"),
-            st.Page("pages/03_Comparison.py", title="Comparison", icon=":material/expand_circle_right:"),
-        ],
-        "Data": [
-            st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
-        ],
-        "Tools": [
-            st.Page("pages/04_Criteria_Tuning.py", title="Criteria Tuning", icon=":material/tune:"),
-        ]
-    }
-)
+_is_admin = st.session_state.get("_is_admin", False)
+
+_nav: dict = {
+    "Data": [
+        st.Page("pages/00_Upload.py", title="Import Sessions", icon=":material/database_upload:"),
+    ],
+    "Analysis": [
+        st.Page("pages/01_Session_Overview.py", title="Session Overview",
+                icon=":material/expand_circle_right:", default=True),
+        st.Page("pages/02_Loop_Detail.py", title="Loop Detail", icon=":material/expand_circle_right:"),
+        st.Page("pages/03_Comparison.py", title="Comparison", icon=":material/expand_circle_right:"),
+    ],
+}
+
+if _is_admin:
+    _nav["Tools"] = [
+        st.Page("pages/04_Criteria_Tuning.py", title="Criteria Optimization", icon=":material/tune:"),
+        st.Page("pages/05_User_Management.py", title="User Management", icon=":material/manage_accounts:"),
+    ]
+
+pg = st.navigation(_nav)
 pg.run()
