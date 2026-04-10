@@ -61,7 +61,7 @@ for ln in loop_nums:
         "Fail":   counts["failed"],
         "Block":  counts["blocked"],
     })
-st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 st.divider()
 
@@ -99,7 +99,7 @@ with st.container(border=True):
         xaxis=dict(title="Loop"),
         yaxis=dict(title="Count"),
     ))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 # ---------------------------------------------------------------------------
 # Overall donut chart for first loop with data
@@ -139,7 +139,7 @@ with col_breakdown:
             hole=0.45,
         )
         fig_pie.update_layout(**light_layout())
-        st.plotly_chart(fig_pie, use_container_width=True)
+        st.plotly_chart(fig_pie, width="stretch")
 
 with col_heatmap:
     st.subheader("Result Heatmap (Test ID × Loop)")
@@ -163,6 +163,6 @@ with col_heatmap:
                 coloraxis_showscale=False,
                 height=max(400, len(all_ids) * 8),
             ))
-            st.plotly_chart(fig_heat, use_container_width=True)
+            st.plotly_chart(fig_heat, width="stretch")
     else:
         st.info("Not enough data for heatmap.")

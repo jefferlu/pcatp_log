@@ -196,7 +196,7 @@ else:
     st.dataframe(
         display_df.style.apply(_row_color, axis=1),
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         column_config={
             "Test ID":      st.column_config.NumberColumn("Monitor ID", width=80),
             "Category":     st.column_config.TextColumn("Category",   width=160),
