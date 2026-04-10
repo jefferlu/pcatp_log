@@ -186,6 +186,7 @@ with col_seq:
             ),
         )
         if selected_id:
+            _test_name = ref_info[selected_id]["Test Name"]
             seq_data = [
                 {"Loop": ln, "Result": all_results[selected_id].get(ln, "N/A")}
                 for ln in loop_nums
@@ -203,6 +204,7 @@ with col_seq:
                     mode="lines+markers+text",
                     text=seq_df["Result"],
                     textposition="top center",
+                    hovertemplate=f"{_test_name}<extra></extra>",
                     marker=dict(
                         size=10,
                         color=seq_df["Result"].map({
