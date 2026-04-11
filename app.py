@@ -102,6 +102,14 @@ try:
             max-width: none !important;
             box-sizing: border-box !important;
         }
+        /* Delay login tabs appearance to prevent flash during cookie validation */
+        [data-testid="stTabs"] {
+            animation: fadeInTabs 0s ease 0.3s both;
+        }
+        @keyframes fadeInTabs {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
         </style>
         """, unsafe_allow_html=True)
 

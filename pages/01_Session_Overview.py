@@ -3,8 +3,9 @@ Page 1 — Session Overview
 ===========================
 Shows aggregate summary, per-loop PASS/FAIL/BLOCK trends and test-item heatmap.
 """
+import re
+
 import pandas as pd
-import plotly.express as px  # used for pie chart
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -66,61 +67,75 @@ st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 st.divider()
 
 # ---------------------------------------------------------------------------
-# Per-loop stats for charts
+# Fail Parameters across all loops
 # ---------------------------------------------------------------------------
-chart_rows = []
+_RANGE_RE    = re.compile(r"Min:([\d.Ee+\-]+)\s+Max:([\d.Ee+\-]+)\s*\|\s*Limit\[([\d.Ee+\-]+)~([\d.Ee+\-]+)\]")
+_AVG_RE      = re.compile(r"Avg:([\d.Ee+\-]+)\s*\|\s*Limit\[([\d.Ee+\-]+)~([\d.Ee+\-]+)\]")
+
+fail_rows = []
 for ln in loop_nums:
-    counts = compute_counts(loops[ln].get("results"))
-    chart_rows.append({"Loop": ln, **counts})
-stats_df = pd.DataFrame(chart_rows)
+    df = loops[ln].get("results", pd.DataFrame())
+    if df.empty:
+        continue
+    fail_df = df[df["Result"].str.strip().str.upper() == "FAIL"]
+    for _, row in fail_df.iterrows():
+        val = str(row.get("Value", "")).strip()
+        m = _RANGE_RE.search(val)
+        if m:
+            fail_rows.append({
+                "Loop":      ln,
+                "Test Name": row.get("Test Name", ""),
+                "Sub Item":  row.get("Sub Item", ""),
+                "Min":       float(m.group(1)),
+                "Max":       float(m.group(2)),
+                "Limit Lo":  float(m.group(3)),
+                "Limit Hi":  float(m.group(4)),
+            })
+            continue
+        m = _AVG_RE.search(val)
+        if m:
+            fail_rows.append({
+                "Loop":      ln,
+                "Test Name": row.get("Test Name", ""),
+                "Sub Item":  row.get("Sub Item", ""),
+                "Min":       float(m.group(1)),
+                "Max":       float(m.group(1)),
+                "Limit Lo":  float(m.group(2)),
+                "Limit Hi":  float(m.group(3)),
+            })
 
-# ---------------------------------------------------------------------------
-# Trend line chart
-# ---------------------------------------------------------------------------
-st.subheader("Pass / Fail / Block Trend per Loop")
-with st.container(border=True):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=stats_df["Loop"], y=stats_df["passed"],
-        mode="lines+markers", name="PASS",
-        line=dict(color="#00AA55", width=2),
-    ))
-    fig.add_trace(go.Scatter(
-        x=stats_df["Loop"], y=stats_df["failed"],
-        mode="lines+markers", name="FAIL",
-        line=dict(color="#EE3333", width=2),
-    ))
-    fig.add_trace(go.Scatter(
-        x=stats_df["Loop"], y=stats_df["blocked"],
-        mode="lines+markers", name="BLOCK",
-        line=dict(color="#DD8800", width=2),
-    ))
-    fig.update_layout(**light_layout(
-        xaxis=dict(title="Loop"),
-        yaxis=dict(title="Count"),
-    ))
-    st.plotly_chart(fig, width="stretch")
+if fail_rows:
+    st.subheader("Fail Parameters")
+    fail_table = pd.DataFrame(fail_rows)
 
-# ---------------------------------------------------------------------------
-# Overall donut chart for first loop with data
-# ---------------------------------------------------------------------------
-first_loop = loop_nums[0]
-first_counts = compute_counts(loops[first_loop].get("results"))
+    # Assign alternating color index per loop group
+    _loop_order = list(dict.fromkeys(fail_table["Loop"]))
+    _loop_color = {ln: i % 2 for i, ln in enumerate(_loop_order)}
+    _BG = ["#F8F8F8", "#EEF4FF"]  # light grey / light blue
 
-col_breakdown, col_seq = st.columns([1, 2])
+    _loop_per_row = [_BG[_loop_color[ln]] for ln in fail_table["Loop"]]
 
-with col_breakdown:
-    st.subheader(f"Loop {first_loop} Breakdown")
-    with st.container(border=True):
-        fig_pie = px.pie(
-            names=["PASS", "FAIL", "BLOCK"],
-            values=[first_counts["passed"], first_counts["failed"], first_counts["blocked"]],
-            color=["PASS", "FAIL", "BLOCK"],
-            color_discrete_map={"PASS": "#00AA55", "FAIL": "#EE3333", "BLOCK": "#DD8800"},
-            hole=0.45,
-        )
-        fig_pie.update_layout(**light_layout())
-        st.plotly_chart(fig_pie, width="stretch")
+    def _style_fail_table(df: pd.DataFrame) -> pd.DataFrame:
+        styles = pd.DataFrame("", index=df.index, columns=df.columns)
+        for i, idx in enumerate(df.index):
+            styles.loc[idx] = f"background-color: {_loop_per_row[i]}"
+        return styles
+
+    st.dataframe(
+        fail_table.style.apply(_style_fail_table, axis=None),
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "Loop":      st.column_config.NumberColumn("Loop",     width=60),
+            "Test Name": st.column_config.TextColumn("Test Name", width=160),
+            "Sub Item":  st.column_config.TextColumn("Sub Item",  width=180),
+            "Min":       st.column_config.NumberColumn("Min",      width=90, format="%.2f"),
+            "Max":       st.column_config.NumberColumn("Max",      width=90, format="%.2f"),
+            "Limit Lo":  st.column_config.NumberColumn("Limit Lo", width=90, format="%.2f"),
+            "Limit Hi":  st.column_config.NumberColumn("Limit Hi", width=90, format="%.2f"),
+        },
+    )
+    st.divider()
 
 # ---------------------------------------------------------------------------
 # Transition computation
@@ -147,6 +162,9 @@ for ln in loop_nums:
 
 transition_rows: list[dict] = []
 for tid, loop_map in all_results.items():
+    has_fail = any(r == "FAIL" for r in loop_map.values())
+    if not has_fail:
+        continue
     sequence = [(ln, loop_map[ln]) for ln in loop_nums if ln in loop_map]
     flips = []
     for i in range(1, len(sequence)):
@@ -154,15 +172,14 @@ for tid, loop_map in all_results.items():
         curr_loop, curr_res = sequence[i]
         if prev_res in VALID and curr_res in VALID and prev_res != curr_res:
             flips.append(f"L{prev_loop}→L{curr_loop}: {prev_res}→{curr_res}")
-    if flips:
-        transition_rows.append({
-            "Test ID":     tid,
-            "Category":    ref_info[tid]["Category"],
-            "Test Name":   ref_info[tid]["Test Name"],
-            "Sub Item":    ref_info[tid]["Sub Item"],
-            "Transitions": len(flips),
-            "Detail":      "  |  ".join(flips),
-        })
+    transition_rows.append({
+        "Test ID":     tid,
+        "Category":    ref_info[tid]["Category"],
+        "Test Name":   ref_info[tid]["Test Name"],
+        "Sub Item":    ref_info[tid]["Sub Item"],
+        "Transitions": len(flips),
+        "Detail":      "  |  ".join(flips),
+    })
 
 transition_df = (
     pd.DataFrame(transition_rows).sort_values("Transitions", ascending=False)
@@ -170,58 +187,57 @@ transition_df = (
 )
 
 # ---------------------------------------------------------------------------
-# Result Sequence per Unstable Item
+# Result Sequence per Fail Item
 # ---------------------------------------------------------------------------
-with col_seq:
-    st.subheader("Result Sequence per Unstable Item")
-    if transition_df.empty:
-        st.success("No state transitions detected across all loops.")
-    else:
-        top_ids = transition_df.head(30)["Test ID"].tolist()
-        selected_id = st.selectbox(
-            "Select Test ID to inspect",
-            top_ids,
-            format_func=lambda tid: (
-                f"{tid} — {ref_info[tid]['Test Name']} / {ref_info[tid]['Sub Item']}"
-            ),
-        )
-        if selected_id:
-            _test_name = ref_info[selected_id]["Test Name"]
-            seq_data = [
-                {"Loop": ln, "Result": all_results[selected_id].get(ln, "N/A")}
-                for ln in loop_nums
-                if ln in all_results[selected_id]
-            ]
-            seq_df = pd.DataFrame(seq_data)
-            result_num = {"PASS": 1, "BLOCK": 0, "FAIL": -1}
-            seq_df["Value"] = seq_df["Result"].map(lambda r: result_num.get(r, None))
+st.subheader("Result Sequence per Fail Item")
+if transition_df.empty:
+    st.success("No failures detected across all loops.")
+else:
+    top_ids = transition_df.head(30)["Test ID"].tolist()
+    selected_id = st.selectbox(
+        "Select Test ID to inspect",
+        top_ids,
+        format_func=lambda tid: (
+            f"{tid} — {ref_info[tid]['Test Name']} / {ref_info[tid]['Sub Item']}"
+        ),
+    )
+    if selected_id:
+        _test_name = ref_info[selected_id]["Test Name"]
+        seq_data = [
+            {"Loop": ln, "Result": all_results[selected_id].get(ln, "N/A")}
+            for ln in loop_nums
+            if ln in all_results[selected_id]
+        ]
+        seq_df = pd.DataFrame(seq_data)
+        result_num = {"PASS": 1, "BLOCK": 0, "FAIL": -1}
+        seq_df["Value"] = seq_df["Result"].map(lambda r: result_num.get(r, None))
 
-            with st.container(border=True):
-                fig_seq = go.Figure()
-                fig_seq.add_trace(go.Scatter(
-                    x=seq_df["Loop"],
-                    y=seq_df["Value"],
-                    mode="lines+markers+text",
-                    text=seq_df["Result"],
-                    textposition="top center",
-                    hovertemplate=f"{_test_name}<extra></extra>",
-                    marker=dict(
-                        size=10,
-                        color=seq_df["Result"].map({
-                            "PASS": "#00AA55", "FAIL": "#EE3333",
-                            "BLOCK": "#DD8800", "N/A": "#AAAAAA",
-                        }),
-                    ),
-                    line=dict(color="#AAAAAA", width=1, dash="dot"),
-                ))
-                fig_seq.update_layout(**light_layout(
-                    yaxis=dict(
-                        tickvals=[-1, 0, 1],
-                        ticktext=["FAIL", "BLOCK", "PASS"],
-                        range=[-1.5, 1.5],
-                        title="",
-                    ),
-                    xaxis=dict(title="Loop", dtick=1),
-                    height=365,
-                ))
-                st.plotly_chart(fig_seq, width="stretch")
+        with st.container(border=True):
+            fig_seq = go.Figure()
+            fig_seq.add_trace(go.Scatter(
+                x=seq_df["Loop"],
+                y=seq_df["Value"],
+                mode="lines+markers+text",
+                text=seq_df["Result"],
+                textposition="top center",
+                hovertemplate=f"{_test_name}<extra></extra>",
+                marker=dict(
+                    size=10,
+                    color=seq_df["Result"].map({
+                        "PASS": "#00AA55", "FAIL": "#EE3333",
+                        "BLOCK": "#DD8800", "N/A": "#AAAAAA",
+                    }),
+                ),
+                line=dict(color="#AAAAAA", width=1, dash="dot"),
+            ))
+            fig_seq.update_layout(**light_layout(
+                yaxis=dict(
+                    tickvals=[-1, 0, 1],
+                    ticktext=["FAIL", "BLOCK", "PASS"],
+                    range=[-1.5, 1.5],
+                    title="",
+                ),
+                xaxis=dict(title="Loop", dtick=1),
+                height=365,
+            ))
+            st.plotly_chart(fig_seq, width="stretch")
