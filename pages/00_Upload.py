@@ -1,6 +1,6 @@
 """
 Upload Page — Import ATP log sessions into the database.
-Supports ZIP archives or individual CSV files.
+Supports ZIP archives, individual CSV files, or selecting directories from the server.
 """
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ from db.importer import import_session
 from parsers.csv_parser import _is_loop_csv
 
 render_sidebar(show_loop_selector=False)
+
 
 # ---------------------------------------------------------------------------
 # Show import results carried over from the previous run (after st.rerun)
@@ -114,6 +115,104 @@ def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
 
     return session_dirs
 
+
+# ---------------------------------------------------------------------------
+# Import from local directory
+# ---------------------------------------------------------------------------
+_PREFS_PATH = Path(__file__).parent.parent / "config" / "upload_prefs.json"
+
+
+def _load_log_root() -> str:
+    try:
+        import json
+        return json.loads(_PREFS_PATH.read_text()).get("log_root", "")
+    except Exception:
+        return ""
+
+
+def _save_log_root(path: str) -> None:
+    import json
+    _PREFS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _PREFS_PATH.write_text(json.dumps({"log_root": path}))
+
+
+def _find_session_dirs(root: Path) -> list[Path]:
+    return sorted(
+        p for p in root.rglob("*")
+        if p.is_dir() and any(p.glob("*.csv"))
+    )
+
+
+# Load persisted path into session_state on first load / after refresh
+if "_log_root_path" not in st.session_state:
+    st.session_state["_log_root_path"] = _load_log_root()
+
+with st.container(border=True):
+    st.subheader("Import from Directory")
+
+    log_root_input = st.text_input(
+        "Log directory path",
+        value=st.session_state["_log_root_path"],
+        placeholder="/path/to/log/folder",
+        key="log_root_input",
+    )
+
+    # Save to disk whenever path changes
+    if log_root_input != st.session_state["_log_root_path"]:
+        st.session_state["_log_root_path"] = log_root_input
+        st.session_state["_selected_log_dirs"] = []
+        _save_log_root(log_root_input)
+
+    log_root = Path(log_root_input) if log_root_input else None
+
+    if log_root and not log_root.exists():
+        st.error(f"Directory not found: `{log_root_input}`")
+    elif log_root:
+        session_dirs_found = _find_session_dirs(log_root)
+
+        if not session_dirs_found:
+            st.info("No session directories (containing CSV files) found.")
+        else:
+            _dir_labels = {str(p): str(p.relative_to(log_root)) for p in session_dirs_found}
+            _saved = [s for s in st.session_state.get("_selected_log_dirs", [])
+                      if s in _dir_labels]
+
+            selected_dirs = st.multiselect(
+                f"{len(session_dirs_found)} session(s) found — select to import",
+                options=list(_dir_labels.keys()),
+                default=_saved,
+                format_func=lambda p: _dir_labels[p],
+                key="selected_log_dirs_widget",
+            )
+            st.session_state["_selected_log_dirs"] = selected_dirs
+
+            _, btn_col2 = st.columns([8, 1])
+            if btn_col2.button("Import", type="primary",
+                               disabled=not selected_dirs, key="import_dir"):
+                results = []
+                progress = st.progress(0)
+                for i, dir_str in enumerate(selected_dirs):
+                    src = Path(dir_str)
+                    with st.spinner(f"Importing {src.name}…"):
+                        try:
+                            owner = st.session_state.get("_username", "")
+                            result = import_session(src, overwrite=True, owner=owner)
+                        except Exception as e:
+                            result = {
+                                "session_id": src.name,
+                                "loops_imported": 0,
+                                "skipped": False,
+                                "error": f"**{src.name}** — import failed: {e}",
+                            }
+                    results.append(result)
+                    progress.progress((i + 1) / len(selected_dirs))
+
+                st.session_state["_import_results"] = results
+                st.session_state["_selected_log_dirs"] = []
+                st.cache_data.clear()
+                st.rerun()
+
+st.divider()
 
 # ---------------------------------------------------------------------------
 # Upload section
