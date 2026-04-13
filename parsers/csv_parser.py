@@ -228,4 +228,20 @@ def load_session(session_dir: Path) -> dict:
         if not data["header_meta"] and header:
             data["header_meta"] = header
 
+    # Fallback: single-CSV session where the only file has no loop number.
+    # Treat it as loop 1 so it can still be imported.
+    if not data["loops"]:
+        for csv_file in sorted(session_dir.glob("*.csv")):
+            is_loop, _ = _is_loop_csv(csv_file)
+            if not is_loop:
+                header, results, legacy = parse_loop_results(csv_file)
+                header.setdefault("Test Loop", "1")
+                data["loops"][1] = {
+                    "header": header,
+                    "results": results,
+                    "legacy": legacy,
+                }
+                data["header_meta"] = header
+                break
+
     return data

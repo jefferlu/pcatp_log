@@ -67,6 +67,15 @@ def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") 
     # Map loop_num → per-loop TXT (by numeric filename prefix)
     txt_map = _map_loop_txts(session_dir)
 
+    # Fallback: if no TXT was mapped but exactly one TXT exists and exactly one
+    # loop is present (the single-CSV / no-loop-number case), map that TXT to
+    # the single loop so it is not skipped.
+    if not txt_map:
+        all_txts = list(session_dir.glob("*.txt"))
+        if len(all_txts) == 1 and len(loops) == 1:
+            only_loop = next(iter(loops))
+            txt_map[only_loop] = all_txts[0]
+
     # Determine log_type from the first available per-loop TXT
     log_type = ""
     for loop_num in sorted(txt_map):
@@ -83,6 +92,11 @@ def import_session(session_dir: Path, overwrite: bool = False, owner: str = "") 
             loops_skipped.append({"loop": loop_num, "reason": "missing TXT file"})
         else:
             complete_loops.append(loop_num)
+
+    # Detect loops that have a TXT but no CSV (e.g. empty/corrupt CSV file)
+    for loop_num in sorted(txt_map.keys()):
+        if loop_num not in loops and loop_num not in [s["loop"] for s in loops_skipped]:
+            loops_skipped.append({"loop": loop_num, "reason": "empty or missing CSV file"})
 
     if not complete_loops:
         return {
