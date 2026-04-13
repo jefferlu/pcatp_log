@@ -141,10 +141,23 @@ def _save_log_root(username: str, path: str) -> None:
 
 
 def _find_session_dirs(root: Path) -> list[Path]:
-    return sorted(
+    # Find subdirectories that directly contain CSV files (not via rglob)
+    subdirs = sorted(
         p for p in root.rglob("*")
-        if p.is_dir() and any(p.glob("*.csv"))
+        if p.is_dir() and p != root and any(p.glob("*.csv"))
     )
+    # Exclude intermediate directories whose CSV-containing children are already listed
+    # (keep only leaf session dirs, i.e. dirs that don't contain other csv-dirs inside)
+    leaf_dirs = [
+        p for p in subdirs
+        if not any(child.is_dir() and any(child.glob("*.csv")) for child in p.iterdir())
+    ]
+    if leaf_dirs:
+        return leaf_dirs
+    # Fallback: root itself is the session directory
+    if any(root.glob("*.csv")):
+        return [root]
+    return []
 
 
 # Load persisted path into session_state on first load / after refresh
@@ -178,7 +191,10 @@ with st.container(border=True):
         if not session_dirs_found:
             st.info("No session directories (containing CSV files) found.")
         else:
-            _dir_labels = {str(p): str(p.relative_to(log_root)) for p in session_dirs_found}
+            _dir_labels = {
+                str(p): p.name if p == log_root else str(p.relative_to(log_root))
+                for p in session_dirs_found
+            }
             _saved = [s for s in st.session_state.get("_selected_log_dirs", [])
                       if s in _dir_labels]
 
@@ -195,22 +211,46 @@ with st.container(border=True):
             if btn_col2.button("Import", type="primary",
                                disabled=not selected_dirs, key="import_dir"):
                 results = []
-                progress = st.progress(0)
-                for i, dir_str in enumerate(selected_dirs):
-                    src = Path(dir_str)
-                    with st.spinner(f"Importing {src.name}…"):
-                        try:
-                            owner = st.session_state.get("_username", "")
-                            result = import_session(src, overwrite=True, owner=owner)
-                        except Exception as e:
-                            result = {
-                                "session_id": src.name,
-                                "loops_imported": 0,
-                                "skipped": False,
-                                "error": f"**{src.name}** — import failed: {e}",
-                            }
-                    results.append(result)
-                    progress.progress((i + 1) / len(selected_dirs))
+                with tempfile.TemporaryDirectory() as tmp_root:
+                    tmp_path = Path(tmp_root)
+                    progress = st.progress(0)
+                    for i, dir_str in enumerate(selected_dirs):
+                        src = Path(dir_str)
+                        with st.spinner(f"Compressing & importing {src.name}…"):
+                            try:
+                                # Pack directory into an in-memory ZIP
+                                zip_buf = io.BytesIO()
+                                zip_buf.name = f"{src.name}.zip"
+                                with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+                                    for f in sorted(src.iterdir()):
+                                        if f.is_file() and not f.name.startswith((".", "__")):
+                                            zf.write(f, f.name)
+                                zip_buf.seek(0)
+
+                                # Use the same ZIP extraction logic as manual upload
+                                dirs = _prepare_zip_sessions(zip_buf, tmp_path)
+                                if not dirs:
+                                    results.append({
+                                        "session_id": src.name,
+                                        "loops_imported": 0,
+                                        "loops_skipped": [],
+                                        "skipped": False,
+                                        "error": f"**{src.name}** — no CSV files found after compression.",
+                                    })
+                                else:
+                                    for sess_dir in dirs:
+                                        owner = st.session_state.get("_username", "")
+                                        result = import_session(sess_dir, overwrite=True, owner=owner)
+                                        results.append(result)
+                            except Exception as e:
+                                results.append({
+                                    "session_id": src.name,
+                                    "loops_imported": 0,
+                                    "loops_skipped": [],
+                                    "skipped": False,
+                                    "error": f"**{src.name}** — import failed: {e}",
+                                })
+                        progress.progress((i + 1) / len(selected_dirs))
 
                 st.session_state["_import_results"] = results
                 st.session_state["_selected_log_dirs"] = []
