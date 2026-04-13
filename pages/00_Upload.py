@@ -119,21 +119,25 @@ def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
 # ---------------------------------------------------------------------------
 # Import from local directory
 # ---------------------------------------------------------------------------
-_PREFS_PATH = Path(__file__).parent.parent / "config" / "upload_prefs.json"
+_PREFS_DIR = Path(__file__).parent.parent / "config" / "user_prefs"
 
 
-def _load_log_root() -> str:
+def _prefs_path(username: str) -> Path:
+    return _PREFS_DIR / f"{username}.json"
+
+
+def _load_log_root(username: str) -> str:
     try:
         import json
-        return json.loads(_PREFS_PATH.read_text()).get("log_root", "")
+        return json.loads(_prefs_path(username).read_text()).get("log_root", "")
     except Exception:
         return ""
 
 
-def _save_log_root(path: str) -> None:
+def _save_log_root(username: str, path: str) -> None:
     import json
-    _PREFS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    _PREFS_PATH.write_text(json.dumps({"log_root": path}))
+    _PREFS_DIR.mkdir(parents=True, exist_ok=True)
+    _prefs_path(username).write_text(json.dumps({"log_root": path}))
 
 
 def _find_session_dirs(root: Path) -> list[Path]:
@@ -144,8 +148,9 @@ def _find_session_dirs(root: Path) -> list[Path]:
 
 
 # Load persisted path into session_state on first load / after refresh
+_current_user = st.session_state.get("_username", "")
 if "_log_root_path" not in st.session_state:
-    st.session_state["_log_root_path"] = _load_log_root()
+    st.session_state["_log_root_path"] = _load_log_root(_current_user)
 
 with st.container(border=True):
     st.subheader("Import from Directory")
@@ -161,7 +166,7 @@ with st.container(border=True):
     if log_root_input != st.session_state["_log_root_path"]:
         st.session_state["_log_root_path"] = log_root_input
         st.session_state["_selected_log_dirs"] = []
-        _save_log_root(log_root_input)
+        _save_log_root(_current_user, log_root_input)
 
     log_root = Path(log_root_input) if log_root_input else None
 
