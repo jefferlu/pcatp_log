@@ -195,7 +195,7 @@ def _apply_and_export(config_bytes: bytes, edited_df: pd.DataFrame) -> str:
 
 
 def _build_bulk_table(config: CriteriaConfig) -> pd.DataFrame:
-    """Return a DataFrame of all Min/Max pairs with +10% margin applied."""
+    """Return a DataFrame of all Min/Max pairs with +MARGIN applied."""
     base_map = _build_base_map(config)
     rows = []
     for _, (key_min, key_max) in sorted(base_map.items()):
@@ -308,7 +308,7 @@ st.success(
 # Tabs
 # ---------------------------------------------------------------------------
 st.divider()
-tab_fail, tab_bulk = st.tabs(["Failure-Based Suggestions", "Bulk +10% Margin"])
+tab_fail, tab_bulk = st.tabs(["Failure-Based Suggestions", f"Bulk +{int(_MARGIN*100)}% Margin"])
 
 # ---------------------------------------------------------------------------
 # Tab 1 — Failure-Based
@@ -398,7 +398,7 @@ with tab_fail:
         )
 
 # ---------------------------------------------------------------------------
-# Tab 2 — Bulk +10% Margin
+# Tab 2 — Bulk Margin
 # ---------------------------------------------------------------------------
 _ADJ_STYLE = "background-color: #E8F5E9; color: #1B5E20; font-weight: bold;"
 
