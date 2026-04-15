@@ -18,7 +18,7 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from db.database import list_sessions, load_fail_values
+from db.database import list_sessions, load_fail_values, load_all_results
 
 render_sidebar(show_loop_selector=False)
 
@@ -151,23 +151,32 @@ st.subheader("Export to Excel")
 
 _total_loops_map = {s["session_id"]: s["total_loops"] for s in all_sessions}
 
-def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
+with st.spinner("Loading all results for export…"):
+    all_results_df = load_all_results(selected_sessions)
+
+def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFrame) -> bytes:
     buf = io.BytesIO()
+    _sum_fill  = PatternFill("solid", fgColor="4472C4")   # blue — summary header
+    _raw_fill  = PatternFill("solid", fgColor="70AD47")   # green — raw header
+    _fail_fill = PatternFill("solid", fgColor="FFCCCC")   # red — fail rows
+    _hdr_font  = Font(color="FFFFFF", bold=True)
+
     with pd.ExcelWriter(buf, engine="openpyxl") as writer:
         for session_id in sessions:
-            sess_df = df[df["session_id"] == session_id]
-            if sess_df.empty:
+            sess_fail = fail_df[fail_df["session_id"] == session_id]
+            sess_all  = all_df[all_df["session_id"] == session_id]
+            if sess_all.empty:
                 continue
 
             total_loops = _total_loops_map.get(session_id, "—")
 
-            # Summary
+            # Summary (from fail data)
             summary_rows = []
-            for param in sorted(sess_df["param"].unique()):
-                pdata = sess_df[sess_df["param"] == param]
-                vals = pdata["numeric_value"]
-                lmin = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
-                lmax = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
+            for param in sorted(sess_fail["param"].unique()) if not sess_fail.empty else []:
+                pdata = sess_fail[sess_fail["param"] == param]
+                vals  = pdata["numeric_value"]
+                lmin  = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
+                lmax  = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
                 summary_rows.append({
                     "Parameter":        param,
                     "Total Fail Loops": int(vals.count()),
@@ -181,30 +190,37 @@ def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
                 })
             summary_df = pd.DataFrame(summary_rows)
 
-            # Raw
-            raw_df = sess_df[["loop_num", "test_name", "sub_item", "param", "numeric_value"]].copy()
-            raw_df.columns = ["Loop", "Test Name", "Sub Item", "Parameter", "Value"]
-            raw_df = raw_df.sort_values(["Parameter", "Loop"])
+            # Raw — all parameters, sorted by loop then test_name
+            raw_df = sess_all[["loop_num", "test_name", "sub_item", "result", "value"]].copy()
+            raw_df.columns = ["Loop", "Test Name", "Sub Item", "Result", "Value"]
+            raw_df = raw_df.sort_values(["Loop", "Test Name", "Sub Item"]).reset_index(drop=True)
 
-            # Write to single sheet: summary at top, blank row, then raw
+            # Write sheets
             sheet_name = session_id[:31]
             summary_df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=0)
-            raw_start = len(summary_df) + 2  # +1 header, +1 blank row
+            raw_start = len(summary_df) + 2
             raw_df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=raw_start)
 
-            # Apply header background colours
             ws = writer.sheets[sheet_name]
-            _sum_fill = PatternFill("solid", fgColor="4472C4")  # blue
-            _raw_fill = PatternFill("solid", fgColor="70AD47")  # green
-            _font     = Font(color="FFFFFF", bold=True)
-            for cell in ws[1]:                          # summary header row (row 1)
+
+            # Header colours
+            for cell in ws[1]:
                 if cell.value is not None:
                     cell.fill = _sum_fill
-                    cell.font = _font
-            for cell in ws[raw_start + 1]:              # raw header row
+                    cell.font = _hdr_font
+            for cell in ws[raw_start + 1]:
                 if cell.value is not None:
                     cell.fill = _raw_fill
-                    cell.font = _font
+                    cell.font = _hdr_font
+
+            # Highlight FAIL rows in raw table
+            result_col_idx = raw_df.columns.get_loc("Result") + 1  # 1-based
+            for row_offset, result_val in enumerate(raw_df["Result"]):
+                if str(result_val).upper() == "FAIL":
+                    excel_row = raw_start + 2 + row_offset  # +2: header row + 1-based
+                    for cell in ws[excel_row]:
+                        if cell.column <= len(raw_df.columns):
+                            cell.fill = _fail_fill
 
             # Auto-fit column widths
             for col in ws.columns:
@@ -219,7 +235,7 @@ def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
 
 fname = "Fail_Distribution.xlsx"
 with st.spinner("Building Excel…"):
-    excel_bytes = _build_excel(selected_sessions, fail_df)
+    excel_bytes = _build_excel(selected_sessions, fail_df, all_results_df)
 st.download_button(
     label="Download Excel",
     data=excel_bytes,
