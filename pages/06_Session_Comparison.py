@@ -200,7 +200,7 @@ def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
     buf.seek(0)
     return buf.read()
 
-fname = "fail_distribution.xlsx"
+fname = "Fail_Distribution.xlsx"
 with st.spinner("Building Excel…"):
     excel_bytes = _build_excel(selected_sessions, fail_df)
 st.download_button(
