@@ -83,15 +83,20 @@ for session_id in selected_sessions:
         # Summary table
         summary_rows = []
         for param in params_sorted:
-            vals = sess_df[sess_df["param"] == param]["numeric_value"]
-            loop_count = sess_df[sess_df["param"] == param]["loop_num"].nunique()
+            pdata = sess_df[sess_df["param"] == param]
+            vals = pdata["numeric_value"]
+            loop_count = pdata["loop_num"].nunique()
+            lmin = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
+            lmax = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
             summary_rows.append({
-                "Parameter":  param,
+                "Parameter":        param,
                 "Total Fail Loops": int(loop_count),
-                "Median":     round(float(np.median(vals)), 4),
-                "Min":        round(float(vals.min()), 4),
-                "Max":        round(float(vals.max()), 4),
-                "Range":      round(float(vals.max() - vals.min()), 4),
+                "Limit Min":        round(float(lmin), 4) if lmin is not None else None,
+                "Limit Max":        round(float(lmax), 4) if lmax is not None else None,
+                "Val Min":          round(float(vals.min()), 4),
+                "Val Max":          round(float(vals.max()), 4),
+                "Median":           round(float(np.median(vals)), 4),
+                "Range":            round(float(vals.max() - vals.min()), 4),
             })
         summary_df = pd.DataFrame(summary_rows)
 
@@ -100,12 +105,14 @@ for session_id in selected_sessions:
             hide_index=True,
             width="stretch",
             column_config={
-                "Parameter":  st.column_config.TextColumn("Parameter",    width=220),
-                "Total Fail Loops": st.column_config.NumberColumn("Total Fail Loops", width=90),
-                "Median":     st.column_config.NumberColumn("Median",     width=100, format="%.4f"),
-                "Min":        st.column_config.NumberColumn("Min",        width=100, format="%.4f"),
-                "Max":        st.column_config.NumberColumn("Max",        width=100, format="%.4f"),
-                "Range":      st.column_config.NumberColumn("Range",      width=100, format="%.4f"),
+                "Parameter":        st.column_config.TextColumn("Parameter",         width=220),
+                "Total Fail Loops": st.column_config.NumberColumn("Total Fail Loops", width=100),
+                "Limit Min":        st.column_config.NumberColumn("Limit Min",        width=100, format="%.4f"),
+                "Limit Max":        st.column_config.NumberColumn("Limit Max",        width=100, format="%.4f"),
+                "Val Min":          st.column_config.NumberColumn("Val Min",          width=100, format="%.4f"),
+                "Val Max":          st.column_config.NumberColumn("Val Max",          width=100, format="%.4f"),
+                "Median":           st.column_config.NumberColumn("Median",           width=100, format="%.4f"),
+                "Range":            st.column_config.NumberColumn("Range",            width=100, format="%.4f"),
             },
         )
 
@@ -157,14 +164,19 @@ def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
             # Summary
             summary_rows = []
             for param in sorted(sess_df["param"].unique()):
-                vals = sess_df[sess_df["param"] == param]["numeric_value"]
+                pdata = sess_df[sess_df["param"] == param]
+                vals = pdata["numeric_value"]
+                lmin = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
+                lmax = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
                 summary_rows.append({
                     "Parameter":        param,
                     "Total Fail Loops": int(vals.count()),
                     "Total Loops":      total_loops,
+                    "Limit Min":        round(float(lmin), 4) if lmin is not None else "",
+                    "Limit Max":        round(float(lmax), 4) if lmax is not None else "",
+                    "Val Min":          round(float(vals.min()), 4),
+                    "Val Max":          round(float(vals.max()), 4),
                     "Median":           round(float(np.median(vals)), 4),
-                    "Min":              round(float(vals.min()), 4),
-                    "Max":              round(float(vals.max()), 4),
                     "Range":            round(float(vals.max() - vals.min()), 4),
                 })
             summary_df = pd.DataFrame(summary_rows)
