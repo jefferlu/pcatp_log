@@ -163,6 +163,10 @@ cython_debug/
 
 .python-version
 .DS_Store
+
+# Runtime-generated config (do not commit)
+config/users.yaml
+config/user_prefs/
 media-root/
 pcatp_log_wpf
 atp-log-analyzer
