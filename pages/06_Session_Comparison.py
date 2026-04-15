@@ -100,8 +100,27 @@ for session_id in selected_sessions:
             })
         summary_df = pd.DataFrame(summary_rows)
 
+        def _style_summary(df: pd.DataFrame) -> pd.DataFrame:
+            styles = pd.DataFrame("", index=df.index, columns=df.columns)
+            _fail_bg = "background-color: #FFCCCC;"
+            _out_bg  = "background-color: #FF6666; font-weight: bold;"
+            for i, row in df.iterrows():
+                # Highlight Val Min red if below Limit Min
+                if pd.notna(row.get("Limit Min")) and pd.notna(row.get("Val Min")):
+                    if row["Val Min"] < row["Limit Min"]:
+                        styles.at[i, "Val Min"] = _out_bg
+                # Highlight Val Max red if above Limit Max
+                if pd.notna(row.get("Limit Max")) and pd.notna(row.get("Val Max")):
+                    if row["Val Max"] > row["Limit Max"]:
+                        styles.at[i, "Val Max"] = _out_bg
+                # Light red on entire row for fail parameters
+                for col in df.columns:
+                    if styles.at[i, col] == "":
+                        styles.at[i, col] = _fail_bg
+            return styles
+
         st.dataframe(
-            summary_df,
+            summary_df.style.apply(_style_summary, axis=None),
             hide_index=True,
             width="stretch",
             column_config={
