@@ -4,6 +4,8 @@ ATP Log Analyzer — Main Entry Point
 Run with:
     streamlit run app.py
 """
+APP_VERSION = "1.1.0"
+
 from pathlib import Path
 
 import bcrypt
@@ -194,6 +196,23 @@ try:
         with open(_CONFIG_PATH, "w", encoding="utf-8") as _f:
             yaml.dump(_fresh_config, _f, allow_unicode=True, default_flow_style=False)
         st.session_state["_last_login_written"] = True
+
+    # Inject title into the stSidebarHeader area
+    st.markdown(
+        f"""
+        <style>
+        [data-testid="stSidebarHeader"]::before {{
+            content: "ATP Log Analyzer V{APP_VERSION}";
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem 0.25rem 1rem;
+            color: inherit;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     # Sidebar: username (left) + logout button (right) on same row
     _col_name, _col_out = st.sidebar.columns([3, 1])

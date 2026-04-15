@@ -7,6 +7,7 @@ credentials:
     admin:
       email: admin@example.com
       failed_login_attempts: 0
+      last_login: '2026-04-15 22:03:24'
       logged_in: false
       name: Administrator
       password: $2b$12$MiGNHLJZYnb3jxgC8OICseNUPM6k6s1ahdAqNADYDweuEUoSRcBge
