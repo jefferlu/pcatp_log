@@ -216,6 +216,7 @@ _nav: dict = {
                 icon=":material/expand_circle_right:", default=True),
         st.Page("pages/02_Loop_Detail.py", title="Loop Analysis", icon=":material/expand_circle_right:"),
         st.Page("pages/03_Comparison.py", title="State Transition", icon=":material/expand_circle_right:"),
+        st.Page("pages/06_Session_Comparison.py", title="Session Comparison", icon=":material/expand_circle_right:"),
     ],
 }
 
