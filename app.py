@@ -149,11 +149,14 @@ try:
                         st.error("Passwords do not match.")
                     else:
                         _hashed = bcrypt.hashpw(reg_password.encode(), bcrypt.gensalt(12)).decode()
+                        _now = __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         _cfg["credentials"]["usernames"][reg_username] = {
-                            "name":     reg_name or reg_username,
-                            "email":    reg_email,
-                            "password": _hashed,
-                            "role":     "user",
+                            "name":       reg_name or reg_username,
+                            "email":      reg_email,
+                            "password":   _hashed,
+                            "role":       "user",
+                            "created_at": _now,
+                            "last_login": "",
                         }
                         with open(_CONFIG_PATH, "w", encoding="utf-8") as _f:
                             yaml.dump(_cfg, _f, allow_unicode=True, default_flow_style=False)
@@ -183,6 +186,14 @@ try:
     _is_admin = _cred.get("role", "user") == "admin"
     st.session_state["_username"] = _username
     st.session_state["_is_admin"] = _is_admin
+
+    # Write last_login on first run after authentication
+    if not st.session_state.get("_last_login_written"):
+        _now = __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        _fresh_config["credentials"]["usernames"][_username]["last_login"] = _now
+        with open(_CONFIG_PATH, "w", encoding="utf-8") as _f:
+            yaml.dump(_fresh_config, _f, allow_unicode=True, default_flow_style=False)
+        st.session_state["_last_login_written"] = True
 
     # Sidebar: username (left) + logout button (right) on same row
     _col_name, _col_out = st.sidebar.columns([3, 1])
