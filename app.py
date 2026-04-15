@@ -54,6 +54,13 @@ st.markdown(
 # Authentication
 # ---------------------------------------------------------------------------
 _CONFIG_PATH = Path(__file__).parent / "config" / "users.yaml"
+_CONFIG_EXAMPLE = Path(__file__).parent / "config" / "users.yaml.example"
+
+# Auto-create users.yaml from example template if missing
+if not _CONFIG_PATH.exists():
+    import shutil
+    _CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(_CONFIG_EXAMPLE, _CONFIG_PATH)
 
 
 @st.cache_resource
