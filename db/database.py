@@ -240,6 +240,58 @@ def delete_sessions_by_owner(username: str) -> int:
     return len(session_ids)
 
 
+def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
+    """Return all FAIL rows with parsed numeric values for the given sessions.
+
+    Returns a DataFrame with columns:
+        session_id, loop_num, test_name, sub_item, numeric_value
+    Only rows where a numeric value can be extracted from the Value field are included.
+    """
+    import re
+    if not session_ids:
+        return pd.DataFrame()
+
+    placeholders = ", ".join("?" * len(session_ids))
+    with connect() as conn:
+        df = conn.execute(
+            f"SELECT session_id, loop_num, test_name, sub_item, value "
+            f"FROM results "
+            f"WHERE session_id IN ({placeholders}) AND upper(result) = 'FAIL'",
+            session_ids,
+        ).df()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    # Extract numeric value: prefer "Min:X Max:Y" midpoint, then "Avg:X", then bare number
+    _range_re = re.compile(r"Min:([\d.Ee+\-]+)\s+Max:([\d.Ee+\-]+)")
+    _avg_re   = re.compile(r"Avg:([\d.Ee+\-]+)")
+    _num_re   = re.compile(r"([\d.Ee+\-]+)")
+
+    def _extract(val: str) -> float | None:
+        try:
+            m = _range_re.search(val)
+            if m:
+                return (float(m.group(1)) + float(m.group(2))) / 2
+            m = _avg_re.search(val)
+            if m:
+                return float(m.group(1))
+            m = _num_re.search(val)
+            if m:
+                return float(m.group(1))
+        except (ValueError, TypeError):
+            pass
+        return None
+
+    df["numeric_value"] = df["value"].apply(lambda v: _extract(str(v)))
+    df = df.dropna(subset=["numeric_value"])
+    df["param"] = df.apply(
+        lambda r: r["sub_item"].strip() if r["sub_item"].strip() else r["test_name"].strip(),
+        axis=1,
+    )
+    return df[["session_id", "loop_num", "test_name", "sub_item", "param", "numeric_value"]].reset_index(drop=True)
+
+
 def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
     """Load log entries for a specific loop."""
     with connect() as conn:
