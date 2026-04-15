@@ -134,72 +134,72 @@ with st.container(border=True):
     )
 
     _, btn_col_dir = st.columns([8, 1])
+    _dir_importing = st.session_state.get("_dir_importing", False)
     if btn_col_dir.button("Import", type="primary",
-                          disabled=not dir_files, key="import_dir"):
-        results = []
-        with tempfile.TemporaryDirectory() as tmp_root:
-            tmp_path = Path(tmp_root)
-            with st.spinner("Packing & importing…"):
-                try:
-                    # Write all files to a staging dir
-                    staging = tmp_path / "_staging"
-                    staging.mkdir()
-                    for uf in dir_files:
-                        (staging / uf.name).write_bytes(uf.read())
-
-                    # Derive session ID from the first loop CSV:
-                    # e.g. "1_EMM_EE_20260409234918" → "EE_20260409234918"
-                    # (strip leading "{num}_{mode}_" prefix)
-                    def _session_from_loop_stem(stem: str) -> str:
-                        parts = stem.split("_")
-                        if len(parts) > 2 and parts[0].isdigit():
-                            return "_".join(parts[2:])
-                        return stem
-
-                    session_id = None
-                    for p in sorted(staging.glob("*.csv")):
-                        is_loop, _ = _is_loop_csv(p)
-                        if is_loop:
-                            session_id = _session_from_loop_stem(p.stem)
-                            break
-                    if session_id is None:
-                        # Fallback: use summary CSV stem or first filename
-                        for p in sorted(staging.glob("*.csv")):
-                            session_id = p.stem
-                            break
-                    if session_id is None:
-                        session_id = Path(dir_files[0].name).stem
-
-                    # Pack everything into a ZIP and use the standard pipeline
-                    zip_buf = io.BytesIO()
-                    zip_buf.name = f"{session_id}.zip"
-                    with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
-                        for f in sorted(staging.iterdir()):
-                            if f.is_file():
-                                zf.write(f, f.name)
-                    zip_buf.seek(0)
-
-                    dirs = _prepare_zip_sessions(zip_buf, tmp_path)
-                    if not dirs:
-                        results.append({
-                            "session_id": session_id, "loops_imported": 0,
-                            "loops_skipped": [], "skipped": False,
-                            "error": f"**{session_id}** — no CSV files found.",
-                        })
-                    else:
-                        for sess_dir in dirs:
-                            owner = st.session_state.get("_username", "")
-                            result = import_session(sess_dir, overwrite=True, owner=owner)
-                            results.append(result)
-                except Exception as e:
-                    results.append({
-                        "session_id": "", "loops_imported": 0,
-                        "loops_skipped": [], "skipped": False,
-                        "error": f"Import failed: {e}",
-                    })
-        st.session_state["_import_results"] = results
-        st.cache_data.clear()
+                          disabled=not dir_files or _dir_importing, key="import_dir"):
+        st.session_state["_dir_importing"] = True
         st.rerun()
+
+if st.session_state.get("_dir_importing") and dir_files:
+    results = []
+    with tempfile.TemporaryDirectory() as tmp_root:
+        tmp_path = Path(tmp_root)
+        with st.spinner("Packing & importing…"):
+            try:
+                staging = tmp_path / "_staging"
+                staging.mkdir()
+                for uf in dir_files:
+                    (staging / uf.name).write_bytes(uf.read())
+
+                def _session_from_loop_stem(stem: str) -> str:
+                    parts = stem.split("_")
+                    if len(parts) > 2 and parts[0].isdigit():
+                        return "_".join(parts[2:])
+                    return stem
+
+                session_id = None
+                for p in sorted(staging.glob("*.csv")):
+                    is_loop, _ = _is_loop_csv(p)
+                    if is_loop:
+                        session_id = _session_from_loop_stem(p.stem)
+                        break
+                if session_id is None:
+                    for p in sorted(staging.glob("*.csv")):
+                        session_id = p.stem
+                        break
+                if session_id is None:
+                    session_id = Path(dir_files[0].name).stem
+
+                zip_buf = io.BytesIO()
+                zip_buf.name = f"{session_id}.zip"
+                with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for f in sorted(staging.iterdir()):
+                        if f.is_file():
+                            zf.write(f, f.name)
+                zip_buf.seek(0)
+
+                dirs = _prepare_zip_sessions(zip_buf, tmp_path)
+                if not dirs:
+                    results.append({
+                        "session_id": session_id, "loops_imported": 0,
+                        "loops_skipped": [], "skipped": False,
+                        "error": f"**{session_id}** — no CSV files found.",
+                    })
+                else:
+                    for sess_dir in dirs:
+                        owner = st.session_state.get("_username", "")
+                        result = import_session(sess_dir, overwrite=True, owner=owner)
+                        results.append(result)
+            except Exception as e:
+                results.append({
+                    "session_id": "", "loops_imported": 0,
+                    "loops_skipped": [], "skipped": False,
+                    "error": f"Import failed: {e}",
+                })
+    st.session_state["_dir_importing"] = False
+    st.session_state["_import_results"] = results
+    st.cache_data.clear()
+    st.rerun()
 
 st.divider()
 
@@ -222,70 +222,77 @@ with st.container(border=True):
     st.warning("Sessions with the same name will be overwritten automatically.")
 
     _, btn_col = st.columns([8, 1])
-    if btn_col.button("Import", type="primary", disabled=not uploaded, use_container_width=True):
-        results = []
-        with tempfile.TemporaryDirectory() as tmp_root:
-            tmp_path = Path(tmp_root)
-
-            zip_files = [f for f in uploaded if f.name.endswith(".zip")]
-            csv_files = [f for f in uploaded if f.name.endswith(".csv")]
-
-            session_dirs: list[Path] = []
-
-            # --- Process ZIP files (each ZIP → one or more sessions) ---
-            for zf in zip_files:
-                dirs = _prepare_zip_sessions(zf, tmp_path)
-                if not dirs:
-                    results.append({
-                        "error": f"No CSV files found in **{zf.name}**.",
-                        "session_id": "", "loops_imported": 0, "skipped": False,
-                    })
-                else:
-                    session_dirs.extend(dirs)
-
-            # --- Process loose CSV files → session named after summary CSV ---
-            if csv_files:
-                staging = tmp_path / "_staging"
-                staging.mkdir()
-                for cf in csv_files:
-                    (staging / cf.name).write_bytes(cf.read())
-
-                session_id = None
-                for p in sorted(staging.glob("*.csv")):
-                    is_loop, _ = _is_loop_csv(p)
-                    if not is_loop:
-                        session_id = p.stem
-                        break
-                if session_id is None:
-                    session_id = Path(csv_files[0].name).stem
-
-                sess_dir = tmp_path / session_id
-                sess_dir.mkdir(exist_ok=True)
-                for p in staging.iterdir():
-                    p.rename(sess_dir / p.name)
-                session_dirs.append(sess_dir)
-
-            # --- Import ---
-            if session_dirs:
-                progress = st.progress(0)
-                for i, sess_dir in enumerate(session_dirs):
-                    with st.spinner(f"Importing {sess_dir.name}…"):
-                        try:
-                            owner = st.session_state.get("_username", "")
-                            result = import_session(sess_dir, overwrite=True, owner=owner)
-                        except Exception as e:
-                            result = {
-                                "session_id": sess_dir.name,
-                                "loops_imported": 0,
-                                "skipped": False,
-                                "error": f"**{sess_dir.name}** — import failed: {e}",
-                            }
-                        results.append(result)
-                    progress.progress((i + 1) / len(session_dirs))
-
-        st.session_state["_import_results"] = results
-        st.cache_data.clear()
+    _uploading = st.session_state.get("_uploading", False)
+    if btn_col.button("Import", type="primary",
+                      disabled=not uploaded or _uploading, use_container_width=True):
+        st.session_state["_uploading"] = True
         st.rerun()
+
+if st.session_state.get("_uploading") and uploaded:
+    results = []
+    with tempfile.TemporaryDirectory() as tmp_root:
+        tmp_path = Path(tmp_root)
+
+        zip_files = [f for f in uploaded if f.name.endswith(".zip")]
+        csv_files = [f for f in uploaded if f.name.endswith(".csv")]
+
+        session_dirs: list[Path] = []
+
+        # --- Process ZIP files (each ZIP → one or more sessions) ---
+        for zf in zip_files:
+            dirs = _prepare_zip_sessions(zf, tmp_path)
+            if not dirs:
+                results.append({
+                    "error": f"No CSV files found in **{zf.name}**.",
+                    "session_id": "", "loops_imported": 0, "skipped": False,
+                })
+            else:
+                session_dirs.extend(dirs)
+
+        # --- Process loose CSV files → session named after summary CSV ---
+        if csv_files:
+            staging = tmp_path / "_staging"
+            staging.mkdir()
+            for cf in csv_files:
+                (staging / cf.name).write_bytes(cf.read())
+
+            session_id = None
+            for p in sorted(staging.glob("*.csv")):
+                is_loop, _ = _is_loop_csv(p)
+                if not is_loop:
+                    session_id = p.stem
+                    break
+            if session_id is None:
+                session_id = Path(csv_files[0].name).stem
+
+            sess_dir = tmp_path / session_id
+            sess_dir.mkdir(exist_ok=True)
+            for p in staging.iterdir():
+                p.rename(sess_dir / p.name)
+            session_dirs.append(sess_dir)
+
+        # --- Import ---
+        if session_dirs:
+            progress = st.progress(0)
+            for i, sess_dir in enumerate(session_dirs):
+                with st.spinner(f"Importing {sess_dir.name}…"):
+                    try:
+                        owner = st.session_state.get("_username", "")
+                        result = import_session(sess_dir, overwrite=True, owner=owner)
+                    except Exception as e:
+                        result = {
+                            "session_id": sess_dir.name,
+                            "loops_imported": 0,
+                            "skipped": False,
+                            "error": f"**{sess_dir.name}** — import failed: {e}",
+                        }
+                    results.append(result)
+                progress.progress((i + 1) / len(session_dirs))
+
+    st.session_state["_uploading"] = False
+    st.session_state["_import_results"] = results
+    st.cache_data.clear()
+    st.rerun()
 
 st.divider()
 
