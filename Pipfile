@@ -11,6 +11,7 @@ duckdb = "*"
 streamlit-authenticator = "*"
 pyyaml = "*"
 bcrypt = "*"
+openpyxl = "*"
 
 [dev-packages]
 
