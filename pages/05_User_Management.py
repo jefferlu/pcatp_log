@@ -53,15 +53,15 @@ if not users:
 
 for username, info in list(users.items()):
     with st.container(border=True):
-        c_name, c_email, c_role, c_sessions, c_action = st.columns([2, 3, 1, 1, 1])
+        c_name, c_email, c_role, c_sessions, c_created, c_last, c_action = st.columns([2, 2, 1, 1, 2, 2, 1])
         c_name.markdown(f"**{info.get('name', username)}**  \n`{username}`")
         c_email.markdown(info.get("email", "—"))
         c_role.markdown(f"`{info.get('role', 'user')}`")
 
-        session_count = len(list_sessions(username, is_admin=True))
-        # filter to only this user's own sessions
         own_sessions = [s for s in list_sessions(username, is_admin=True) if s["owner"] == username]
         c_sessions.metric("Sessions", len(own_sessions))
+        c_created.markdown(f"**Registered**  \n{info.get('created_at', '—')}")
+        c_last.markdown(f"**Last Login**  \n{info.get('last_login', '—') or '—'}")
 
         if username == current_user:
             c_action.caption("")
