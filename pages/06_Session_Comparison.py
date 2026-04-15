@@ -142,6 +142,8 @@ st.divider()
 # ---------------------------------------------------------------------------
 st.subheader("Export to Excel")
 
+_total_loops_map = {s["session_id"]: s["total_loops"] for s in all_sessions}
+
 def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine="openpyxl") as writer:
@@ -150,17 +152,20 @@ def _build_excel(sessions: list[str], df: pd.DataFrame) -> bytes:
             if sess_df.empty:
                 continue
 
+            total_loops = _total_loops_map.get(session_id, "—")
+
             # Summary
             summary_rows = []
             for param in sorted(sess_df["param"].unique()):
                 vals = sess_df[sess_df["param"] == param]["numeric_value"]
                 summary_rows.append({
-                    "Parameter":  param,
+                    "Parameter":        param,
                     "Total Fail Loops": int(vals.count()),
-                    "Median":     round(float(np.median(vals)), 4),
-                    "Min":        round(float(vals.min()), 4),
-                    "Max":        round(float(vals.max()), 4),
-                    "Range":      round(float(vals.max() - vals.min()), 4),
+                    "Total Loops":      total_loops,
+                    "Median":           round(float(np.median(vals)), 4),
+                    "Min":              round(float(vals.min()), 4),
+                    "Max":              round(float(vals.max()), 4),
+                    "Range":            round(float(vals.max() - vals.min()), 4),
                 })
             summary_df = pd.DataFrame(summary_rows)
 
