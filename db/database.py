@@ -301,6 +301,22 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
                "numeric_value", "limit_min", "limit_max"]].reset_index(drop=True)
 
 
+def load_all_results(session_ids: list[str]) -> pd.DataFrame:
+    """Return all result rows for the given sessions (all results, not just FAIL)."""
+    if not session_ids:
+        return pd.DataFrame()
+    placeholders = ", ".join("?" * len(session_ids))
+    with connect() as conn:
+        df = conn.execute(
+            f"SELECT session_id, loop_num, test_name, sub_item, result, value "
+            f"FROM results "
+            f"WHERE session_id IN ({placeholders}) "
+            f"ORDER BY session_id, loop_num, test_name, sub_item",
+            session_ids,
+        ).df()
+    return df
+
+
 def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
     """Load log entries for a specific loop."""
     with connect() as conn:
