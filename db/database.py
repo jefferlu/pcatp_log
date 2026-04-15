@@ -284,11 +284,10 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
         return None
 
     df["numeric_value"] = df["value"].apply(lambda v: _extract(str(v)))
-    df = df.dropna(subset=["numeric_value"])
-    df["param"] = df.apply(
-        lambda r: r["sub_item"].strip() if r["sub_item"].strip() else r["test_name"].strip(),
-        axis=1,
-    )
+    df = df.dropna(subset=["numeric_value"]).copy()
+    sub  = df["sub_item"].astype(str).str.strip()
+    name = df["test_name"].astype(str).str.strip()
+    df["param"] = sub.where(sub != "", name)
     return df[["session_id", "loop_num", "test_name", "sub_item", "param", "numeric_value"]].reset_index(drop=True)
 
 
