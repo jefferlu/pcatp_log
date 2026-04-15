@@ -147,6 +147,8 @@ st.divider()
 st.subheader("Failure Analysis")
 
 fail_df = analyze_failures(results_df, log_entries)
+if not fail_df.empty:
+    fail_df = fail_df.sort_values("Root Cause").reset_index(drop=True)
 
 if fail_df.empty:
     st.success("No failures to analyse in this loop.")
