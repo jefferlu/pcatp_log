@@ -244,7 +244,8 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
     """Return all FAIL rows with parsed numeric values for the given sessions.
 
     Returns a DataFrame with columns:
-        session_id, loop_num, test_name, sub_item, numeric_value
+        session_id, loop_num, test_name, sub_item, param,
+        numeric_value, limit_min, limit_max
     Only rows where a numeric value can be extracted from the Value field are included.
     """
     import re
@@ -263,32 +264,41 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame()
 
-    # Extract numeric value: prefer "Min:X Max:Y" midpoint, then "Avg:X", then bare number
-    _range_re = re.compile(r"Min:([\d.Ee+\-]+)\s+Max:([\d.Ee+\-]+)")
     _avg_re   = re.compile(r"Avg:([\d.Ee+\-]+)")
-    _num_re   = re.compile(r"([\d.Ee+\-]+)")
+    _num_re   = re.compile(r"^[\d.Ee+\-]+$")
+    _limit_re = re.compile(r"Limit\[([\d.Ee+\-]+)~([\d.Ee+\-]+)\]")
 
-    def _extract(val: str) -> float | None:
+    def _extract_value(val: str) -> float | None:
         try:
-            m = _range_re.search(val)
-            if m:
-                return (float(m.group(1)) + float(m.group(2))) / 2
             m = _avg_re.search(val)
             if m:
                 return float(m.group(1))
-            m = _num_re.search(val)
-            if m:
-                return float(m.group(1))
+            v = val.split("|")[0].strip()
+            if _num_re.match(v):
+                return float(v)
         except (ValueError, TypeError):
             pass
         return None
 
-    df["numeric_value"] = df["value"].apply(lambda v: _extract(str(v)))
+    def _extract_limits(val: str) -> tuple[float | None, float | None]:
+        try:
+            m = _limit_re.search(val)
+            if m:
+                return float(m.group(1)), float(m.group(2))
+        except (ValueError, TypeError):
+            pass
+        return None, None
+
+    df["numeric_value"] = df["value"].apply(lambda v: _extract_value(str(v)))
     df = df.dropna(subset=["numeric_value"]).copy()
+    limits = df["value"].apply(lambda v: pd.Series(_extract_limits(str(v)), index=["limit_min", "limit_max"]))
+    df["limit_min"] = limits["limit_min"]
+    df["limit_max"] = limits["limit_max"]
     sub  = df["sub_item"].astype(str).str.strip()
     name = df["test_name"].astype(str).str.strip()
     df["param"] = sub.where(sub != "", name)
-    return df[["session_id", "loop_num", "test_name", "sub_item", "param", "numeric_value"]].reset_index(drop=True)
+    return df[["session_id", "loop_num", "test_name", "sub_item", "param",
+               "numeric_value", "limit_min", "limit_max"]].reset_index(drop=True)
 
 
 def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
