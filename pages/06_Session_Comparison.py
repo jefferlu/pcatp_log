@@ -88,8 +88,11 @@ for session_id in selected_sessions:
             loop_count = pdata["loop_num"].nunique()
             lmin = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
             lmax = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
+            test_name = pdata["test_name"].iloc[0] if not pdata.empty else ""
+            sub_item  = pdata["sub_item"].iloc[0]  if not pdata.empty else ""
             summary_rows.append({
-                "Parameter":        param,
+                "Test Name":        test_name,
+                "Sub Item":         sub_item,
                 "Total Fail Loops": int(loop_count),
                 "Limit Min":        round(float(lmin), 4) if lmin is not None else None,
                 "Limit Max":        round(float(lmax), 4) if lmax is not None else None,
@@ -105,7 +108,8 @@ for session_id in selected_sessions:
             hide_index=True,
             width="stretch",
             column_config={
-                "Parameter":        st.column_config.TextColumn("Parameter",         width=220),
+                "Test Name":        st.column_config.TextColumn("Test Name",          width=180),
+                "Sub Item":         st.column_config.TextColumn("Sub Item",           width=200),
                 "Total Fail Loops": st.column_config.NumberColumn("Total Fail Loops", width=100),
                 "Limit Min":        st.column_config.NumberColumn("Limit Min",        width=100, format="%.4f"),
                 "Limit Max":        st.column_config.NumberColumn("Limit Max",        width=100, format="%.4f"),
@@ -177,8 +181,11 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
                 vals  = pdata["numeric_value"]
                 lmin  = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
                 lmax  = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
+                test_name = pdata["test_name"].iloc[0] if not pdata.empty else ""
+                sub_item  = pdata["sub_item"].iloc[0]  if not pdata.empty else ""
                 summary_rows.append({
-                    "Parameter":        param,
+                    "Test Name":        test_name,
+                    "Sub Item":         sub_item,
                     "Total Fail Loops": int(vals.count()),
                     "Total Loops":      total_loops,
                     "Limit Min":        round(float(lmin), 4) if lmin is not None else "",

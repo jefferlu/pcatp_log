@@ -291,9 +291,9 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
 
     df["numeric_value"] = df["value"].apply(lambda v: _extract_value(str(v)))
     df = df.dropna(subset=["numeric_value"]).copy()
-    limits = df["value"].apply(lambda v: pd.Series(_extract_limits(str(v)), index=["limit_min", "limit_max"]))
-    df["limit_min"] = limits["limit_min"]
-    df["limit_max"] = limits["limit_max"]
+    _limits = df["value"].apply(lambda v: _extract_limits(str(v)))
+    df["limit_min"] = _limits.apply(lambda t: t[0])
+    df["limit_max"] = _limits.apply(lambda t: t[1])
     sub  = df["sub_item"].astype(str).str.strip()
     name = df["test_name"].astype(str).str.strip()
     df["param"] = sub.where(sub != "", name)
