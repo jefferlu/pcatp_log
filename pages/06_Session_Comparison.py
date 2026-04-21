@@ -144,7 +144,7 @@ for session_id in selected_sessions:
                 showlegend=False,
             )
             with st.container(border=True):
-                st.plotly_chart(fig, width="stretch")
+                st.plotly_chart(fig, width="stretch", key=f"boxplot_{session_id}")
 
 st.divider()
 
