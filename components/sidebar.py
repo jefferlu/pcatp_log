@@ -100,6 +100,7 @@ def render_sidebar(
     st.sidebar.markdown("---")
     if session_data:
         sess_meta = next((s for s in sessions if s["session_id"] == selected_name), {})
+        st.session_state["_session_log_type"] = sess_meta.get("log_type", "")
         st.sidebar.markdown(f"Session: `{selected_name}`")
         if sess_meta.get("log_type"):
             st.sidebar.markdown(f"Type: **{sess_meta['log_type']}**")
