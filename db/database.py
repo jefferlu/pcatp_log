@@ -85,6 +85,28 @@ _DDL_STATEMENTS = [
     """
     ALTER TABLE sessions ADD COLUMN IF NOT EXISTS log_type TEXT DEFAULT ''
     """,
+    """
+    CREATE TABLE IF NOT EXISTS spec_mapping (
+        log_type        TEXT,
+        test_name       TEXT,
+        pin_no          TEXT,
+        item_no         TEXT,
+        voltage_v       DOUBLE,
+        load_resistor   DOUBLE,
+        evo_imm_group   TEXT,
+        gen1_net_name   TEXT,
+        evo_net_name    TEXT,
+        PRIMARY KEY (log_type, test_name)
+    )
+    """,
+    # Migration: add log_type to existing spec_mapping that lacks it
+    """
+    ALTER TABLE spec_mapping ADD COLUMN IF NOT EXISTS log_type TEXT DEFAULT ''
+    """,
+    # Migration: rename reserved-word column 'no' to 'item_no'
+    """
+    ALTER TABLE spec_mapping RENAME COLUMN "no" TO item_no
+    """,
 ]
 
 _COL_RENAME = {
@@ -103,8 +125,23 @@ def connect():
     """Open a DuckDB connection, ensure schema exists, yield, then close."""
     conn = duckdb.connect(str(DB_PATH))
     try:
+        # Migration: drop spec_mapping if it has the old single-column PK (test_name only).
+        # This is safe because spec_mapping data is always re-importable from xlsx.
+        try:
+            pk_row = conn.execute(
+                "SELECT constraint_column_names FROM duckdb_constraints() "
+                "WHERE table_name = 'spec_mapping' AND constraint_type = 'PRIMARY KEY'"
+            ).fetchone()
+            if pk_row and list(pk_row[0]) == ["test_name"]:
+                conn.execute("DROP TABLE spec_mapping")
+        except Exception:
+            pass
+
         for stmt in _DDL_STATEMENTS:
-            conn.execute(stmt)
+            try:
+                conn.execute(stmt)
+            except Exception:
+                pass
         yield conn
     finally:
         conn.close()
@@ -299,6 +336,91 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
     df["param"] = sub.where(sub != "", name)
     return df[["session_id", "loop_num", "test_name", "sub_item", "param",
                "numeric_value", "limit_min", "limit_max"]].reset_index(drop=True)
+
+
+def import_spec_mapping(xlsx_path: str, log_type: str) -> int:
+    """Load spec mapping from an xlsx file into the spec_mapping table.
+
+    The matching key (test_name) is built as:
+        {Gen1 Net Name without last _XXXX segment}_{EVO Net Name}
+    e.g. Gen1=ODH_43_2314, EVO=HSD_H5_5 → test_name=ODH_43_HSD_H5_5
+
+    log_type: "Cabin" or "Front" — used to distinguish mapping sets.
+    Returns the number of rows inserted.
+    """
+    import openpyxl
+
+    wb = openpyxl.load_workbook(xlsx_path, data_only=True)
+    ws = wb.active
+
+    rows = []
+    for row in ws.iter_rows(min_row=4, values_only=True):
+        no       = row[1]
+        pin_no   = row[3]
+        evo      = row[4]
+        gen1     = row[5]
+        voltage  = row[6]
+        load_res = row[7]
+        imm_grp  = row[13]
+
+        if not gen1 or not evo:
+            continue
+
+        parts = str(gen1).split("_")
+        if len(parts) < 2:
+            continue
+        prefix = "_".join(parts[:-1])
+        test_name_key = f"{prefix}_{evo}"
+
+        rows.append((
+            log_type,
+            test_name_key,
+            str(pin_no).strip().replace("\n", " ") if pin_no  is not None else "",
+            str(no)      if no      is not None else "",
+            float(voltage)  if voltage  is not None else None,
+            float(load_res) if load_res is not None else None,
+            str(imm_grp) if imm_grp is not None else "",
+            str(gen1),
+            str(evo),
+        ))
+
+    if not rows:
+        return 0
+
+    # Deduplicate: keep first occurrence of each (log_type, test_name)
+    seen: set = set()
+    deduped = []
+    for r in rows:
+        key = (r[0], r[1])
+        if key not in seen:
+            seen.add(key)
+            deduped.append(r)
+    rows = deduped
+
+    with connect() as conn:
+        conn.execute("DELETE FROM spec_mapping WHERE log_type = ?", [log_type])
+        conn.executemany(
+            "INSERT INTO spec_mapping "
+            "(log_type, test_name, pin_no, item_no, voltage_v, load_resistor, evo_imm_group, gen1_net_name, evo_net_name) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            rows,
+        )
+    return len(rows)
+
+
+def get_spec_mapping(log_type: str | None = None) -> pd.DataFrame:
+    """Return spec_mapping rows. Optionally filter by log_type."""
+    with connect() as conn:
+        if log_type:
+            return conn.execute(
+                "SELECT log_type, test_name, pin_no, item_no, voltage_v, load_resistor, evo_imm_group, "
+                "gen1_net_name, evo_net_name FROM spec_mapping WHERE log_type = ? ORDER BY test_name",
+                [log_type],
+            ).df()
+        return conn.execute(
+            "SELECT log_type, test_name, pin_no, item_no, voltage_v, load_resistor, evo_imm_group, "
+            "gen1_net_name, evo_net_name FROM spec_mapping ORDER BY log_type, test_name"
+        ).df()
 
 
 def load_all_results(session_ids: list[str]) -> pd.DataFrame:

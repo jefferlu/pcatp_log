@@ -10,13 +10,14 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from db.database import list_sessions, delete_session
+from db.database import list_sessions, delete_session, import_spec_mapping, get_spec_mapping
 from db.importer import import_session
 from parsers.csv_parser import _is_loop_csv
 
@@ -293,6 +294,46 @@ if st.session_state.get("_uploading") and uploaded:
     st.session_state["_import_results"] = results
     st.cache_data.clear()
     st.rerun()
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# Spec Mapping
+# ---------------------------------------------------------------------------
+with st.container(border=True):
+    st.subheader("Spec Mapping")
+    st.caption("Upload **A.xlsx** to build the test_name → Pin No / Voltage / Load Resistor / EVO IMM Group mapping table.")
+
+    try:
+        _mapping_df = get_spec_mapping()
+    except Exception:
+        _mapping_df = pd.DataFrame()
+    if not _mapping_df.empty:
+        _counts = _mapping_df.groupby("log_type").size().to_dict()
+        _count_str = " &nbsp;|&nbsp; ".join(f"**{lt}**: {n}" for lt, n in sorted(_counts.items()))
+        st.success(f"Mapping loaded — {_count_str}")
+
+    _spec_log_type = st.radio(
+        "Log type for this file",
+        ["Cabin", "Front"],
+        horizontal=True,
+        key="spec_log_type",
+    )
+
+    spec_file = st.file_uploader("Upload A.xlsx", type=["xlsx"], key="spec_upload")
+    if spec_file is not None:
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as _tmp:
+            _tmp.write(spec_file.read())
+            _tmp_path = _tmp.name
+        with st.spinner("Importing spec mapping…"):
+            try:
+                _count = import_spec_mapping(_tmp_path, log_type=_spec_log_type)
+                st.success(f"Imported **{_count}** mapping entries for **{_spec_log_type}**.")
+                st.rerun()
+            except Exception as _e:
+                st.error(f"Import failed: {_e}")
+            finally:
+                Path(_tmp_path).unlink(missing_ok=True)
 
 st.divider()
 

@@ -14,6 +14,7 @@ if not st.session_state.get("_username"):
 
 from components.sidebar import render_sidebar
 from components.metrics_card import render_metrics_card, compute_counts
+from db.database import get_spec_mapping
 from utils.helpers import get_loop_numbers
 from utils.chart_theme import light_layout
 
@@ -108,6 +109,20 @@ if fail_rows:
     st.subheader("Fail Parameters")
     fail_table = pd.DataFrame(fail_rows)
 
+    # Join spec mapping (pin_no, evo_imm_group) by test_name and session log_type
+    _log_type = st.session_state.get("_session_log_type", "")
+    try:
+        if _log_type:
+            _spec = get_spec_mapping(_log_type)[["test_name", "pin_no", "evo_imm_group"]]
+            _spec = _spec.rename(columns={
+                "test_name":     "Test Name",
+                "pin_no":        "Pin No",
+                "evo_imm_group": "EVO IMM Group",
+            })
+            fail_table = fail_table.merge(_spec, on="Test Name", how="left")
+    except Exception:
+        _log_type = ""  # skip spec columns if table not ready
+
     # Assign alternating color index per loop group
     _loop_order = list(dict.fromkeys(fail_table["Loop"]))
     _loop_color = {ln: i % 2 for i, ln in enumerate(_loop_order)}
@@ -121,19 +136,24 @@ if fail_rows:
             styles.loc[idx] = f"background-color: {_loop_per_row[i]}"
         return styles
 
+    _col_config = {
+        "Loop":      st.column_config.NumberColumn("Loop",     width=60),
+        "Test Name": st.column_config.TextColumn("Test Name", width=160),
+        "Sub Item":  st.column_config.TextColumn("Sub Item",  width=180),
+        "Min":       st.column_config.NumberColumn("Min",      width=90, format="%.2f"),
+        "Max":       st.column_config.NumberColumn("Max",      width=90, format="%.2f"),
+        "Limit Lo":  st.column_config.NumberColumn("Limit Lo", width=90, format="%.2f"),
+        "Limit Hi":  st.column_config.NumberColumn("Limit Hi", width=90, format="%.2f"),
+    }
+    if _log_type:
+        _col_config["Pin No"]        = st.column_config.TextColumn("Pin No",        width=120)
+        _col_config["EVO IMM Group"] = st.column_config.TextColumn("EVO IMM Group", width=120)
+
     st.dataframe(
         fail_table.style.apply(_style_fail_table, axis=None),
         width="stretch",
         hide_index=True,
-        column_config={
-            "Loop":      st.column_config.NumberColumn("Loop",     width=60),
-            "Test Name": st.column_config.TextColumn("Test Name", width=160),
-            "Sub Item":  st.column_config.TextColumn("Sub Item",  width=180),
-            "Min":       st.column_config.NumberColumn("Min",      width=90, format="%.2f"),
-            "Max":       st.column_config.NumberColumn("Max",      width=90, format="%.2f"),
-            "Limit Lo":  st.column_config.NumberColumn("Limit Lo", width=90, format="%.2f"),
-            "Limit Hi":  st.column_config.NumberColumn("Limit Hi", width=90, format="%.2f"),
-        },
+        column_config=_col_config,
     )
     st.divider()
 

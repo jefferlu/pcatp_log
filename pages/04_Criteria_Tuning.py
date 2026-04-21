@@ -185,12 +185,12 @@ def _apply_and_export(config_bytes: bytes, edited_df: pd.DataFrame) -> str:
     for _, row in edited_df.iterrows():
         key_min = row.get("_key_min", "")
         key_max = row.get("_key_max", "")
-        sug_min = row.get("Suggested Min")
-        sug_max = row.get("Suggested Max")
-        if key_min and sug_min is not None:
-            cfg.set(key_min, float(sug_min))
-        if key_max and sug_max is not None:
-            cfg.set(key_max, float(sug_max))
+        new_min = row.get("Current Min")
+        new_max = row.get("Current Max")
+        if key_min and new_min is not None:
+            cfg.set(key_min, float(new_min))
+        if key_max and new_max is not None:
+            cfg.set(key_max, float(new_max))
     return cfg.export()
 
 
@@ -305,10 +305,89 @@ st.success(
 )
 
 # ---------------------------------------------------------------------------
+# Analyse failures (needed by both editor and tab)
+# ---------------------------------------------------------------------------
+with st.spinner("Analysing all loops…"):
+    suggestions = _aggregate_failures(session_data, session_id, config)
+
+# ---------------------------------------------------------------------------
+# Editor — shown before tabs, always visible
+# ---------------------------------------------------------------------------
+st.divider()
+st.caption("Edit values below if needed:")
+
+_editor_filter = st.radio(
+    "Show parameters",
+    ["All", "Fail"],
+    index=0,
+    horizontal=True,
+    key="criteria_editor_filter",
+)
+
+if _editor_filter == "All":
+    _base_map = _build_base_map(config)
+    _all_rows = []
+    for _, (key_min, key_max) in sorted(_base_map.items()):
+        cur_min = config.params.get(key_min)
+        cur_max = config.params.get(key_max)
+        if cur_min is None and cur_max is None:
+            continue
+        base_name = (key_min[:-4] if key_min else key_max[:-4])
+        _all_rows.append({
+            "Parameter":   base_name,
+            "Current Min": cur_min,
+            "Current Max": cur_max,
+            "_key_min":    key_min,
+            "_key_max":    key_max,
+        })
+    _editor_df = pd.DataFrame(_all_rows)
+else:
+    if suggestions.empty:
+        _editor_df = pd.DataFrame(columns=["Parameter", "Current Min", "Current Max", "_key_min", "_key_max"])
+    else:
+        _editor_df = suggestions[["Parameter", "Current Min", "Current Max", "_key_min", "_key_max"]].copy()
+
+_orig_min_map = _editor_df.set_index("Parameter")["Current Min"].to_dict() if not _editor_df.empty else {}
+_orig_max_map = _editor_df.set_index("Parameter")["Current Max"].to_dict() if not _editor_df.empty else {}
+
+edited = st.data_editor(
+    _editor_df,
+    column_order=["Parameter", "Current Min", "Current Max"],
+    disabled=["Parameter"],
+    hide_index=True,
+    width="stretch",
+    column_config={
+        "Parameter":   st.column_config.TextColumn("Parameter",   width=200),
+        "Current Min": st.column_config.NumberColumn("Min ✏",     width=120),
+        "Current Max": st.column_config.NumberColumn("Max ✏",     width=120),
+    },
+    key="criteria_editor",
+)
+
+changed_count = 0
+if not edited.empty:
+    changed_count = len(edited[
+        (edited["Current Min"] != edited["Parameter"].map(_orig_min_map)) |
+        (edited["Current Max"] != edited["Parameter"].map(_orig_max_map))
+    ])
+st.caption(
+    f"{changed_count} parameter(s) will be modified in the output file.  "
+    f"Unchanged parameters and all comments are preserved."
+)
+st.download_button(
+    label="Download Tuned Config",
+    data=_apply_and_export(config_bytes, edited).encode("utf-8-sig") if not edited.empty else config_bytes,
+    file_name=uploaded.name,
+    mime="text/plain",
+    type="primary",
+    key="dl_fail",
+)
+
+# ---------------------------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------------------------
 st.divider()
-tab_fail, tab_bulk = st.tabs(["Failure-Based Suggestions", f"Bulk +{int(_MARGIN*100)}% Margin"])
+tab_bulk, tab_fail = st.tabs([f"Bulk +{int(_MARGIN*100)}% Margin", "Failure-Based Suggestions"])
 
 # ---------------------------------------------------------------------------
 # Tab 1 — Failure-Based
@@ -330,13 +409,7 @@ def _style_table(df: pd.DataFrame) -> pd.DataFrame:
     return styles
 
 with tab_fail:
-    st.caption(
-        "Only parameters with **Out of Range** failures matched to a config key are shown. "
-        "Edit **Suggested Min / Max** before downloading."
-    )
-    with st.spinner("Analysing all loops…"):
-        suggestions = _aggregate_failures(session_data, session_id, config)
-
+    st.caption("Parameters with **Out of Range** failures matched to a config key.")
     if suggestions.empty:
         st.success("No out-of-range failures matched to config parameters.")
     else:
@@ -361,40 +434,6 @@ with tab_fail:
                 "Suggested Min": st.column_config.NumberColumn("Sug Min",   width=100),
                 "Suggested Max": st.column_config.NumberColumn("Sug Max",   width=100),
             },
-        )
-
-        st.caption("Edit suggested values below if needed:")
-        edited = st.data_editor(
-            suggestions[["Parameter", "Suggested Min", "Suggested Max", "_key_min", "_key_max"]],
-            column_order=["Parameter", "Suggested Min", "Suggested Max"],
-            disabled=["Parameter"],
-            hide_index=True,
-            width="stretch",
-            column_config={
-                "Parameter":     st.column_config.TextColumn("Parameter",   width=200),
-                "Suggested Min": st.column_config.NumberColumn("Sug Min ✏", width=120),
-                "Suggested Max": st.column_config.NumberColumn("Sug Max ✏", width=120),
-            },
-            key="criteria_editor",
-        )
-
-        st.divider()
-        _orig = suggestions.set_index("Parameter")[["Current Min", "Current Max"]]
-        changed_count = len(edited[
-            (edited["Suggested Min"] != edited["Parameter"].map(_orig["Current Min"])) |
-            (edited["Suggested Max"] != edited["Parameter"].map(_orig["Current Max"]))
-        ])
-        st.caption(
-            f"{changed_count} parameter(s) will be modified in the output file.  "
-            f"Unchanged parameters and all comments are preserved."
-        )
-        st.download_button(
-            label="Download Tuned Config",
-            data=_apply_and_export(config_bytes, edited).encode("utf-8-sig"),
-            file_name=uploaded.name,
-            mime="text/plain",
-            type="primary",
-            key="dl_fail",
         )
 
 # ---------------------------------------------------------------------------

@@ -170,3 +170,4 @@ config/user_prefs/
 media-root/
 pcatp_log_wpf
 atp-log-analyzer
+atp_log.duckdb
