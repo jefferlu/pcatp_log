@@ -237,6 +237,21 @@ def _apply_bulk_export(config_bytes: bytes, bulk_df: pd.DataFrame) -> str:
     return cfg.export()
 
 
+def _apply_suggestions_export(config_bytes: bytes, sugg_df: pd.DataFrame) -> str:
+    """Apply failure-based suggested values to a fresh config and export."""
+    cfg = CriteriaConfig.from_bytes(config_bytes)
+    for _, row in sugg_df.iterrows():
+        key_min = row.get("_key_min", "")
+        key_max = row.get("_key_max", "")
+        new_min = row.get("Suggested Min")
+        new_max = row.get("Suggested Max")
+        if key_min and pd.notna(new_min):
+            cfg.set(key_min, float(new_min))
+        if key_max and pd.notna(new_max):
+            cfg.set(key_max, float(new_max))
+    return cfg.export()
+
+
 # ---------------------------------------------------------------------------
 # Page
 # ---------------------------------------------------------------------------
@@ -305,26 +320,26 @@ st.success(
 )
 
 # ---------------------------------------------------------------------------
-# Analyse failures (needed by both editor and tab)
+# Analyse failures (needed by failure tab)
 # ---------------------------------------------------------------------------
 with st.spinner("Analysing all loops…"):
     suggestions = _aggregate_failures(session_data, session_id, config)
 
 # ---------------------------------------------------------------------------
-# Editor — shown before tabs, always visible
+# Tabs
 # ---------------------------------------------------------------------------
 st.divider()
-st.caption("Edit values below if needed:")
+tab_all, tab_bulk, tab_fail = st.tabs([
+    "All Parameters",
+    f"Bulk +{int(_MARGIN*100)}% Margin",
+    "Failure-Based Suggestions",
+])
 
-_editor_filter = st.radio(
-    "Show parameters",
-    ["All", "Fail"],
-    index=0,
-    horizontal=True,
-    key="criteria_editor_filter",
-)
-
-if _editor_filter == "All":
+# ---------------------------------------------------------------------------
+# Tab 0 — All Parameters
+# ---------------------------------------------------------------------------
+with tab_all:
+    st.caption("All tunable parameters in the config. Edit Min / Max then download.")
     _base_map = _build_base_map(config)
     _all_rows = []
     for _, (key_min, key_max) in sorted(_base_map.items()):
@@ -332,7 +347,7 @@ if _editor_filter == "All":
         cur_max = config.params.get(key_max)
         if cur_min is None and cur_max is None:
             continue
-        base_name = (key_min[:-4] if key_min else key_max[:-4])
+        base_name = key_min[:-4] if key_min else key_max[:-4]
         _all_rows.append({
             "Parameter":   base_name,
             "Current Min": cur_min,
@@ -340,135 +355,116 @@ if _editor_filter == "All":
             "_key_min":    key_min,
             "_key_max":    key_max,
         })
-    _editor_df = pd.DataFrame(_all_rows)
-else:
-    if suggestions.empty:
-        _editor_df = pd.DataFrame(columns=["Parameter", "Current Min", "Current Max", "_key_min", "_key_max"])
-    else:
-        _editor_df = suggestions[["Parameter", "Current Min", "Current Max", "_key_min", "_key_max"]].copy()
+    _all_df = pd.DataFrame(_all_rows)
 
-_orig_min_map = _editor_df.set_index("Parameter")["Current Min"].to_dict() if not _editor_df.empty else {}
-_orig_max_map = _editor_df.set_index("Parameter")["Current Max"].to_dict() if not _editor_df.empty else {}
+    _orig_min_map = _all_df.set_index("Parameter")["Current Min"].to_dict() if not _all_df.empty else {}
+    _orig_max_map = _all_df.set_index("Parameter")["Current Max"].to_dict() if not _all_df.empty else {}
 
-edited = st.data_editor(
-    _editor_df,
-    column_order=["Parameter", "Current Min", "Current Max"],
-    disabled=["Parameter"],
-    hide_index=True,
-    width="stretch",
-    column_config={
-        "Parameter":   st.column_config.TextColumn("Parameter",   width=200),
-        "Current Min": st.column_config.NumberColumn("Min ✏",     width=120),
-        "Current Max": st.column_config.NumberColumn("Max ✏",     width=120),
-    },
-    key="criteria_editor",
-)
+    edited_all = st.data_editor(
+        _all_df,
+        column_order=["Parameter", "Current Min", "Current Max"],
+        disabled=["Parameter"],
+        hide_index=True,
+        use_container_width=True,
+        column_config={
+            "Parameter":   st.column_config.TextColumn("Parameter",  width=220),
+            "Current Min": st.column_config.NumberColumn("Min ✏",    width=130),
+            "Current Max": st.column_config.NumberColumn("Max ✏",    width=130),
+        },
+        key="all_params_editor",
+    )
 
-changed_count = 0
-if not edited.empty:
-    changed_count = len(edited[
-        (edited["Current Min"] != edited["Parameter"].map(_orig_min_map)) |
-        (edited["Current Max"] != edited["Parameter"].map(_orig_max_map))
-    ])
-st.caption(
-    f"{changed_count} parameter(s) will be modified in the output file.  "
-    f"Unchanged parameters and all comments are preserved."
-)
-st.download_button(
-    label="Download Tuned Config",
-    data=_apply_and_export(config_bytes, edited).encode("utf-8-sig") if not edited.empty else config_bytes,
-    file_name=uploaded.name,
-    mime="text/plain",
-    type="primary",
-    key="dl_fail",
-)
-
-# ---------------------------------------------------------------------------
-# Tabs
-# ---------------------------------------------------------------------------
-st.divider()
-tab_bulk, tab_fail = st.tabs([f"Bulk +{int(_MARGIN*100)}% Margin", "Failure-Based Suggestions"])
+    _changed = 0
+    if not edited_all.empty:
+        _changed = len(edited_all[
+            (edited_all["Current Min"] != edited_all["Parameter"].map(_orig_min_map)) |
+            (edited_all["Current Max"] != edited_all["Parameter"].map(_orig_max_map))
+        ])
+    st.caption(
+        f"{_changed} parameter(s) will be modified.  "
+        "Unchanged parameters and all comments are preserved."
+    )
+    st.download_button(
+        label="Download Tuned Config",
+        data=_apply_and_export(config_bytes, edited_all).encode("utf-8-sig") if not edited_all.empty else config_bytes,
+        file_name=uploaded.name,
+        mime="text/plain",
+        type="primary",
+        key="dl_all",
+    )
 
 # ---------------------------------------------------------------------------
 # Tab 1 — Failure-Based
 # ---------------------------------------------------------------------------
-_SUG_STYLE = "background-color: #FFF3CD; color: #7B4F00; font-weight: bold;"
-_ERR_STYLE = "background-color: #FFCCCC; color: #AA0000; font-weight: bold;"
-
-def _style_table(df: pd.DataFrame) -> pd.DataFrame:
-    styles = pd.DataFrame("", index=df.index, columns=df.columns)
-    for col in ("Suggested Min", "Suggested Max"):
-        if col in styles.columns:
-            styles[col] = _SUG_STYLE
-    if "Root Cause" in df.columns:
-        for i, cause in enumerate(df["Root Cause"]):
-            if "Low"  in cause or "Both" in cause:
-                styles.at[df.index[i], "Actual Min"] = _ERR_STYLE
-            if "High" in cause or "Both" in cause:
-                styles.at[df.index[i], "Actual Max"] = _ERR_STYLE
-    return styles
-
 with tab_fail:
     st.caption("Parameters with **Out of Range** failures matched to a config key.")
     if suggestions.empty:
         st.success("No out-of-range failures matched to config parameters.")
     else:
-        _DISPLAY_COLS = [
+        _SUGG_COLS = [
             "Parameter", "Root Cause", "Loops",
             "Current Min", "Current Max",
             "Actual Min",  "Actual Max",
             "Suggested Min", "Suggested Max",
+            "_key_min", "_key_max",
         ]
-        st.dataframe(
-            suggestions[_DISPLAY_COLS].style.apply(_style_table, axis=None),
+        edited_sugg = st.data_editor(
+            suggestions[_SUGG_COLS],
+            column_order=[c for c in _SUGG_COLS if not c.startswith("_")],
+            disabled=["Parameter", "Root Cause", "Loops",
+                      "Current Min", "Current Max", "Actual Min", "Actual Max"],
             hide_index=True,
-            width="stretch",
+            use_container_width=True,
             column_config={
-                "Parameter":     st.column_config.TextColumn("Parameter",   width=180),
-                "Root Cause":    st.column_config.TextColumn("Root Cause",  width=160),
-                "Loops":         st.column_config.TextColumn("Loops",       width=80),
-                "Current Min":   st.column_config.NumberColumn("Cur Min",   width=90),
-                "Current Max":   st.column_config.NumberColumn("Cur Max",   width=90),
-                "Actual Min":    st.column_config.NumberColumn("Act Min",   width=90),
-                "Actual Max":    st.column_config.NumberColumn("Act Max",   width=90),
-                "Suggested Min": st.column_config.NumberColumn("Sug Min",   width=100),
-                "Suggested Max": st.column_config.NumberColumn("Sug Max",   width=100),
+                "Parameter":     st.column_config.TextColumn("Parameter",    width=180),
+                "Root Cause":    st.column_config.TextColumn("Root Cause",   width=160),
+                "Loops":         st.column_config.TextColumn("Loops",        width=80),
+                "Current Min":   st.column_config.NumberColumn("Cur Min",    width=90),
+                "Current Max":   st.column_config.NumberColumn("Cur Max",    width=90),
+                "Actual Min":    st.column_config.NumberColumn("Act Min",    width=90),
+                "Actual Max":    st.column_config.NumberColumn("Act Max",    width=90),
+                "Suggested Min": st.column_config.NumberColumn("Sug Min ✏", width=100),
+                "Suggested Max": st.column_config.NumberColumn("Sug Max ✏", width=100),
             },
+            key="sugg_editor",
+        )
+        st.download_button(
+            label="Download Suggestion-Based Config",
+            data=_apply_suggestions_export(config_bytes, edited_sugg).encode("utf-8-sig"),
+            file_name=uploaded.name,
+            mime="text/plain",
+            type="primary",
+            key="dl_fail_sugg",
         )
 
 # ---------------------------------------------------------------------------
 # Tab 2 — Bulk Margin
 # ---------------------------------------------------------------------------
-_ADJ_STYLE = "background-color: #E8F5E9; color: #1B5E20; font-weight: bold;"
-
-def _style_bulk(df: pd.DataFrame) -> pd.DataFrame:
-    styles = pd.DataFrame("", index=df.index, columns=df.columns)
-    for col in ("Adjusted Min", "Adjusted Max"):
-        if col in styles.columns:
-            styles[col] = _ADJ_STYLE
-    return styles
-
 with tab_bulk:
     st.caption(
         f"Every parameter in the config is widened by **{int(_MARGIN*100)}%** "
         f"(Min − {int(_MARGIN*100)}%, Max + {int(_MARGIN*100)}%).  "
-        "No manual editing — download the result directly."
+        "Adjust individual values before downloading."
     )
 
     bulk_df = _build_bulk_table(config)
 
-    st.dataframe(
-        bulk_df[["Parameter", "Current Min", "Current Max", "Adjusted Min", "Adjusted Max"]]
-        .style.apply(_style_bulk, axis=None),
+    _BULK_COLS = ["Parameter", "Current Min", "Current Max", "Adjusted Min", "Adjusted Max",
+                  "_key_min", "_key_max"]
+    edited_bulk = st.data_editor(
+        bulk_df[_BULK_COLS],
+        column_order=["Parameter", "Current Min", "Current Max", "Adjusted Min", "Adjusted Max"],
+        disabled=["Parameter", "Current Min", "Current Max"],
         hide_index=True,
-        width="stretch",
+        use_container_width=True,
         column_config={
-            "Parameter":    st.column_config.TextColumn("Parameter",    width=220),
-            "Current Min":  st.column_config.NumberColumn("Cur Min",    width=100),
-            "Current Max":  st.column_config.NumberColumn("Cur Max",    width=100),
-            "Adjusted Min": st.column_config.NumberColumn("Adj Min",    width=100),
-            "Adjusted Max": st.column_config.NumberColumn("Adj Max",    width=100),
+            "Parameter":    st.column_config.TextColumn("Parameter",     width=220),
+            "Current Min":  st.column_config.NumberColumn("Cur Min",     width=100),
+            "Current Max":  st.column_config.NumberColumn("Cur Max",     width=100),
+            "Adjusted Min": st.column_config.NumberColumn("Adj Min ✏",  width=100),
+            "Adjusted Max": st.column_config.NumberColumn("Adj Max ✏",  width=100),
         },
+        key="bulk_editor",
     )
 
     st.caption(
@@ -477,7 +473,7 @@ with tab_bulk:
     )
     st.download_button(
         label="Download Bulk-Adjusted Config",
-        data=_apply_bulk_export(config_bytes, bulk_df).encode("utf-8-sig"),
+        data=_apply_bulk_export(config_bytes, edited_bulk).encode("utf-8-sig"),
         file_name=uploaded.name,
         mime="text/plain",
         type="primary",
