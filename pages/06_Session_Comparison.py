@@ -18,7 +18,7 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from db.database import list_sessions, load_fail_values, load_all_results
+from db.database import list_sessions, load_fail_values, load_all_results, load_device_info
 
 render_sidebar(show_loop_selector=False)
 
@@ -183,9 +183,13 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
                 lmax  = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
                 test_name = pdata["test_name"].iloc[0] if not pdata.empty else ""
                 sub_item  = pdata["sub_item"].iloc[0]  if not pdata.empty else ""
+                test_mode = pdata["test_mode"].iloc[0] if "test_mode" in pdata.columns and not pdata.empty else ""
+                category  = pdata["category"].iloc[0]  if "category"  in pdata.columns and not pdata.empty else ""
                 summary_rows.append({
                     "Test Name":        test_name,
                     "Sub Item":         sub_item,
+                    "Test Mode":        test_mode,
+                    "Category":         category,
                     "Total Fail Loops": int(vals.count()),
                     "Total Loops":      total_loops,
                     "Limit Min":        round(float(lmin), 4) if lmin is not None else "",
@@ -198,33 +202,71 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
             summary_df = pd.DataFrame(summary_rows)
 
             # Raw — all parameters, sorted by loop then test_name
-            raw_df = sess_all[["loop_num", "test_name", "sub_item", "result", "value"]].copy()
-            raw_df.columns = ["Loop", "Test Name", "Sub Item", "Result", "Value"]
+            raw_df = sess_all[["loop_num", "test_mode", "category", "test_name", "sub_item", "result", "value"]].copy()
+            raw_df.columns = ["Loop", "Test Mode", "Category", "Test Name", "Sub Item", "Result", "Value"]
             raw_df = raw_df.sort_values(["Loop", "Test Name", "Sub Item"]).reset_index(drop=True)
 
             # Write sheets
-            sheet_name = session_id[:31]
-            summary_df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=0)
-            raw_start = len(summary_df) + 2
-            raw_df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=raw_start)
+            # Layout:
+            #   rows 1..N  = device info (key | value), one per info field
+            #   row  N+1   = blank
+            #   row  N+2   = "Fail Summary" title
+            #   row  N+3   = summary header (blue)
+            #   rows N+4.. = summary data
+            #   (gap of 2)
+            #   row  M     = "All Results" title
+            #   row  M+1   = raw header (green)
+            #   rows M+2.. = raw data
+            sheet_name  = session_id[:31]
+
+            dev_info   = load_device_info(session_id)
+            info_keys  = ["Project Name", "SW Version", "TB Version", "ZCU Version"]
+            info_rows  = len(info_keys)            # always 4 rows reserved (blank if missing)
+            info_offset = info_rows + 1            # blank row after info block
+
+            sum_title_row = info_offset + 1        # 1-based
+            sum_hdr_row   = sum_title_row + 1
+            # startrow for to_excel is 0-based; summary header lands on sum_hdr_row
+            summary_df.to_excel(writer, sheet_name=sheet_name, index=False,
+                                startrow=sum_hdr_row - 1)
+
+            raw_title_row = sum_hdr_row + len(summary_df) + 2
+            raw_hdr_row   = raw_title_row + 1
+            raw_df.to_excel(writer, sheet_name=sheet_name, index=False,
+                            startrow=raw_hdr_row - 1)
 
             ws = writer.sheets[sheet_name]
 
+            # Device info block
+            for i, key in enumerate(info_keys):
+                r = i + 1
+                ws.cell(row=r, column=1).value = key
+                ws.cell(row=r, column=2).value = dev_info.get(key, "")
+
+            _title_font = Font(bold=True)
+
+            # Fail Summary title
+            ws.cell(row=sum_title_row, column=1).value = "Fail Summary"
+            ws.cell(row=sum_title_row, column=1).font  = _title_font
+
+            # All Results title
+            ws.cell(row=raw_title_row, column=1).value = "All Results"
+            ws.cell(row=raw_title_row, column=1).font  = _title_font
+
             # Header colours
-            for cell in ws[1]:
+            for cell in ws[sum_hdr_row]:
                 if cell.value is not None:
                     cell.fill = _sum_fill
                     cell.font = _hdr_font
-            for cell in ws[raw_start + 1]:
+            for cell in ws[raw_hdr_row]:
                 if cell.value is not None:
                     cell.fill = _raw_fill
                     cell.font = _hdr_font
 
             # Highlight FAIL rows in raw table
-            result_col_idx = raw_df.columns.get_loc("Result") + 1  # 1-based
             for row_offset, result_val in enumerate(raw_df["Result"]):
                 if str(result_val).upper() == "FAIL":
-                    excel_row = raw_start + 2 + row_offset  # +2: header row + 1-based
+                    excel_row = raw_hdr_row + 1 + row_offset
                     for cell in ws[excel_row]:
                         if cell.column <= len(raw_df.columns):
                             cell.fill = _fail_fill

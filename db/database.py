@@ -292,9 +292,12 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
     placeholders = ", ".join("?" * len(session_ids))
     with connect() as conn:
         df = conn.execute(
-            f"SELECT session_id, loop_num, test_name, sub_item, value "
-            f"FROM results "
-            f"WHERE session_id IN ({placeholders}) AND upper(result) = 'FAIL'",
+            f"SELECT r.session_id, r.loop_num, r.test_name, r.sub_item, r.category, r.value, "
+            f"       coalesce(lh.test_mode, s.test_mode, '') AS test_mode "
+            f"FROM results r "
+            f"JOIN sessions s ON r.session_id = s.session_id "
+            f"LEFT JOIN loop_headers lh ON r.session_id = lh.session_id AND r.loop_num = lh.loop_num "
+            f"WHERE r.session_id IN ({placeholders}) AND upper(r.result) = 'FAIL'",
             session_ids,
         ).df()
 
@@ -334,7 +337,7 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
     sub  = df["sub_item"].astype(str).str.strip()
     name = df["test_name"].astype(str).str.strip()
     df["param"] = sub.where(sub != "", name)
-    return df[["session_id", "loop_num", "test_name", "sub_item", "param",
+    return df[["session_id", "loop_num", "test_name", "sub_item", "category", "test_mode", "param",
                "numeric_value", "limit_min", "limit_max"]].reset_index(drop=True)
 
 
@@ -430,13 +433,47 @@ def load_all_results(session_ids: list[str]) -> pd.DataFrame:
     placeholders = ", ".join("?" * len(session_ids))
     with connect() as conn:
         df = conn.execute(
-            f"SELECT session_id, loop_num, test_name, sub_item, result, value "
-            f"FROM results "
-            f"WHERE session_id IN ({placeholders}) "
-            f"ORDER BY session_id, loop_num, test_name, sub_item",
+            f"SELECT r.session_id, r.loop_num, r.test_name, r.sub_item, r.category, "
+            f"       r.result, r.value, "
+            f"       coalesce(lh.test_mode, s.test_mode, '') AS test_mode "
+            f"FROM results r "
+            f"JOIN sessions s ON r.session_id = s.session_id "
+            f"LEFT JOIN loop_headers lh ON r.session_id = lh.session_id AND r.loop_num = lh.loop_num "
+            f"WHERE r.session_id IN ({placeholders}) "
+            f"ORDER BY r.session_id, r.loop_num, r.test_name, r.sub_item",
             session_ids,
         ).df()
     return df
+
+
+_DEVICE_INFO_KEYS = ["Project Name", "SW Version", "TB Version", "ZCU Version"]
+
+def load_device_info(session_id: str) -> dict[str, str]:
+    """Extract firmware/project info from any log entry for the session.
+
+    Looks for lines like 'Project Name  = Cabin' in log_entries and returns
+    {key: value} for each of the known info keys.  Returns an empty dict if
+    no log entries exist for the session.
+    """
+    import re
+    pattern = "|".join(re.escape(k) for k in _DEVICE_INFO_KEYS)
+    with connect() as conn:
+        rows = conn.execute(
+            "SELECT message FROM log_entries "
+            "WHERE session_id = ? AND regexp_matches(message, ?) "
+            "LIMIT 20",
+            [session_id, pattern],
+        ).fetchall()
+
+    result: dict[str, str] = {}
+    for (msg,) in rows:
+        m = re.match(r"^([^=]+?)\s*=\s*(.+)$", msg.strip())
+        if m:
+            key = m.group(1).strip()
+            val = m.group(2).strip()
+            if key in _DEVICE_INFO_KEYS and key not in result:
+                result[key] = val
+    return result
 
 
 def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
