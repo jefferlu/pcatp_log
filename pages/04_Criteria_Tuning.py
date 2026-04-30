@@ -357,7 +357,7 @@ def _aggregate_window_shift(
 
         if cur_min is None or cur_max is None:
             continue
-        if cur_min == 0 and cur_max == 60:
+        if cur_min == 0 and cur_max == 50:
             continue
 
         avg_actual = sum(w["values"]) / len(w["values"])
@@ -542,7 +542,7 @@ with tab_win:
     st.caption(
         "Centers the existing [Min, Max] window around the **mean actual value** "
         "across all fail loops.  Min is floored at 0.  "
-        "Parameters with only Min or Max (no pair) and Limit[0~60] are excluded."
+        "Parameters with only Min or Max (no pair) and Limit[0~50] are excluded."
     )
     if window_shift_df.empty:
         st.success("No out-of-range failures matched to paired config parameters.")
