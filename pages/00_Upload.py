@@ -23,6 +23,12 @@ from parsers.csv_parser import _is_loop_csv
 
 render_sidebar(show_loop_selector=False)
 
+# Counter that increments after every import — changing the key forces
+# Streamlit to recreate file_uploader widgets with empty state.
+if "_upload_gen" not in st.session_state:
+    st.session_state["_upload_gen"] = 0
+_gen = st.session_state["_upload_gen"]
+
 
 # ---------------------------------------------------------------------------
 # Show import results carried over from the previous run (after st.rerun)
@@ -131,13 +137,13 @@ with st.container(border=True):
         "Select all files from a session directory",
         type=["csv", "txt"],
         accept_multiple_files=True,
-        key="dir_upload",
+        key=f"dir_upload_{_gen}",
     )
 
     _, btn_col_dir = st.columns([8, 1])
     _dir_importing = st.session_state.get("_dir_importing", False)
     if btn_col_dir.button("Import", type="primary",
-                          disabled=not dir_files or _dir_importing, key="import_dir"):
+                          disabled=not dir_files or _dir_importing, key=f"import_dir_{_gen}"):
         st.session_state["_dir_importing"] = True
         st.rerun()
 
@@ -199,6 +205,7 @@ if st.session_state.get("_dir_importing") and dir_files:
                 })
     st.session_state["_dir_importing"] = False
     st.session_state["_import_results"] = results
+    st.session_state["_upload_gen"] += 1
     st.cache_data.clear()
     st.rerun()
 
@@ -218,6 +225,7 @@ with st.container(border=True):
         "Choose file(s)",
         type=["zip", "csv"],
         accept_multiple_files=True,
+        key=f"zip_upload_{_gen}",
     )
 
     st.warning("Sessions with the same name will be overwritten automatically.")
@@ -225,7 +233,8 @@ with st.container(border=True):
     _, btn_col = st.columns([8, 1])
     _uploading = st.session_state.get("_uploading", False)
     if btn_col.button("Import", type="primary",
-                      disabled=not uploaded or _uploading, use_container_width=True):
+                      disabled=not uploaded or _uploading,
+                      use_container_width=True, key=f"import_zip_{_gen}"):
         st.session_state["_uploading"] = True
         st.rerun()
 
@@ -292,6 +301,7 @@ if st.session_state.get("_uploading") and uploaded:
 
     st.session_state["_uploading"] = False
     st.session_state["_import_results"] = results
+    st.session_state["_upload_gen"] += 1
     st.cache_data.clear()
     st.rerun()
 

@@ -253,6 +253,146 @@ def _apply_suggestions_export(config_bytes: bytes, sugg_df: pd.DataFrame) -> str
 
 
 # ---------------------------------------------------------------------------
+# Window Shift helpers
+# ---------------------------------------------------------------------------
+
+def _adjust_window(avg: float, old_min: float, old_max: float) -> tuple[float, float]:
+    """Center [old_min, old_max] around avg; floor at 0."""
+    half_width = (old_max - old_min) / 2
+    h = min(half_width, avg)
+    return round(max(avg - h, 0), 4), round(avg + h, 4)
+
+
+_AVG_RE = re.compile(r"Avg:([\d.Ee+\-]+)")
+_NUM_RE = re.compile(r"^[\d.Ee+\-]+$")
+
+
+def _parse_actual(val: str) -> float | None:
+    """Extract a single numeric value from a result Value string."""
+    try:
+        m = _AVG_RE.search(val)
+        if m:
+            return float(m.group(1))
+        v = val.split("|")[0].strip()
+        if _NUM_RE.match(v):
+            return float(v)
+    except (ValueError, TypeError):
+        pass
+    return None
+
+
+def _aggregate_window_shift(
+    session_data: dict,
+    session_id: str,
+    config: CriteriaConfig,
+) -> pd.DataFrame:
+    """
+    For each config parameter, collect actual values from ALL loops (pass and
+    fail), compute the overall mean, then apply window-shift centering.
+
+    Rules:
+      - Only parameters with both Min AND Max in the config.
+      - Skip parameters where Min=0 and Max=60 (binary/boolean limits).
+      - New Min is floored at 0.
+    """
+    base_map = _build_base_map(config)
+    params   = config.params
+
+    # norm → {base, values: list[float], loop_count: int}
+    actuals: dict[str, dict] = {}
+
+    loops = session_data.get("loops", {})
+    for loop_num, ldata in sorted(loops.items()):
+        results_df = ldata.get("results", pd.DataFrame())
+        if results_df.empty:
+            continue
+
+        for _, row in results_df.iterrows():
+            val = _parse_actual(str(row.get("Value", "") or ""))
+            if val is None:
+                continue
+
+            matched_norm = None
+            matched_base = None
+            for candidate in (
+                str(row.get("Sub Item",  "")).strip(),
+                str(row.get("Test Name", "")).strip(),
+            ):
+                n = _norm(candidate)
+                if n in base_map:
+                    matched_norm = n
+                    matched_base = candidate
+                    break
+
+            if matched_norm is None:
+                continue
+
+            if matched_norm not in actuals:
+                actuals[matched_norm] = {
+                    "base":       matched_base,
+                    "values":     [val],
+                    "loop_count": 0,
+                }
+            else:
+                actuals[matched_norm]["values"].append(val)
+
+        # Increment loop_count once per norm per loop
+        seen_norms = set()
+        for _, row in results_df.iterrows():
+            for candidate in (
+                str(row.get("Sub Item",  "")).strip(),
+                str(row.get("Test Name", "")).strip(),
+            ):
+                n = _norm(candidate)
+                if n in actuals and n not in seen_norms:
+                    actuals[n]["loop_count"] += 1
+                    seen_norms.add(n)
+                    break
+
+    rows = []
+    for norm, w in actuals.items():
+        key_min, key_max = base_map[norm]
+        cur_min = params.get(key_min)
+        cur_max = params.get(key_max)
+
+        if cur_min is None or cur_max is None:
+            continue
+        if cur_min == 0 and cur_max == 60:
+            continue
+
+        avg_actual = sum(w["values"]) / len(w["values"])
+        new_min, new_max = _adjust_window(avg_actual, cur_min, cur_max)
+
+        rows.append({
+            "Parameter":   w["base"],
+            "Loops":       w["loop_count"],
+            "Avg Actual":  round(avg_actual, 4),
+            "Current Min": cur_min,
+            "Current Max": cur_max,
+            "New Min":     new_min,
+            "New Max":     new_max,
+            "_key_min":    key_min,
+            "_key_max":    key_max,
+        })
+
+    return pd.DataFrame(rows)
+
+
+def _apply_window_shift_export(config_bytes: bytes, ws_df: pd.DataFrame) -> str:
+    cfg = CriteriaConfig.from_bytes(config_bytes)
+    for _, row in ws_df.iterrows():
+        key_min = row.get("_key_min", "")
+        key_max = row.get("_key_max", "")
+        new_min = row.get("New Min")
+        new_max = row.get("New Max")
+        if key_min and pd.notna(new_min):
+            cfg.set(key_min, float(new_min))
+        if key_max and pd.notna(new_max):
+            cfg.set(key_max, float(new_max))
+    return cfg.export()
+
+
+# ---------------------------------------------------------------------------
 # Page
 # ---------------------------------------------------------------------------
 session_data, _ = render_sidebar(show_loop_selector=False)
@@ -320,18 +460,20 @@ st.success(
 )
 
 # ---------------------------------------------------------------------------
-# Analyse failures (needed by failure tab)
+# Analyse failures (needed by window-shift and failure tabs)
 # ---------------------------------------------------------------------------
 with st.spinner("Analysing all loops…"):
-    suggestions = _aggregate_failures(session_data, session_id, config)
+    suggestions      = _aggregate_failures(session_data, session_id, config)
+    window_shift_df  = _aggregate_window_shift(session_data, session_id, config)
 
 # ---------------------------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------------------------
 st.divider()
-tab_all, tab_bulk, tab_fail = st.tabs([
+tab_all, tab_bulk, tab_win, tab_fail = st.tabs([
     "All Parameters",
     f"Bulk +{int(_MARGIN*100)}% Margin",
+    "Window Shift",
     "Failure-Based Suggestions",
 ])
 
@@ -394,7 +536,51 @@ with tab_all:
     )
 
 # ---------------------------------------------------------------------------
-# Tab 1 — Failure-Based
+# Tab 1 — Window Shift
+# ---------------------------------------------------------------------------
+with tab_win:
+    st.caption(
+        "Centers the existing [Min, Max] window around the **mean actual value** "
+        "across all fail loops.  Min is floored at 0.  "
+        "Parameters with only Min or Max (no pair) and Limit[0~60] are excluded."
+    )
+    if window_shift_df.empty:
+        st.success("No out-of-range failures matched to paired config parameters.")
+    else:
+        _WIN_COLS = [
+            "Parameter", "Loops", "Avg Actual",
+            "Current Min", "Current Max",
+            "New Min", "New Max",
+            "_key_min", "_key_max",
+        ]
+        edited_win = st.data_editor(
+            window_shift_df[_WIN_COLS],
+            column_order=[c for c in _WIN_COLS if not c.startswith("_")],
+            disabled=["Parameter", "Loops", "Avg Actual", "Current Min", "Current Max"],
+            hide_index=True,
+            use_container_width=True,
+            column_config={
+                "Parameter":   st.column_config.TextColumn("Parameter",    width=200),
+                "Loops":       st.column_config.TextColumn("Loops",        width=80),
+                "Avg Actual":  st.column_config.NumberColumn("Avg Actual", width=100, format="%.4f"),
+                "Current Min": st.column_config.NumberColumn("Cur Min",    width=90),
+                "Current Max": st.column_config.NumberColumn("Cur Max",    width=90),
+                "New Min":     st.column_config.NumberColumn("New Min ✏",  width=100),
+                "New Max":     st.column_config.NumberColumn("New Max ✏",  width=100),
+            },
+            key="win_editor",
+        )
+        st.download_button(
+            label="Download Window-Shift Config",
+            data=_apply_window_shift_export(config_bytes, edited_win).encode("utf-8-sig"),
+            file_name=uploaded.name,
+            mime="text/plain",
+            type="primary",
+            key="dl_win",
+        )
+
+# ---------------------------------------------------------------------------
+# Tab 2 — Failure-Based
 # ---------------------------------------------------------------------------
 with tab_fail:
     st.caption("Parameters with **Out of Range** failures matched to a config key.")
