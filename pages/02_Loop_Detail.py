@@ -11,7 +11,6 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from components.metrics_card import render_metrics_card, compute_counts
 from components.result_table import (
     render_result_table,
     render_category_filter,
@@ -38,12 +37,25 @@ legacy_df  = loop_data.get("legacy",  pd.DataFrame())
 header     = loop_data.get("header",  {})
 
 # ---------------------------------------------------------------------------
-# Summary metrics
+# Session Info
 # ---------------------------------------------------------------------------
-counts = compute_counts(results_df)
-render_metrics_card(**counts)
+_sess_id   = session_data.get("id", "—")
+_log_type  = st.session_state.get("_session_log_type", "") or "—"
+_test_mode = header.get("Test Mode", "") or "—"
 
-# st.divider()
+st.markdown("""
+<style>
+[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
+[data-testid="stMetricValue"] { font-size: 1.1rem !important; font-weight: 600; }
+</style>
+""", unsafe_allow_html=True)
+
+with st.container(border=True):
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Session",      _sess_id)
+    c2.metric("Type",         _log_type)
+    c3.metric("Test Mode",    _test_mode)
+    c4.metric("Current Loop", selected_loop)
 
 # ---------------------------------------------------------------------------
 # Result Table (with filters)3

@@ -76,30 +76,30 @@ transition_df = (
 )
 
 # ---------------------------------------------------------------------------
-# Summary card
+# Session Info
 # ---------------------------------------------------------------------------
 if not all_results:
     st.info("No result data available.")
     st.stop()
 
-total_items    = len(all_results)
-unstable_count = len(transition_df)
-total_flips    = int(transition_df["Transitions"].sum()) if not transition_df.empty else 0
+_sess_id    = session_data.get("id", "—")
+_log_type   = st.session_state.get("_session_log_type", "") or "—"
+_test_mode  = session_data.get("header_meta", {}).get("Test Mode", "") or "—"
+_total_loops = len(loop_nums)
 
-st.markdown(
-    """
-    <style>
-    [data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
-    [data-testid="stMetricValue"] { font-size: 1.75rem !important; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown("""
+<style>
+[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
+[data-testid="stMetricValue"] { font-size: 1.1rem !important; font-weight: 600; }
+</style>
+""", unsafe_allow_html=True)
+
 with st.container(border=True):
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Total Test Items", total_items)
-    m2.metric("Unstable Items", unstable_count)
-    m3.metric("Total Transitions", total_flips)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Session",     _sess_id)
+    c2.metric("Type",        _log_type)
+    c3.metric("Test Mode",   _test_mode)
+    c4.metric("Total Loops", _total_loops)
 
 st.divider()
 
@@ -147,7 +147,7 @@ with col_chart:
         st.plotly_chart(fig_bar, width="stretch")
 
 with col_table:
-    st.subheader(f"Unstable Items (Top {min(20, unstable_count)})")
+    st.subheader(f"Unstable Items (Top {min(20, len(transition_df))})")
     st.dataframe(
         transition_df.head(20)[["Test ID", "Category", "Test Name", "Sub Item", "Transitions", "Detail"]],
         width="stretch",

@@ -18,6 +18,7 @@ def _cached_load_session(session_id: str) -> dict | None:
 def render_sidebar(
     *,
     show_loop_selector: bool = True,
+    show_session_selector: bool = True,
     log_root=None,  # kept for API compatibility, unused
 ) -> tuple[dict | None, int | None]:
     username = st.session_state.get("_username", "")
@@ -26,6 +27,9 @@ def render_sidebar(
     sessions = list_sessions(username, is_admin=is_admin)
     if not sessions:
         st.sidebar.warning("No sessions in database. Please import via the Upload page.")
+        return None, None
+
+    if not show_session_selector:
         return None, None
 
     # --- Log type filter (radio) ---
@@ -88,26 +92,25 @@ def render_sidebar(
     if show_loop_selector and session_data:
         loop_nums = get_loop_numbers(session_data)
         if loop_nums:
+            _persisted_loop = st.session_state.get("_sidebar_loop_num")
+            _loop_index = (
+                loop_nums.index(_persisted_loop)
+                if _persisted_loop in loop_nums
+                else 0
+            )
             selected_loop = st.sidebar.selectbox(
                 "Loop",
                 loop_nums,
                 format_func=lambda n: f"Loop {n}",
+                index=_loop_index,
                 key="sidebar_loop",
             )
+            st.session_state["_sidebar_loop_num"] = selected_loop
         else:
             st.sidebar.info("No loops found for this session.")
 
-    st.sidebar.markdown("---")
     if session_data:
         sess_meta = next((s for s in sessions if s["session_id"] == selected_name), {})
         st.session_state["_session_log_type"] = sess_meta.get("log_type", "")
-        st.sidebar.markdown(f"Session: `{selected_name}`")
-        if sess_meta.get("log_type"):
-            st.sidebar.markdown(f"Type: **{sess_meta['log_type']}**")
-        loops_count = len(session_data.get("loops", {}))
-        st.sidebar.markdown(f"Loops loaded: **{loops_count}**")
-        meta = session_data.get("header_meta", {})
-        if meta.get("Test Mode"):
-            st.sidebar.markdown(f"Test Mode: **{meta['Test Mode']}**")
 
     return session_data, selected_loop

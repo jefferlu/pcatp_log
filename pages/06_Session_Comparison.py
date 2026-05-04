@@ -20,7 +20,7 @@ if not st.session_state.get("_username"):
 from components.sidebar import render_sidebar
 from db.database import list_sessions, load_fail_values, load_all_results, load_device_info
 
-render_sidebar(show_loop_selector=False)
+render_sidebar(show_loop_selector=False, show_session_selector=False)
 
 # ---------------------------------------------------------------------------
 # Session selector

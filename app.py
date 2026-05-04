@@ -4,7 +4,7 @@ ATP Log Analyzer — Main Entry Point
 Run with:
     streamlit run app.py
 """
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 
 from pathlib import Path
 

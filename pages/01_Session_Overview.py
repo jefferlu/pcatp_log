@@ -13,7 +13,7 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from components.metrics_card import render_metrics_card, compute_counts
+from components.metrics_card import compute_counts
 from db.database import get_spec_mapping
 from utils.helpers import get_loop_numbers
 from utils.chart_theme import light_layout
@@ -32,19 +32,26 @@ if not loop_nums:
     st.stop()
 
 # ---------------------------------------------------------------------------
-# Aggregate Summary (All Loops)
+# Session Info
 # ---------------------------------------------------------------------------
-total_p = total_f = total_b = total_t = 0
-for ln in loop_nums:
-    counts = compute_counts(loops[ln].get("results"))
-    total_p += counts["passed"]
-    total_f += counts["failed"]
-    total_b += counts["blocked"]
-    total_t += counts["total"]
+_sess_id   = session_data.get("id", "—")
+_log_type  = st.session_state.get("_session_log_type", "") or "—"
+_test_mode = session_data.get("header_meta", {}).get("Test Mode", "") or "—"
+_total_loops = len(loop_nums)
 
-render_metrics_card(total=total_t, passed=total_p, failed=total_f, blocked=total_b, title="")
+st.markdown("""
+<style>
+[data-testid="stMetricLabel"] { font-size: 0.7rem !important; }
+[data-testid="stMetricValue"] { font-size: 1.1rem !important; font-weight: 600; }
+</style>
+""", unsafe_allow_html=True)
 
-# st.divider()
+with st.container(border=True):
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Session",      _sess_id)
+    c2.metric("Type",         _log_type)
+    c3.metric("Test Mode",    _test_mode)
+    c4.metric("Total Loops",  _total_loops)
 
 # ---------------------------------------------------------------------------
 # Per-Loop Summary table
