@@ -200,7 +200,7 @@ else:
         hide_index=True,
         width="stretch",
         column_config={
-            "Test ID":      st.column_config.NumberColumn("Monitor ID", width=80),
+            "Test ID":      st.column_config.NumberColumn("Test ID", width=80),
             "Category":     st.column_config.TextColumn("Category",   width=160),
             "Test Name":    st.column_config.TextColumn("Test Name",  width=130),
             "Sub Item":     st.column_config.TextColumn("Sub Item",   width=180),

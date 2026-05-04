@@ -162,7 +162,22 @@ if fail_rows:
 # ---------------------------------------------------------------------------
 VALID = {"PASS", "FAIL", "BLOCK"}
 all_results: dict[str, dict[int, str]] = {}
+all_values:  dict[str, dict[int, str]] = {}
 ref_info:    dict[str, dict]           = {}
+
+_AVG_VAL_RE   = re.compile(r"Avg:([\d.Ee+\-]+)")
+_RANGE_VAL_RE = re.compile(r"Min:([\d.Ee+\-]+)\s+Max:([\d.Ee+\-]+)")
+
+def _fmt_value(raw: str) -> str:
+    """Extract a compact display string from a raw Value field."""
+    m = _AVG_VAL_RE.search(raw)
+    if m:
+        return f"Avg: {float(m.group(1)):.4g}"
+    m = _RANGE_VAL_RE.search(raw)
+    if m:
+        return f"Min: {float(m.group(1)):.4g}  Max: {float(m.group(2)):.4g}"
+    first = raw.split("|")[0].strip()
+    return first if first else ""
 
 for ln in loop_nums:
     df = loops[ln].get("results", pd.DataFrame())
@@ -173,12 +188,17 @@ for ln in loop_nums:
         res = str(row.get("Result", "")).strip().upper()
         if tid not in all_results:
             all_results[tid] = {}
+            all_values[tid]  = {}
             ref_info[tid] = {
                 "Category":  row.get("Category", ""),
                 "Test Name": row.get("Test Name", ""),
                 "Sub Item":  row.get("Sub Item", ""),
             }
         all_results[tid][ln] = res
+        raw_val = str(row.get("Value", "")).strip()
+        fv = _fmt_value(raw_val)
+        if fv:
+            all_values[tid][ln] = fv
 
 transition_rows: list[dict] = []
 for tid, loop_map in all_results.items():
@@ -224,23 +244,31 @@ else:
     if selected_id:
         _test_name = ref_info[selected_id]["Test Name"]
         seq_data = [
-            {"Loop": ln, "Result": all_results[selected_id].get(ln, "N/A")}
+            {
+                "Loop":    ln,
+                "Result":  all_results[selected_id].get(ln, "N/A"),
+                "MeasVal": all_values.get(selected_id, {}).get(ln, ""),
+            }
             for ln in loop_nums
             if ln in all_results[selected_id]
         ]
         seq_df = pd.DataFrame(seq_data)
         result_num = {"PASS": 1, "BLOCK": 0, "FAIL": -1}
-        seq_df["Value"] = seq_df["Result"].map(lambda r: result_num.get(r, None))
+        seq_df["NumVal"] = seq_df["Result"].map(lambda r: result_num.get(r, None))
 
         with st.container(border=True):
             fig_seq = go.Figure()
             fig_seq.add_trace(go.Scatter(
                 x=seq_df["Loop"],
-                y=seq_df["Value"],
+                y=seq_df["NumVal"],
                 mode="lines+markers+text",
                 text=seq_df["Result"],
                 textposition="top center",
-                hovertemplate=f"{_test_name}<extra></extra>",
+                hovertext=[
+                    f"{_test_name}<br>{mv}" if mv else _test_name
+                    for mv in seq_df["MeasVal"]
+                ],
+                hoverinfo="text",
                 marker=dict(
                     size=10,
                     color=seq_df["Result"].map({

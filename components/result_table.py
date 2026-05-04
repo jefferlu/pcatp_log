@@ -62,15 +62,13 @@ def render_result_table(
         base_cols.append("Value")
     existing_cols = [c for c in base_cols if c in display_df.columns]
     display_df = display_df[existing_cols].reset_index(drop=True)
-    display_df = display_df.rename(columns={"Test ID": "Monitor ID"})
-
     # --- Styling ---
     styled = display_df.style
     if "Result" in display_df.columns:
         styled = styled.map(_style_result, subset=["Result"])
 
     _col_config = {
-        "Monitor ID": st.column_config.NumberColumn("Monitor ID", width=90),
+        "Test ID":    st.column_config.NumberColumn("Test ID",     width=90),
         "Category":   st.column_config.TextColumn("Category",    width=150),
         "Test Name":  st.column_config.TextColumn("Test Name",   width=150),
         "Sub Item":   st.column_config.TextColumn("Sub Item",    width=170),
