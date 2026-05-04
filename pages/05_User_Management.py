@@ -25,6 +25,26 @@ _CONFIG_PATH = Path(__file__).parent.parent / "config" / "users.yaml"
 
 render_sidebar(show_loop_selector=False)
 
+st.markdown("""
+<style>
+/* Delete button and Confirm button — alarm red */
+button[kind="primary"][data-testid^="stButton"]:has(~ div),
+div[data-testid="stButton"] > button[kind="primary"] {
+    /* fallback — overridden by key-specific rules below */
+}
+/* Target any primary button whose label starts with Delete or Confirm */
+[data-testid="stButton"] button[kind="primary"] {
+    background-color: #D32F2F !important;
+    border-color:     #D32F2F !important;
+    color: #fff !important;
+}
+[data-testid="stButton"] button[kind="primary"]:hover {
+    background-color: #B71C1C !important;
+    border-color:     #B71C1C !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ---------------------------------------------------------------------------
 # Load users
 # ---------------------------------------------------------------------------
@@ -76,7 +96,7 @@ for username, info in list(users.items()):
                 icon=":material/warning:",
             )
             col_yes, col_no = st.columns(2)
-            if col_yes.button("Yes, delete", key=f"yes_{username}", type="primary"):
+            if col_yes.button("Confirm", key=f"yes_{username}", type="primary"):
                 deleted = delete_sessions_by_owner(username)
                 cfg = _load_config()
                 cfg["credentials"]["usernames"].pop(username, None)

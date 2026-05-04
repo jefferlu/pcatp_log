@@ -10,6 +10,7 @@ from pathlib import Path
 
 import bcrypt
 import streamlit as st
+import streamlit.components.v1 as _components
 import yaml
 
 st.set_page_config(
@@ -125,9 +126,22 @@ try:
         st.markdown("<br>" * 3, unsafe_allow_html=True)
         _, center_col, _ = st.columns([1, 0.7, 1])
         with center_col:
+            if st.session_state.pop("_goto_login", False):
+                _components.html(
+                    """<script>
+                    setTimeout(function(){
+                        var tabs = window.parent.document.querySelectorAll('button[role="tab"]');
+                        if (tabs.length > 0) tabs[0].click();
+                    }, 80);
+                    </script>""",
+                    height=0,
+                )
             tab_login, tab_register = st.tabs(["Login", "Register"])
 
             with tab_login:
+                _reg_user = st.session_state.pop("_registered_username", None)
+                if _reg_user:
+                    st.success(f"Account '{_reg_user}' created. You can now log in.")
                 authenticator.login(fields={
                     'Form name': 'ATP Log Analyzer',
                     'Username': 'Username',
@@ -140,11 +154,11 @@ try:
             with tab_register:
                 with st.form("register_form"):
                     st.markdown("### Create Account")
-                    reg_username    = st.text_input("Username")
+                    reg_username    = st.text_input("Username *")
                     reg_name        = st.text_input("Display Name")
                     reg_email       = st.text_input("Email")
-                    reg_password    = st.text_input("Password",         type="password")
-                    reg_confirm     = st.text_input("Confirm Password", type="password")
+                    reg_password    = st.text_input("Password *",         type="password")
+                    reg_confirm     = st.text_input("Confirm Password *", type="password")
                     submitted = st.form_submit_button("Register", use_container_width=True)
 
                 if submitted:
@@ -170,7 +184,9 @@ try:
                         with open(_CONFIG_PATH, "w", encoding="utf-8") as _f:
                             yaml.dump(_cfg, _f, allow_unicode=True, default_flow_style=False)
                         _reload_auth_config()
-                        st.success(f"Account '{reg_username}' created. You can now log in.")
+                        st.session_state["_goto_login"] = True
+                        st.session_state["_registered_username"] = reg_username
+                        st.rerun()
 
         # Hide sidebar last — injected just before render completes so sidebar
         # disappears together with page content, not before.
