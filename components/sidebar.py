@@ -30,6 +30,12 @@ def render_sidebar(
         return None, None
 
     if not show_session_selector:
+        # Load the previously selected session silently (no widget shown).
+        _persisted_id = st.session_state.get("_sidebar_session_id")
+        if _persisted_id and any(s["session_id"] == _persisted_id for s in sessions):
+            sess_meta = next(s for s in sessions if s["session_id"] == _persisted_id)
+            st.session_state["_session_log_type"] = sess_meta.get("log_type", "")
+            return _cached_load_session(_persisted_id), None
         return None, None
 
     # --- Log type filter (radio) ---

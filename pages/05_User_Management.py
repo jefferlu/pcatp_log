@@ -23,7 +23,7 @@ from db.database import delete_sessions_by_owner, list_sessions
 
 _CONFIG_PATH = Path(__file__).parent.parent / "config" / "users.yaml"
 
-render_sidebar(show_loop_selector=False)
+render_sidebar(show_loop_selector=False, show_session_selector=False)
 
 st.markdown("""
 <style>

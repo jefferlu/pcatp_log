@@ -395,7 +395,7 @@ def _apply_window_shift_export(config_bytes: bytes, ws_df: pd.DataFrame) -> str:
 # ---------------------------------------------------------------------------
 # Page
 # ---------------------------------------------------------------------------
-session_data, _ = render_sidebar(show_loop_selector=False)
+session_data, _ = render_sidebar(show_loop_selector=False, show_session_selector=False)
 
 if session_data is None:
     st.info("Select a session from the sidebar.")
