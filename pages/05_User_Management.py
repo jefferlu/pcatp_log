@@ -95,16 +95,17 @@ for username, info in list(users.items()):
                 f"Delete **{username}** and all their data? This cannot be undone.",
                 icon=":material/warning:",
             )
-            col_yes, col_no = st.columns(2)
-            if col_yes.button("Confirm", key=f"yes_{username}", type="primary"):
+            _, col_yes, col_no = st.columns([8, 1, 1])
+            if col_yes.button("Confirm", key=f"yes_{username}", type="primary",
+                              use_container_width=True):
                 deleted = delete_sessions_by_owner(username)
                 cfg = _load_config()
                 cfg["credentials"]["usernames"].pop(username, None)
                 _save_config(cfg)
-                st.cache_resource.clear()   # force app.py to reload users.yaml on next request
+                st.cache_resource.clear()
                 st.session_state.pop(f"_confirm_delete_{username}", None)
                 st.success(f"User **{username}** deleted ({deleted} session(s) removed).")
                 st.rerun()
-            if col_no.button("Cancel", key=f"no_{username}"):
+            if col_no.button("Cancel", key=f"no_{username}", use_container_width=True):
                 st.session_state.pop(f"_confirm_delete_{username}", None)
                 st.rerun()
