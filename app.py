@@ -208,9 +208,12 @@ try:
         for _k in list(st.session_state.keys()):
             del st.session_state[_k]
         st.rerun()
-    _is_admin = _cred.get("role", "user") == "admin"
+    _role = _cred.get("role", "user")
+    _is_admin = _role == "admin"
+    _is_manager = _role in ("admin", "manager")
     st.session_state["_username"] = _username
     st.session_state["_is_admin"] = _is_admin
+    st.session_state["_is_manager"] = _is_manager
 
     # Write last_login on first run after authentication
     if not st.session_state.get("_last_login_written"):
@@ -259,6 +262,7 @@ except Exception as e:
 # Navigation
 # ---------------------------------------------------------------------------
 _is_admin = st.session_state.get("_is_admin", False)
+_is_manager = st.session_state.get("_is_manager", False)
 
 _nav: dict = {
     "Data": [
@@ -273,9 +277,13 @@ _nav: dict = {
     ],
 }
 
-if _is_admin:
+if _is_manager:
     _nav["Tools"] = [
         st.Page("pages/04_Criteria_Tuning.py", title="Criteria Optimization", icon=":material/tune:"),
+    ]
+
+if _is_admin:
+    _nav["Administrator"] = [
         st.Page("pages/05_User_Management.py", title="User Management", icon=":material/manage_accounts:"),
     ]
 

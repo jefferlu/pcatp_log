@@ -76,14 +76,34 @@ for username, info in list(users.items()):
         c_name, c_email, c_role, c_sessions, c_created, c_last, c_action = st.columns([2, 2, 1, 1, 2, 2, 1])
         c_name.markdown(f"**{info.get('name', username)}**  \n`{username}`")
         c_email.markdown(info.get("email", "—"))
-        c_role.markdown(f"`{info.get('role', 'user')}`")
+
+        current_role = info.get("role", "user")
+        is_self = username == current_user
+        _role_options = ["user", "manager", "admin"]
+        if is_self:
+            # Own account — role fixed, no controls
+            c_role.markdown(f"`{current_role}`")
+        else:
+            new_role = c_role.selectbox(
+                "Role",
+                _role_options,
+                index=_role_options.index(current_role) if current_role in _role_options else 0,
+                key=f"role_{username}",
+                label_visibility="collapsed",
+            )
+            if new_role != current_role:
+                cfg = _load_config()
+                cfg["credentials"]["usernames"][username]["role"] = new_role
+                _save_config(cfg)
+                st.cache_resource.clear()
+                st.rerun()
 
         own_sessions = [s for s in list_sessions(username, is_admin=True) if s["owner"] == username]
         c_sessions.metric("Sessions", len(own_sessions))
         c_created.markdown(f"**Registered**  \n{info.get('created_at', '—')}")
         c_last.markdown(f"**Last Login**  \n{info.get('last_login', '—') or '—'}")
 
-        if username == current_user:
+        if is_self:
             c_action.caption("")
         else:
             if c_action.button("Delete", key=f"del_{username}", type="primary"):

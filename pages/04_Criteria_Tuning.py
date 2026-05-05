@@ -15,8 +15,8 @@ import streamlit as st
 if not st.session_state.get("_username"):
     st.stop()
 
-if not st.session_state.get("_is_admin"):
-    st.error("Access denied. This page is available to administrators only.")
+if not st.session_state.get("_is_manager"):
+    st.error("Access denied. This page is available to managers and administrators only.")
     st.stop()
 
 from components.sidebar import render_sidebar
