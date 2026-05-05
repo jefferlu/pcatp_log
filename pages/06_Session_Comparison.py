@@ -64,7 +64,6 @@ with st.spinner("Loading fail data…"):
 
 if fail_df.empty:
     st.success("No FAIL records with numeric values found.")
-    st.stop()
 
 st.divider()
 
