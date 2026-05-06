@@ -1,6 +1,6 @@
 """
 Upload Page — Import ATP log sessions into the database.
-Supports ZIP archives, individual CSV files, or selecting directories from the client.
+Select all files from a session directory to import.
 """
 from __future__ import annotations
 
@@ -22,6 +22,12 @@ from db.importer import import_session
 from parsers.csv_parser import _is_loop_csv
 
 render_sidebar(show_loop_selector=False)
+
+st.markdown("""
+<style>
+[data-testid="stFileUploaderDropzone"] button { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
 
 # Counter that increments after every import — changing the key forces
 # Streamlit to recreate file_uploader widgets with empty state.
@@ -124,26 +130,27 @@ def _prepare_zip_sessions(zf_file, tmp_path: Path) -> list[Path]:
 
 
 # ---------------------------------------------------------------------------
-# Import from Directory
+# Upload Log Files
 # ---------------------------------------------------------------------------
 with st.container(border=True):
-    st.subheader("Import from Directory")
+    st.subheader("Upload Log Files")
     st.caption(
         "Open your session folder, select **all files** (Ctrl+A / Cmd+A), then click Open. "
         "All selected files are treated as one session and imported automatically."
     )
-
     dir_files = st.file_uploader(
         "Select all files from a session directory",
         type=["csv", "txt"],
         accept_multiple_files=True,
         key=f"dir_upload_{_gen}",
     )
+    st.warning("Sessions with the same name will be overwritten automatically.")
 
-    _, btn_col_dir = st.columns([8, 1])
+    _, btn_col_dir = st.columns([8.8, 1.2])
     _dir_importing = st.session_state.get("_dir_importing", False)
     if btn_col_dir.button("Import", type="primary",
-                          disabled=not dir_files or _dir_importing, key=f"import_dir_{_gen}"):
+                          disabled=not dir_files or _dir_importing, key=f"import_dir_{_gen}",
+                          use_container_width=True):
         st.session_state["_dir_importing"] = True
         st.rerun()
 
@@ -204,102 +211,6 @@ if st.session_state.get("_dir_importing") and dir_files:
                     "error": f"Import failed: {e}",
                 })
     st.session_state["_dir_importing"] = False
-    st.session_state["_import_results"] = results
-    st.session_state["_upload_gen"] += 1
-    st.cache_data.clear()
-    st.rerun()
-
-st.divider()
-
-# ---------------------------------------------------------------------------
-# Upload section
-# ---------------------------------------------------------------------------
-with st.container(border=True):
-    st.subheader("Upload Log Files")
-    st.caption(
-        "Upload a **ZIP** archive (CSVs directly or inside a folder) "
-        "or select multiple **CSV** files from a single session."
-    )
-
-    uploaded = st.file_uploader(
-        "Choose file(s)",
-        type=["zip", "csv"],
-        accept_multiple_files=True,
-        key=f"zip_upload_{_gen}",
-    )
-
-    st.warning("Sessions with the same name will be overwritten automatically.")
-
-    _, btn_col = st.columns([8, 1])
-    _uploading = st.session_state.get("_uploading", False)
-    if btn_col.button("Import", type="primary",
-                      disabled=not uploaded or _uploading,
-                      use_container_width=True, key=f"import_zip_{_gen}"):
-        st.session_state["_uploading"] = True
-        st.rerun()
-
-if st.session_state.get("_uploading") and uploaded:
-    results = []
-    with tempfile.TemporaryDirectory() as tmp_root:
-        tmp_path = Path(tmp_root)
-
-        zip_files = [f for f in uploaded if f.name.endswith(".zip")]
-        csv_files = [f for f in uploaded if f.name.endswith(".csv")]
-
-        session_dirs: list[Path] = []
-
-        # --- Process ZIP files (each ZIP → one or more sessions) ---
-        for zf in zip_files:
-            dirs = _prepare_zip_sessions(zf, tmp_path)
-            if not dirs:
-                results.append({
-                    "error": f"No CSV files found in **{zf.name}**.",
-                    "session_id": "", "loops_imported": 0, "skipped": False,
-                })
-            else:
-                session_dirs.extend(dirs)
-
-        # --- Process loose CSV files → session named after summary CSV ---
-        if csv_files:
-            staging = tmp_path / "_staging"
-            staging.mkdir()
-            for cf in csv_files:
-                (staging / cf.name).write_bytes(cf.read())
-
-            session_id = None
-            for p in sorted(staging.glob("*.csv")):
-                is_loop, _ = _is_loop_csv(p)
-                if not is_loop:
-                    session_id = p.stem
-                    break
-            if session_id is None:
-                session_id = Path(csv_files[0].name).stem
-
-            sess_dir = tmp_path / session_id
-            sess_dir.mkdir(exist_ok=True)
-            for p in staging.iterdir():
-                p.rename(sess_dir / p.name)
-            session_dirs.append(sess_dir)
-
-        # --- Import ---
-        if session_dirs:
-            progress = st.progress(0)
-            for i, sess_dir in enumerate(session_dirs):
-                with st.spinner(f"Importing {sess_dir.name}…"):
-                    try:
-                        owner = st.session_state.get("_username", "")
-                        result = import_session(sess_dir, overwrite=True, owner=owner)
-                    except Exception as e:
-                        result = {
-                            "session_id": sess_dir.name,
-                            "loops_imported": 0,
-                            "skipped": False,
-                            "error": f"**{sess_dir.name}** — import failed: {e}",
-                        }
-                    results.append(result)
-                progress.progress((i + 1) / len(session_dirs))
-
-    st.session_state["_uploading"] = False
     st.session_state["_import_results"] = results
     st.session_state["_upload_gen"] += 1
     st.cache_data.clear()
