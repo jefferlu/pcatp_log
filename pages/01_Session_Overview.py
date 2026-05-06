@@ -96,6 +96,7 @@ for ln in loop_nums:
                 "Sub Item":  row.get("Sub Item", ""),
                 "Min":       float(m.group(1)),
                 "Max":       float(m.group(2)),
+                "Avg":       None,
                 "Limit Lo":  float(m.group(3)),
                 "Limit Hi":  float(m.group(4)),
             })
@@ -108,12 +109,13 @@ for ln in loop_nums:
                 "Sub Item":  row.get("Sub Item", ""),
                 "Min":       float(m.group(1)),
                 "Max":       float(m.group(1)),
+                "Avg":       float(m.group(1)),
                 "Limit Lo":  float(m.group(2)),
                 "Limit Hi":  float(m.group(3)),
             })
 
 if fail_rows:
-    st.subheader("Fail Parameters")
+    st.subheader("Fail Records")
     fail_table = pd.DataFrame(fail_rows)
 
     # Join spec mapping (pin_no, evo_imm_group) by test_name and session log_type
@@ -149,6 +151,7 @@ if fail_rows:
         "Sub Item":  st.column_config.TextColumn("Sub Item",  width=180),
         "Min":       st.column_config.NumberColumn("Min",      width=90, format="%.2f"),
         "Max":       st.column_config.NumberColumn("Max",      width=90, format="%.2f"),
+        "Avg":       st.column_config.NumberColumn("Avg",      width=90, format="%.2f"),
         "Limit Lo":  st.column_config.NumberColumn("Limit Lo", width=90, format="%.2f"),
         "Limit Hi":  st.column_config.NumberColumn("Limit Hi", width=90, format="%.2f"),
     }
