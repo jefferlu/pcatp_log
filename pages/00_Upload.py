@@ -17,7 +17,7 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from db.database import list_sessions, delete_session, import_spec_mapping, get_spec_mapping
+from db.database import list_sessions, delete_session, import_spec_mapping, get_spec_mapping, build_session_zip
 from db.importer import import_session
 from parsers.csv_parser import _is_loop_csv
 
@@ -286,8 +286,12 @@ else:
     else:
         filtered_sessions = sessions
 
+    @st.cache_data(show_spinner=False)
+    def _cached_build_zip(session_id: str) -> bytes:
+        return build_session_zip(session_id)
+
     for sess in filtered_sessions:
-        col_info, col_del = st.columns([5, 1])
+        col_info, col_dl, col_del = st.columns([5, 1, 1])
         with col_info:
             owner_tag = f" &nbsp;|&nbsp; Owner: `{sess['owner']}`" if _is_admin and sess.get("owner") else ""
             type_tag = f" &nbsp;|&nbsp; Type: `{sess['log_type']}`" if sess.get("log_type") else ""
@@ -297,6 +301,16 @@ else:
                 + f" &nbsp;|&nbsp; Mode: `{sess['test_mode'] or '—'}`"
                 f" &nbsp;|&nbsp; Loops: **{sess['total_loops']}**"
                 + owner_tag
+            )
+        with col_dl:
+            zip_bytes = _cached_build_zip(sess["session_id"])
+            st.download_button(
+                "Download",
+                data=zip_bytes,
+                file_name=f"{sess['session_id']}.zip",
+                mime="application/zip",
+                key=f"dl_{sess['session_id']}",
+                use_container_width=True,
             )
         with col_del:
             can_delete = _is_admin or sess.get("owner") == _username

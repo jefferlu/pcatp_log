@@ -4,8 +4,10 @@ DuckDB database layer for ATP Log Analyzer.
 from __future__ import annotations
 
 import contextlib
+import io
 import os
 import sys
+import zipfile
 from pathlib import Path
 
 import duckdb
@@ -488,3 +490,77 @@ def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
         {"time": r[0], "module": r[1], "message": r[2], "level": r[3], "loop": loop_num}
         for r in rows
     ]
+
+
+def build_session_zip(session_id: str) -> bytes:
+    """Reconstruct per-loop CSV and TXT files from the DB and return them as a ZIP."""
+    buf = io.BytesIO()
+    with connect() as conn:
+        sess_row = conn.execute(
+            "SELECT test_mode FROM sessions WHERE session_id = ?", [session_id]
+        ).fetchone()
+        if not sess_row:
+            return b""
+        session_test_mode = sess_row[0] or ""
+
+        loop_rows = conn.execute(
+            "SELECT loop_num, end_time, test_mode FROM loop_headers "
+            "WHERE session_id = ? ORDER BY loop_num",
+            [session_id],
+        ).fetchall()
+
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+            for loop_num, end_time, loop_test_mode in loop_rows:
+                tm = loop_test_mode or session_test_mode
+
+                # --- Reconstruct CSV ---
+                csv_lines = [
+                    f"Test Mode,{tm}",
+                    f"Test Loop,{loop_num}",
+                    f"Test End Time,{end_time or ''}",
+                    ",",
+                    ",",
+                    ",",
+                    ",",
+                    ",",
+                    "Test ID,Category,Test Name,Sub Item,Result,Value,Hex ID",
+                ]
+                res_rows = conn.execute(
+                    "SELECT test_id, category, test_name, sub_item, result, value, hex_id "
+                    "FROM results WHERE session_id = ? AND loop_num = ? ORDER BY test_id",
+                    [session_id, loop_num],
+                ).fetchall()
+                for r in res_rows:
+                    csv_lines.append(",".join("" if v is None else str(v) for v in r))
+
+                leg_rows = conn.execute(
+                    "SELECT test_id, category, test_name, sub_item, result, value, hex_id "
+                    "FROM legacy_results WHERE session_id = ? AND loop_num = ? ORDER BY test_id",
+                    [session_id, loop_num],
+                ).fetchall()
+                if leg_rows:
+                    csv_lines.append("")
+                    csv_lines.append("Test ID,Category,Test Name,Sub Item,Result,Value,Hex ID")
+                    for r in leg_rows:
+                        csv_lines.append(",".join("" if v is None else str(v) for v in r))
+
+                csv_bytes = "\r\n".join(csv_lines).encode("utf-8-sig")
+                zf.writestr(f"{loop_num:02d}_00_{session_id}.csv", csv_bytes)
+
+                # --- Reconstruct TXT ---
+                log_rows = conn.execute(
+                    "SELECT time_str, module, message FROM log_entries "
+                    "WHERE session_id = ? AND loop_num = ? ORDER BY rowid",
+                    [session_id, loop_num],
+                ).fetchall()
+                txt_lines = []
+                for time_str, module, message in log_rows:
+                    if module in ("System", "raw") or not time_str:
+                        txt_lines.append(message)
+                    else:
+                        txt_lines.append(f"[{time_str}] [{module}] {message}")
+                txt_bytes = "\r\n".join(txt_lines).encode("utf-8")
+                zf.writestr(f"{loop_num:02d}_00_{session_id}_TestSetResponse.txt", txt_bytes)
+
+    buf.seek(0)
+    return buf.read()
