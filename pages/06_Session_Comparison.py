@@ -7,7 +7,6 @@ distribution across loops, and export the data to Excel.
 from __future__ import annotations
 
 import io
-import re
 
 import numpy as np
 import pandas as pd
@@ -209,50 +208,6 @@ def _build_excel(
                     "Median":           round(float(np.median(vals)), 4),
                     "Range":            round(float(vals.max() - vals.min()), 4),
                 })
-            # Append log-based FAIL entries to Fail Summary
-            # Parse messages like "TestItem: lin, Channel: 01CM, Result: FAIL"
-            _testitem_re = re.compile(
-                r"TestItem:\s*([^,]+?)(?:,\s*Channel:\s*([^,]+?))?(?:,\s*Result:.*)?$",
-                re.IGNORECASE,
-            )
-            if not sess_log_fail.empty:
-                parsed_log = []
-                for _, lrow in sess_log_fail.iterrows():
-                    m = _testitem_re.search(str(lrow["message"]))
-                    if m:
-                        t_name = m.group(1).strip()
-                        t_sub  = m.group(2).strip() if m.group(2) else ""
-                    else:
-                        t_name = f"[{lrow['module']}] {str(lrow['message'])[:80]}"
-                        t_sub  = ""
-                    parsed_log.append({
-                        "test_name": t_name,
-                        "sub_item":  t_sub,
-                        "loop_num":  lrow["loop_num"],
-                    })
-                log_grouped = (
-                    pd.DataFrame(parsed_log)
-                    .groupby(["test_name", "sub_item"])["loop_num"]
-                    .nunique()
-                    .reset_index()
-                    .rename(columns={"loop_num": "fail_loops"})
-                )
-                for _, g in log_grouped.iterrows():
-                    summary_rows.append({
-                        "Test Name":        g["test_name"],
-                        "Sub Item":         g["sub_item"],
-                        "Test Mode":        "",
-                        "Category":         "Log",
-                        "Total Fail Loops": int(g["fail_loops"]),
-                        "Total Loops":      total_loops,
-                        "Limit Min":        "",
-                        "Limit Max":        "",
-                        "Val Min":          "",
-                        "Val Max":          "",
-                        "Median":           "",
-                        "Range":            "",
-                    })
-
             summary_df = pd.DataFrame(summary_rows)
 
             # Raw — all parameters (results + legacy_results), sorted by loop then test_name
