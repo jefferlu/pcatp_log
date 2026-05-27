@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(dotnet build pcatp_log_wpf/pcatp_log_wpf.csproj)",
-      "Bash(python3)"
+      "Bash(python3)",
+      "Bash(python3 -c \"import ast; ast.parse\\(open\\('pages/06_Session_Comparison.py'\\).read\\(\\)\\); print\\('OK'\\)\")"
     ]
   }
 }
