@@ -183,31 +183,56 @@ def _build_excel(
 
             total_loops = _total_loops_map.get(session_id, "—")
 
-            # Summary (from fail data)
+            # Summary — all FAIL rows from All Results (results + legacy_results).
+            # For rows with numeric values the stats are filled in from sess_fail;
+            # non-numeric FAILs (e.g. value="FAIL") get blank numeric columns.
             summary_rows = []
-            for param in sorted(sess_fail["param"].unique()) if not sess_fail.empty else []:
-                pdata = sess_fail[sess_fail["param"] == param]
-                vals  = pdata["numeric_value"]
-                lmin  = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
-                lmax  = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
-                test_name = pdata["test_name"].iloc[0] if not pdata.empty else ""
-                sub_item  = pdata["sub_item"].iloc[0]  if not pdata.empty else ""
-                test_mode = pdata["test_mode"].iloc[0] if "test_mode" in pdata.columns and not pdata.empty else ""
-                category  = pdata["category"].iloc[0]  if "category"  in pdata.columns and not pdata.empty else ""
-                summary_rows.append({
-                    "Test Name":        test_name,
-                    "Sub Item":         sub_item,
-                    "Test Mode":        test_mode,
-                    "Category":         category,
-                    "Total Fail Loops": int(vals.count()),
-                    "Total Loops":      total_loops,
-                    "Limit Min":        round(float(lmin), 4) if lmin is not None else "",
-                    "Limit Max":        round(float(lmax), 4) if lmax is not None else "",
-                    "Val Min":          round(float(vals.min()), 4),
-                    "Val Max":          round(float(vals.max()), 4),
-                    "Median":           round(float(np.median(vals)), 4),
-                    "Range":            round(float(vals.max() - vals.min()), 4),
-                })
+            sess_all_fail = (
+                sess_all[sess_all["result"].str.upper() == "FAIL"]
+                if not sess_all.empty else pd.DataFrame()
+            )
+            if not sess_all_fail.empty:
+                _grp_cols = ["test_name", "sub_item", "category", "test_mode"]
+                for keys, grp in sess_all_fail.fillna("").groupby(_grp_cols, sort=True):
+                    t_name, t_sub, t_cat, t_mode = keys
+                    fail_loops = grp["loop_num"].nunique()
+
+                    # Look up numeric stats from sess_fail (only rows with parseable values)
+                    if not sess_fail.empty:
+                        pdata = sess_fail[
+                            (sess_fail["test_name"].fillna("") == t_name) &
+                            (sess_fail["sub_item"].fillna("")  == t_sub)
+                        ]
+                    else:
+                        pdata = pd.DataFrame()
+
+                    if not pdata.empty:
+                        vals = pdata["numeric_value"]
+                        lmin = pdata["limit_min"].dropna().iloc[0] if pdata["limit_min"].notna().any() else None
+                        lmax = pdata["limit_max"].dropna().iloc[0] if pdata["limit_max"].notna().any() else None
+                        num_stats = {
+                            "Limit Min": round(float(lmin), 4) if lmin is not None else "",
+                            "Limit Max": round(float(lmax), 4) if lmax is not None else "",
+                            "Val Min":   round(float(vals.min()), 4),
+                            "Val Max":   round(float(vals.max()), 4),
+                            "Median":    round(float(np.median(vals)), 4),
+                            "Range":     round(float(vals.max() - vals.min()), 4),
+                        }
+                    else:
+                        num_stats = {
+                            "Limit Min": "", "Limit Max": "",
+                            "Val Min": "", "Val Max": "", "Median": "", "Range": "",
+                        }
+
+                    summary_rows.append({
+                        "Test Name":        t_name,
+                        "Sub Item":         t_sub,
+                        "Test Mode":        t_mode,
+                        "Category":         t_cat,
+                        "Total Fail Loops": int(fail_loops),
+                        "Total Loops":      total_loops,
+                        **num_stats,
+                    })
             summary_df = pd.DataFrame(summary_rows)
 
             # Raw — all parameters (results + legacy_results), sorted by loop then test_name
