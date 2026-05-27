@@ -18,7 +18,7 @@ if not st.session_state.get("_username"):
     st.stop()
 
 from components.sidebar import render_sidebar
-from db.database import list_sessions, load_fail_values, load_all_results, load_device_info
+from db.database import list_sessions, load_fail_values, load_all_results, load_device_info, load_fail_log_entries
 
 render_sidebar(show_loop_selector=False, show_session_selector=False)
 
@@ -157,18 +157,28 @@ _total_loops_map = {s["session_id"]: s["total_loops"] for s in all_sessions}
 with st.spinner("Loading all results for export…"):
     all_results_df = load_all_results(selected_sessions)
 
-def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFrame) -> bytes:
+with st.spinner("Loading log fail entries for export…"):
+    log_fail_df = load_fail_log_entries(selected_sessions)
+
+def _build_excel(
+    sessions: list[str],
+    fail_df: pd.DataFrame,
+    all_df: pd.DataFrame,
+    log_fail_df: pd.DataFrame,
+) -> bytes:
     buf = io.BytesIO()
     _sum_fill  = PatternFill("solid", fgColor="4472C4")   # blue — summary header
     _raw_fill  = PatternFill("solid", fgColor="70AD47")   # green — raw header
+    _log_fill  = PatternFill("solid", fgColor="FFC000")   # orange — log fail header
     _fail_fill = PatternFill("solid", fgColor="FFCCCC")   # red — fail rows
     _hdr_font  = Font(color="FFFFFF", bold=True)
 
     with pd.ExcelWriter(buf, engine="openpyxl") as writer:
         for session_id in sessions:
-            sess_fail = fail_df[fail_df["session_id"] == session_id]
-            sess_all  = all_df[all_df["session_id"] == session_id]
-            if sess_all.empty:
+            sess_fail    = fail_df[fail_df["session_id"] == session_id]
+            sess_all     = all_df[all_df["session_id"] == session_id]
+            sess_log_fail = log_fail_df[log_fail_df["session_id"] == session_id] if not log_fail_df.empty else pd.DataFrame()
+            if sess_all.empty and sess_log_fail.empty:
                 continue
 
             total_loops = _total_loops_map.get(session_id, "—")
@@ -200,22 +210,35 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
                 })
             summary_df = pd.DataFrame(summary_rows)
 
-            # Raw — all parameters, sorted by loop then test_name
-            raw_df = sess_all[["loop_num", "test_mode", "category", "test_name", "sub_item", "result", "value"]].copy()
-            raw_df.columns = ["Loop", "Test Mode", "Category", "Test Name", "Sub Item", "Result", "Value"]
-            raw_df = raw_df.sort_values(["Loop", "Test Name", "Sub Item"]).reset_index(drop=True)
+            # Raw — all parameters (results + legacy_results), sorted by loop then test_name
+            raw_df = pd.DataFrame()
+            if not sess_all.empty:
+                raw_df = sess_all[["loop_num", "test_mode", "category", "test_name", "sub_item", "result", "value"]].copy()
+                raw_df.columns = ["Loop", "Test Mode", "Category", "Test Name", "Sub Item", "Result", "Value"]
+                raw_df = raw_df.sort_values(["Loop", "Test Name", "Sub Item"]).reset_index(drop=True)
+
+            # Log FAIL entries (from TXT log_entries, level='fail')
+            log_df = pd.DataFrame()
+            if not sess_log_fail.empty:
+                log_df = sess_log_fail[["loop_num", "time_str", "module", "message"]].copy()
+                log_df.columns = ["Loop", "Time", "Module", "Message"]
+                log_df = log_df.reset_index(drop=True)
 
             # Write sheets
             # Layout:
-            #   rows 1..N  = device info (key | value), one per info field
-            #   row  N+1   = blank
-            #   row  N+2   = "Fail Summary" title
-            #   row  N+3   = summary header (blue)
-            #   rows N+4.. = summary data
+            #   rows 1..N   = device info (key | value), one per info field
+            #   row  N+1    = blank
+            #   row  N+2    = "Fail Summary" title
+            #   row  N+3    = summary header (blue)
+            #   rows N+4..  = summary data
             #   (gap of 2)
-            #   row  M     = "All Results" title
-            #   row  M+1   = raw header (green)
-            #   rows M+2.. = raw data
+            #   row  M      = "All Results" title
+            #   row  M+1    = raw header (green)
+            #   rows M+2..  = raw data
+            #   (gap of 2)
+            #   row  P      = "Log FAIL Entries" title
+            #   row  P+1    = log header (orange)
+            #   rows P+2..  = log data
             sheet_name  = session_id[:31]
 
             dev_info   = load_device_info(session_id)
@@ -226,13 +249,25 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
             sum_title_row = info_offset + 1        # 1-based
             sum_hdr_row   = sum_title_row + 1
             # startrow for to_excel is 0-based; summary header lands on sum_hdr_row
-            summary_df.to_excel(writer, sheet_name=sheet_name, index=False,
-                                startrow=sum_hdr_row - 1)
+            if not summary_df.empty:
+                summary_df.to_excel(writer, sheet_name=sheet_name, index=False,
+                                    startrow=sum_hdr_row - 1)
+            else:
+                # Write an empty placeholder so the sheet is created
+                pd.DataFrame().to_excel(writer, sheet_name=sheet_name, index=False,
+                                        startrow=sum_hdr_row - 1)
 
-            raw_title_row = sum_hdr_row + len(summary_df) + 2
+            raw_title_row = sum_hdr_row + max(len(summary_df), 1) + 2
             raw_hdr_row   = raw_title_row + 1
-            raw_df.to_excel(writer, sheet_name=sheet_name, index=False,
-                            startrow=raw_hdr_row - 1)
+            if not raw_df.empty:
+                raw_df.to_excel(writer, sheet_name=sheet_name, index=False,
+                                startrow=raw_hdr_row - 1)
+
+            log_title_row = raw_hdr_row + max(len(raw_df), 1) + 2
+            log_hdr_row   = log_title_row + 1
+            if not log_df.empty:
+                log_df.to_excel(writer, sheet_name=sheet_name, index=False,
+                                startrow=log_hdr_row - 1)
 
             ws = writer.sheets[sheet_name]
 
@@ -252,6 +287,10 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
             ws.cell(row=raw_title_row, column=1).value = "All Results"
             ws.cell(row=raw_title_row, column=1).font  = _title_font
 
+            # Log FAIL Entries title
+            ws.cell(row=log_title_row, column=1).value = "Log FAIL Entries"
+            ws.cell(row=log_title_row, column=1).font  = _title_font
+
             # Header colours
             for cell in ws[sum_hdr_row]:
                 if cell.value is not None:
@@ -261,14 +300,19 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
                 if cell.value is not None:
                     cell.fill = _raw_fill
                     cell.font = _hdr_font
+            for cell in ws[log_hdr_row]:
+                if cell.value is not None:
+                    cell.fill = _log_fill
+                    cell.font = _hdr_font
 
             # Highlight FAIL rows in raw table
-            for row_offset, result_val in enumerate(raw_df["Result"]):
-                if str(result_val).upper() == "FAIL":
-                    excel_row = raw_hdr_row + 1 + row_offset
-                    for cell in ws[excel_row]:
-                        if cell.column <= len(raw_df.columns):
-                            cell.fill = _fail_fill
+            if not raw_df.empty:
+                for row_offset, result_val in enumerate(raw_df["Result"]):
+                    if str(result_val).upper() == "FAIL":
+                        excel_row = raw_hdr_row + 1 + row_offset
+                        for cell in ws[excel_row]:
+                            if cell.column <= len(raw_df.columns):
+                                cell.fill = _fail_fill
 
             # Auto-fit column widths
             for col in ws.columns:
@@ -283,7 +327,7 @@ def _build_excel(sessions: list[str], fail_df: pd.DataFrame, all_df: pd.DataFram
 
 fname = "Fail_Distribution.xlsx"
 with st.spinner("Building Excel…"):
-    excel_bytes = _build_excel(selected_sessions, fail_df, all_results_df)
+    excel_bytes = _build_excel(selected_sessions, fail_df, all_results_df, log_fail_df)
 st.download_button(
     label="Download Excel",
     data=excel_bytes,

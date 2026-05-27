@@ -296,7 +296,11 @@ def load_fail_values(session_ids: list[str]) -> pd.DataFrame:
         df = conn.execute(
             f"SELECT r.session_id, r.loop_num, r.test_name, r.sub_item, r.category, r.value, "
             f"       coalesce(lh.test_mode, s.test_mode, '') AS test_mode "
-            f"FROM results r "
+            f"FROM ("
+            f"  SELECT session_id, loop_num, test_name, sub_item, category, result, value FROM results "
+            f"  UNION ALL "
+            f"  SELECT session_id, loop_num, test_name, sub_item, category, result, value FROM legacy_results"
+            f") r "
             f"JOIN sessions s ON r.session_id = s.session_id "
             f"LEFT JOIN loop_headers lh ON r.session_id = lh.session_id AND r.loop_num = lh.loop_num "
             f"WHERE r.session_id IN ({placeholders}) AND upper(r.result) = 'FAIL'",
@@ -429,7 +433,7 @@ def get_spec_mapping(log_type: str | None = None) -> pd.DataFrame:
 
 
 def load_all_results(session_ids: list[str]) -> pd.DataFrame:
-    """Return all result rows for the given sessions (all results, not just FAIL)."""
+    """Return all result rows for the given sessions (results + legacy_results, not just FAIL)."""
     if not session_ids:
         return pd.DataFrame()
     placeholders = ", ".join("?" * len(session_ids))
@@ -438,7 +442,11 @@ def load_all_results(session_ids: list[str]) -> pd.DataFrame:
             f"SELECT r.session_id, r.loop_num, r.test_name, r.sub_item, r.category, "
             f"       r.result, r.value, "
             f"       coalesce(lh.test_mode, s.test_mode, '') AS test_mode "
-            f"FROM results r "
+            f"FROM ("
+            f"  SELECT session_id, loop_num, test_name, sub_item, category, result, value FROM results "
+            f"  UNION ALL "
+            f"  SELECT session_id, loop_num, test_name, sub_item, category, result, value FROM legacy_results"
+            f") r "
             f"JOIN sessions s ON r.session_id = s.session_id "
             f"LEFT JOIN loop_headers lh ON r.session_id = lh.session_id AND r.loop_num = lh.loop_num "
             f"WHERE r.session_id IN ({placeholders}) "
@@ -490,6 +498,27 @@ def load_log_entries(session_id: str, loop_num: int) -> list[dict]:
         {"time": r[0], "module": r[1], "message": r[2], "level": r[3], "loop": loop_num}
         for r in rows
     ]
+
+
+def load_fail_log_entries(session_ids: list[str]) -> pd.DataFrame:
+    """Return log_entries rows with level='fail' for the given sessions.
+
+    Returns a DataFrame with columns:
+        session_id, loop_num, time_str, module, message
+    Ordered by session_id, loop_num, and insertion order (rowid).
+    """
+    if not session_ids:
+        return pd.DataFrame()
+    placeholders = ", ".join("?" * len(session_ids))
+    with connect() as conn:
+        df = conn.execute(
+            f"SELECT session_id, loop_num, time_str, module, message "
+            f"FROM log_entries "
+            f"WHERE session_id IN ({placeholders}) AND level = 'fail' "
+            f"ORDER BY session_id, loop_num, rowid",
+            session_ids,
+        ).df()
+    return df
 
 
 def build_session_zip(session_id: str) -> bytes:
